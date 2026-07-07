@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local secrets and environment
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.p8
+*.p12
+id_rsa
+id_ed25519
+known_hosts
+
+# Tunnel and machine config
+wireguard/
+tailscale/
+*.conf
+*.wg.conf
+ssh_config
+
+# Large model and data artifacts
+models/
+*.gguf
+*.safetensors
+*.onnx
+*.pt
+*.pth
+*.bin
+
+# Benchmark outputs that may contain local paths or host details
+benchmarks/results/local/
+benchmarks/results/private/
+*.parquet
+*.sqlite
+*.db
+
+# OS and editor files
+.DS_Store
+.vscode/
+.idea/
