@@ -1,0 +1,133 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Long Tail Inference Lab hero diagram</title>
+  <desc id="desc">A playful black and white systems diagram showing a laptop, VPS, home server, and edge device routing inference work through a Long Tail Inference Router into runtime, benchmark, eval, and verified result modules.</desc>
+  <rect width="1200" height="675" fill="#fbfbf8"/>
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0V24" stroke="#e8e8e2" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="4" dy="5" stdDeviation="0" flood-color="#111" flood-opacity="0.14"/>
+    </filter>
+    <style>
+      .title{font:800 56px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;fill:#0b0b0b;letter-spacing:.2px}
+      .label{font:800 22px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;fill:#0b0b0b}
+      .small{font:600 14px ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;fill:#111;letter-spacing:1.5px}
+      .tiny{font:500 13px ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;fill:#111}
+      .mono{font:700 14px ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;fill:#111}
+      .box{fill:#fff;stroke:#0b0b0b;stroke-width:2.5;rx:18;filter:url(#shadow)}
+      .line{stroke:#0b0b0b;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+      .thin{stroke:#0b0b0b;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .dash{stroke:#0b0b0b;stroke-width:2;stroke-dasharray:7 7;stroke-linecap:round;stroke-linejoin:round}
+      .dot{fill:#0b0b0b}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10Z" fill="#0b0b0b"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="675" fill="url(#grid)" opacity="0.8"/>
+
+  <path d="M34 34H150M1050 34H1166M34 641H150M1050 641H1166" class="thin"/>
+  <path d="M34 34V132M1166 34V132M34 543V641M1166 543V641" class="dash"/>
+  <circle cx="46" cy="48" r="5" fill="#0b0b0b"/><path d="M1148 46h18M1157 37v18" class="thin"/>
+
+  <text x="600" y="82" text-anchor="middle" class="title">Long Tail Inference Lab</text>
+  <path d="M372 100c92 12 350 12 455 0" class="line" opacity="0.85"/>
+  <path d="M312 70l-28 -16M315 89l-36 5M885 70l28 -16M882 89l36 5" class="line"/>
+
+  <!-- Device cards -->
+  <g transform="translate(145 130)">
+    <rect class="box" width="190" height="135" rx="18"/>
+    <rect x="51" y="30" width="88" height="54" rx="3" class="thin"/>
+    <path d="M40 95h110l-18 20H58z" class="thin"/>
+    <path d="M70 104h50M82 112h26" class="thin"/>
+    <text x="95" y="126" text-anchor="middle" class="label">Laptop</text>
+    <text x="66" y="64" class="mono">&gt;_</text>
+  </g>
+  <g transform="translate(373 130)">
+    <rect class="box" width="190" height="135" rx="18"/>
+    <path d="M60 70c-20 0-31-16-25-33 4-13 17-21 31-18 8-17 28-25 46-16 13 6 21 17 23 31 17 1 28 14 28 29 0 17-13 30-31 30H60z" class="thin"/>
+    <rect x="61" y="54" width="76" height="18" rx="4" class="thin"/><rect x="61" y="76" width="76" height="18" rx="4" class="thin"/><rect x="61" y="98" width="76" height="18" rx="4" class="thin"/>
+    <circle cx="74" cy="63" r="3" class="dot"/><circle cx="74" cy="85" r="3" class="dot"/><circle cx="74" cy="107" r="3" class="dot"/>
+    <text x="95" y="126" text-anchor="middle" class="label">VPS</text>
+  </g>
+  <g transform="translate(601 130)">
+    <rect class="box" width="190" height="135" rx="18"/>
+    <path d="M75 28l72 18v64l-72 18-34-18V46z" class="thin"/>
+    <path d="M75 28v100M41 46l34 12 72-12M55 68h49M55 84h49M55 100h49" class="thin"/>
+    <circle cx="118" cy="69" r="3" class="dot"/><circle cx="118" cy="85" r="3" class="dot"/><circle cx="118" cy="101" r="3" class="dot"/>
+    <text x="95" y="126" text-anchor="middle" class="label">Home Server</text>
+  </g>
+  <g transform="translate(829 130)">
+    <rect class="box" width="190" height="135" rx="18"/>
+    <path d="M45 63h100c13 0 22 9 22 22v21H57c-17 0-30-12-30-28 0-9 7-15 18-15z" class="thin"/>
+    <path d="M52 53h91M57 44h82M63 35h70M54 53l8-18M72 53l8-18M90 53l8-18M108 53l8-18M126 53l8-18" class="thin"/>
+    <circle cx="55" cy="87" r="4" class="dot"/><rect x="73" y="82" width="18" height="10" rx="2" class="thin"/><rect x="104" y="80" width="22" height="14" rx="2" class="thin"/>
+    <text x="95" y="126" text-anchor="middle" class="label">Edge Device</text>
+  </g>
+
+  <!-- Annotation notes -->
+  <g transform="translate(50 308)">
+    <rect x="0" y="0" width="125" height="102" fill="#fff" stroke="#111" stroke-width="2"/>
+    <text x="18" y="28" class="mono">ROUTE.</text><text x="18" y="53" class="mono">SCHEDULE.</text><text x="18" y="78" class="mono">OBSERVE.</text>
+  </g>
+  <g transform="translate(1018 300)">
+    <rect x="0" y="0" width="142" height="88" fill="#fff" stroke="#111" stroke-width="2"/>
+    <text x="16" y="25" class="mono">RIGHT MODEL.</text><text x="16" y="50" class="mono">RIGHT DEVICE.</text><text x="16" y="75" class="mono">RIGHT TIME.</text>
+  </g>
+
+  <!-- Router -->
+  <path d="M240 266v66C240 352 325 352 325 372M468 266v67C468 352 485 352 485 372M696 266v67C696 352 713 352 713 372M924 266v66C924 352 844 352 844 372" class="line" marker-end="url(#arrow)"/>
+  <g transform="translate(290 357)">
+    <rect x="0" y="0" width="620" height="112" rx="55" fill="#fff" stroke="#0b0b0b" stroke-width="3.5" filter="url(#shadow)"/>
+    <circle cx="88" cy="56" r="40" fill="#fff" stroke="#111" stroke-width="3"/>
+    <path d="M88 30v52M62 56h52M88 30l-9 12M88 30l9 12M62 56l12-9M62 56l12 9M114 56l-12-9M114 56l-12 9M88 82l-9-12M88 82l9-12" class="thin"/>
+    <text x="372" y="50" text-anchor="middle" class="label" style="font-size:28px">Long Tail Inference Router</text>
+    <text x="372" y="80" text-anchor="middle" class="small">ROUTE • SCHEDULE • ADAPT • OBSERVE</text>
+    <circle cx="580" cy="35" r="4" class="dot"/><circle cx="580" cy="56" r="4" class="dot"/><circle cx="580" cy="77" r="4" class="dot"/>
+  </g>
+  <path d="M275 382l-36 -16M276 427l-38 14M920 382l36 -16M919 427l38 14" class="line"/>
+
+  <!-- Bottom modules -->
+  <path d="M600 469v40M600 509H175M600 509h850M175 509v45M415 509v45M665 509v45M915 509v45" class="line" marker-end="url(#arrow)"/>
+  <g transform="translate(80 532)">
+    <rect class="box" width="240" height="105" rx="18"/>
+    <circle cx="55" cy="52" r="33" fill="#fff" stroke="#111" stroke-width="3"/>
+    <path d="M36 50l22-20 26 16-6 30-31 3zM36 50l42 26M58 30l-11 49M84 46l-37 33" class="thin"/>
+    <text x="105" y="38" class="label" style="font-size:19px">Open Weight</text><text x="105" y="62" class="label" style="font-size:19px">LLM Runtime</text>
+    <text x="105" y="85" class="tiny">Run anywhere. Any model.</text>
+  </g>
+  <g transform="translate(360 532)">
+    <rect class="box" width="220" height="105" rx="18"/>
+    <path d="M45 34h45v52H45zM57 34c0-8 20-8 20 0M55 50l8 8 15-17M55 69l8 8 15-17" class="thin"/>
+    <text x="105" y="38" class="label" style="font-size:19px">Benchmark</text><text x="105" y="62" class="label" style="font-size:19px">Harness</text>
+    <text x="105" y="85" class="tiny">Reproducible runs.</text>
+  </g>
+  <g transform="translate(620 532)">
+    <rect class="box" width="220" height="105" rx="18"/>
+    <path d="M45 75a36 36 0 1 1 72 0M81 75l25-25M56 75h-8M117 75h8M64 50l-6-6M99 50l6-6" class="thin"/>
+    <circle cx="81" cy="75" r="5" class="dot"/>
+    <text x="125" y="38" class="label" style="font-size:19px">Edge</text><text x="125" y="62" class="label" style="font-size:19px">Evals</text>
+    <text x="125" y="85" class="tiny">Latency. Throughput.</text>
+  </g>
+  <g transform="translate(880 532)">
+    <rect class="box" width="240" height="105" rx="18"/>
+    <path d="M58 27l38 14v25c0 24-18 38-38 47-20-9-38-23-38-47V41z" class="thin"/>
+    <path d="M40 68l13 13 28-34" class="line"/>
+    <text x="110" y="38" class="label" style="font-size:19px">Verified</text><text x="110" y="62" class="label" style="font-size:19px">Results</text>
+    <text x="110" y="85" class="tiny">Trust by design.</text>
+  </g>
+
+  <g transform="translate(162 620)">
+    <path d="M0 0h58" class="line"/><text x="72" y="5" class="mono">DATA FLOW</text>
+    <path d="M0 22h58" class="dash"/><text x="72" y="27" class="mono">OBSERVABILITY</text>
+  </g>
+  <g transform="translate(455 620)">
+    <rect x="0" y="0" width="310" height="34" rx="8" fill="#fff" stroke="#111" stroke-width="2"/>
+    <text x="155" y="23" text-anchor="middle" class="mono">One Router. Any Model. Everywhere.</text>
+  </g>
+  <g transform="translate(830 620)">
+    <rect x="0" y="0" width="280" height="34" rx="8" fill="#fff" stroke="#111" stroke-width="2" stroke-dasharray="6 5"/>
+    <text x="140" y="23" text-anchor="middle" class="mono">$ longtail lab route observe</text>
+  </g>
+</svg>
