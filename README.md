@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/longtail-inference-lab-hero.svg" alt="Long Tail Inference Lab system diagram" width="100%">
+  <img src="docs/assets/longtail-inference-lab-hero.png" alt="Long Tail Inference Lab system diagram" width="100%">
 </p>
 
 # Long Tail Inference Lab
