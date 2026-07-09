@@ -33,7 +33,7 @@ This repo intentionally avoids committing private hostnames, IP addresses, SSH d
 Run locally:
 
 ```bash
-python scripts/safety_scan.py
+python3 scripts/safety_scan.py
 ```
 
 Or with pre commit:
