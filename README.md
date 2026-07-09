@@ -26,6 +26,16 @@ The goal is not to claim that everyday devices replace GPU data centers. The goa
 - Device inventory probe
 - [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md)
 
+## Daily newsletter
+
+A scheduled digest is generated into [`docs/newsletter`](docs/newsletter/) every day. It tracks public signals related to edge LLM inference, open weight model serving, local runtimes, laptop plus VPS split inference, network tax measurement, inference routing, quantized models, and verified everyday compute experiments.
+
+Run it locally:
+
+```bash
+python scripts/build_daily_newsletter.py
+```
+
 ## Safety posture
 
 This repo intentionally avoids committing private hostnames, IP addresses, SSH details, API keys, tunnel configuration, private prompts, and local machine paths. A lightweight safety scan is included for local pre commit usage and CI.
