@@ -17,13 +17,13 @@ It is intentionally simple and dependency free. It is not a replacement for GitH
 ## Run locally
 
 ```bash
-python scripts/safety_scan.py
+python3 scripts/safety_scan.py
 ```
 
 ## Install the pre commit hook
 
 ```bash
-python -m pip install pre-commit
+python3 -m pip install pre-commit
 pre-commit install
 ```
 
