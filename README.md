@@ -24,6 +24,7 @@ The goal is not to claim that everyday devices replace GPU data centers. The goa
 - Edge LLM task evals
 - Reproducible experiment metadata
 - Device inventory probe
+- [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md)
 
 ## Safety posture
 
