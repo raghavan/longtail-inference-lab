@@ -46,6 +46,22 @@ Both signals feed a simple threshold rule to start. If retrieval similarity and 
 
 Tail questions escalate to a frontier model through the same gateway. The escalated request carries the retrieved wiki context and the local draft, so the frontier model can correct or extend rather than start cold. Routing between Claude and Codex is by task type: code heavy questions go to Codex, general reasoning and writing go to Claude, with the mapping itself open to revision as we measure quality.
 
+### Escalation path: API vs native harness
+
+There are two ways to reach the frontier models, and the choice is itself an experimental variable. The models are closed weight either way, so inference always runs in the provider cloud. What differs is the invocation path.
+
+The API path is what the gateway design above assumes: LiteLLM forwards the request to the Claude or Codex API and returns a completion. It is fast, structured, and billed per token.
+
+The native harness path runs the agent tooling locally instead: Claude Code in non interactive mode or through the Agent SDK, and Codex CLI in exec mode. This changes three things:
+
+- Cost model: the harnesses can authenticate with a subscription instead of an API key, so marginal escalation cost drops to near zero dollars and becomes quota consumption instead, measured in rate limit windows rather than spend. Note that routing bulk programmatic traffic through a consumer subscription sits in a terms of service gray area, so this path is framed here as low volume personal research.
+- Write back: an agentic harness can answer the question, distill it into a wiki entry, and open the pull request itself in one invocation with file access to the wiki. The API path requires that scaffolding to be built separately.
+- Integration: a CLI harness is not an OpenAI compatible endpoint, so it does not sit behind LiteLLM naturally. Either a thin shim server wraps the harness, or the router splits: head questions go through the gateway to the local model, tail questions invoke the harness directly.
+
+Codex CLI also supports running open weight models locally through Ollama, which makes it a candidate for the local tier alongside Qwen rather than only an escalation target.
+
+The tradeoff is latency and variance: a harness invocation spins up an agent loop, possibly with tool calls, where the API path is a single completion. For tail questions, where quality already beat speed in the routing decision, that may be acceptable. Measuring both paths on the same eval set is part of the experiment.
+
 ### Write back loop
 
 Every escalated answer is a candidate wiki entry. A distillation step rewrites the frontier answer into wiki form: a stable title, a summary, a body stripped of conversational framing, and links to related entries. The distilled entry lands as a pull request against the wiki rather than a direct write, so a human reviews what enters memory.
@@ -70,6 +86,7 @@ This loop is the point of the experiment. If it works, the wiki accumulates exac
 - How do we keep the wiki from bloating with near duplicate entries as the write back loop runs?
 - Should escalation ever bypass the wiki entirely, for example when retrieval similarity is near zero and the context would only add noise?
 - What is the smallest local model that keeps the local answer rate worthwhile, and how does quantization affect the confidence signal?
+- Which escalation path wins in practice, API or native harness? The harness makes the write back loop nearly free, but the latency, output variance, and terms of service questions need real measurement before it becomes the default.
 
 ## Relation to the lab thesis
 
