@@ -4,6 +4,8 @@ This experiment treats a markdown wiki as a knowledge cache in front of a tiered
 
 The framing is deliberately borrowed from systems engineering. A cache has a hit path, a miss path, an eviction and refresh story, and metrics that tell you whether it is earning its keep. This experiment asks whether team or personal knowledge behaves the same way.
 
+For an assessment of building this on the pi agent harness, see the [implementation note](experiment-wiki-memory-pi-harness.md).
+
 ## Hypothesis
 
 Most questions in a given domain are head questions: they repeat, they cluster, and a small local model with good retrieval can answer them well. A minority are tail questions that need frontier reasoning. If frontier answers are written back into the wiki, tail questions migrate into the head, and the local answer rate should climb over time without quality loss.

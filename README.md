@@ -25,6 +25,7 @@ The goal is not to claim that everyday devices replace GPU data centers. The goa
 - Reproducible experiment metadata
 - Device inventory probe
 - [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md)
+  - [Implementation note: pi agent harness](docs/experiment-wiki-memory-pi-harness.md)
 
 ## Safety posture
 
