@@ -311,6 +311,30 @@ Replication:
 
 One caveat from the lab's llama.cpp RPC experiments: in split inference, the KV cache for offloaded layers lives on the RPC backend, not the host. A capsule captured on the host must gather state across the split, and a session resumed into a different split topology is effectively a different engine configuration. Simplest position for now: capsules are captured and restored on single machine sessions, and split sessions fall back to token replay.
 
+## Agent sessions as capsules
+
+A CLI coding agent session is a session in exactly the sense above, plus one thing the chat framing hides: the instructions. Harnesses like [pi](https://github.com/badlogic/pi-mono) assemble their system context at startup from a global `~/.pi/agent/AGENTS.md` and any `AGENTS.md` or `CLAUDE.md` found walking up from the working directory, and store the conversation as JSONL under `~/.pi/agent/sessions/`. Those instruction files are part of the prompt that produced the KV state, so a capsule that omits them cannot replay faithfully on a machine where the files differ.
+
+`scripts/capsule_pi_session.py` packages a pi session accordingly: the session JSONL, the instruction files in their load order, and a hash manifest, as a generation numbered archive. Which tier it produces is decided by the backend:
+
+- pi against a hosted API is permanently Tier 0. The capsule is transcript and instructions only, and the target rebuilds state by replaying the session, `pi --session`, against the same model.
+- pi against a local `llama-server`, wired in through `~/.pi/agent/models.json`, can produce Tier 1: the script additionally saves the server's slot state and folds `state.bin` into the archive, and can restore it into a server on the target.
+
+```bash
+# tier 0, any backend
+python3 scripts/capsule_pi_session.py create
+
+# tier 1, local llama-server started with --slot-save-path ~/capsules
+python3 scripts/capsule_pi_session.py create \
+  --llama-server http://127.0.0.1:8080 --slot 0 --slot-save-path ~/capsules
+
+# on the target
+python3 scripts/capsule_pi_session.py verify capsule.000001.tar.gz
+python3 scripts/capsule_pi_session.py restore capsule.000001.tar.gz
+```
+
+The agent capsule has one honest limitation relative to the format above: pi records messages, not token IDs, so there is no `tokens.json` and Tier 0 replay is subject to the retokenization caveat. In Tier 1 that does not matter, because the exact token state travels inside `state.bin`; for Tier 0 it is one more reason the fidelity measurements exist.
+
 ## Related work
 
 Hot swapping in flight LLM requests between machines is an active research area, and most of it bears on the hypotheses above:
