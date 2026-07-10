@@ -64,6 +64,24 @@ The procedure between machine A and machine B is: save the slot on A, move the f
 
 The datacenter version of this idea ships KV state between machines continuously rather than as a file: disaggregated prefill in vLLM, LMCache, and Mooncake style transfer engines. Worth studying as the reference point for what the technique looks like at scale, but overkill for this lab. A file shaped capsule is the right granularity for everyday devices.
 
+## Warm standby with rsync
+
+The tiers above describe a one shot move. A cheaper posture for planned machine switches is to keep a standby machine continuously close to current, so that changing machines during downtime is a small final delta rather than a full transfer.
+
+rsync is a surprisingly good fit for this, for a structural reason: a KV cache is append mostly. The keys and values for tokens already processed never change as the session grows; new tokens only add entries. So successive saves of the same session share most of their bytes, and rsync's rolling checksum finds those shared runs even when the serialized layout shifts them around inside the file, which it does, because state is stored per layer and each layer's region grows. A block level diff keyed to fixed offsets would miss this; rsync's content matching does not. The expected sync cost is roughly the KV bytes for tokens added since the last sync, plus metadata, not the whole capsule.
+
+The loop looks like:
+
+1. On the active machine, save the slot to a snapshot file on a cadence: every N turns, or on idle. Never sync a file the engine is still writing; save first, sync the completed snapshot.
+2. `rsync` the snapshot and manifest to the standby over SSH. rsync writes to a temporary file and renames, so the standby always holds a complete capsule, never a torn one.
+3. The standby runs `llama-server` with the same model already loaded and `--slot-save-path` pointed at the synced directory. Failover is one restore call.
+
+The detail that makes the cadence forgiving is hybrid resume. The synced state file is a checkpoint at some token count N, and the transcript names every token after N. On failover, the standby restores the checkpoint and prefills only the tail since the last sync. The recovery point is not the last sync; it is the last transcript update, which is kilobytes and can be synced on every turn. The state file just determines how much prefill the standby has to do, so even a lazy sync cadence, say every ten minutes on an idle link, keeps failover fast.
+
+Two cautions. First, `--inplace` trades away the atomic rename for less temporary disk usage; do not use it here, a torn capsule on the standby defeats the purpose. Second, `-z` compression buys little on F16 KV payloads, which are close to incompressible noise; quantizing the KV cache at save time is the effective compression. And as everywhere in this repo, the capsule carries the full private conversation, so the transport is SSH and the standby's copy is treated with the same care as the original.
+
+This is still Tier 1 correctness wise: same model, same KV cache type, close engine versions on both machines, with the transcript as the always available fallback.
+
 ## The break even rule
 
 Ship the state when:
@@ -85,6 +103,8 @@ One caveat from the lab's llama.cpp RPC experiments: in split inference, the KV 
 - Restore fidelity: token level agreement of continuations after Tier 1 restore versus Tier 0 replay versus never moving at all.
 - Capsule overhead: serialization and deserialization time, which the inequality above ignores and which may matter on slow disks.
 - Compression: how much a KV state payload actually compresses, and whether KV quantization before transfer beats generic compression after.
+- Delta efficiency: bytes rsync actually ships per sync in the warm standby loop versus the KV bytes of tokens added since the last sync, which is the theoretical floor.
+- Failover time from a warm standby: restore time plus tail prefill time, as a function of sync cadence.
 
 ## Security posture
 
