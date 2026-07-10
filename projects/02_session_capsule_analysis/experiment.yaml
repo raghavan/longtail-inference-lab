@@ -1,0 +1,19 @@
+id: experiment_02
+name: Session Capsule Analysis
+status: specified
+track: session_state
+question: What do coding agent sessions contain and when are replay, compression, or portable state worth considering?
+difficulty: intermediate
+created_at: 2026_07_10
+updated_at: 2026_07_10
+results: projects/02_session_capsule_analysis/results/README.md
+learning_outcomes:
+  - Measure agent session growth and composition
+  - Compare transcript compression with derived KV state
+  - Use evidence before designing session transfer systems
+completion_requires:
+  - Privacy safe metrics extractor
+  - Representative session sample
+  - Size and composition analysis
+  - Growth and compression analysis
+  - Evidence based follow up decision
