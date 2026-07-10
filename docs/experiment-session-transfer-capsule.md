@@ -96,6 +96,19 @@ Everything in this inequality is measurable on this lab's hardware, which makes 
 
 One caveat from the lab's llama.cpp RPC experiments: in split inference, the KV cache for offloaded layers lives on the RPC backend, not the host. A capsule captured on the host must gather state across the split, and a session resumed into a different split topology is effectively a different engine configuration. Simplest position for now: capsules are captured and restored on single machine sessions, and split sessions fall back to Tier 0.
 
+## Related work
+
+Hot swapping in flight LLM requests between machines is an active research area, and most of it validates the mechanics this experiment relies on:
+
+- [Llumnix](https://arxiv.org/abs/2406.03243) (OSDI 2024) live migrates running requests between vLLM instances. Its key trick is the same property the rsync section leans on: the KV cache is append only, so it copies the cache for already processed tokens in parallel with ongoing decoding, and the request's downtime shrinks to one iteration's worth of new state. It also measures the naive alternatives, recompute or stop and copy, at over 50x the cost of a decoding step.
+- [SpotServe](https://arxiv.org/abs/2311.15566) (ASPLOS 2024) is the closest match to the downtime motivation: it serves LLMs on preemptible spot instances, commits inference progress at the token level, and resumes interrupted requests on surviving machines rather than restarting them.
+- [CacheGen](https://dl.acm.org/doi/10.1145/3651890.3672274) (SIGCOMM 2024) is the closest match to the network constraint: it treats KV caches as something to ship over ordinary bandwidth limited links, encodes them into compact bitstreams with a custom tensor codec, and adapts compression to available bandwidth, reporting 3.5 to 4.3x size reduction. This directly informs the compression open question below.
+- [Mooncake](https://arxiv.org/abs/2407.00079) (FAST 2025 best paper) and [LMCache](https://blog.lmcache.ai/en/2025/05/08/lmcache-x-mooncake-unite-to-pioneer-kvcache-centric-llm-serving-system/) build entire serving architectures around a disaggregated KV cache pool moved by an RDMA transfer engine, the Tier 2 world at datacenter scale.
+- [AttentionStore / CachedAttention](https://arxiv.org/abs/2403.19708) (ATC 2024) and Pensieve persist KV caches of idle conversations to cheaper storage tiers and restore them when the session resumes, cutting time to first token by up to 88 percent. That is the single machine version of a capsule: same save and restore economics, no network hop.
+- [ServerlessLLM](https://arxiv.org/abs/2401.14351) (OSDI 2024) attacks the adjacent problem of loading checkpoints fast enough that moving work between machines is viable at all.
+
+What none of this work does is the specific thing proposed here: replicate serialized session state to a standby over a commodity internet link using content defined delta sync, rsync style, between everyday devices. The research systems assume datacenter fabrics, RDMA, or at minimum machines in the same cluster; CacheGen assumes constrained bandwidth but solves it with compression on a one shot transfer, not with incremental replication to a warm replica. The gap makes sense: for a fleet, generic delta sync is less efficient than purpose built transfer engines. For two or three personally owned machines on residential links, rsync is infrastructure that already exists, and whether it is good enough is exactly a long tail question, unglamorous, unpublished, and measurable.
+
 ## Metrics
 
 - Transfer time versus recompute time across context lengths from 1K to 32K tokens, on at least three pairings: laptop to VPS, VPS to laptop, and laptop to laptop over the internet.
