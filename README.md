@@ -12,21 +12,30 @@ Open weight models are making inference portable. This lab explores how inferenc
 
 The goal is not to claim that everyday devices replace GPU data centers. The goal is to measure where long tail compute is useful, where the network tax dominates, and which workloads belong on local or distributed inference fabric.
 
-## Initial experiments
+## Experiments
 
-- Local open weight inference baseline
-- Laptop only benchmark
-- VPS only benchmark
-- Laptop plus VPS split inference with llama.cpp RPC
-- Network tax measurement
-- Job level inference routing
-- Quantized model variants for edge inference
-- Edge LLM task evals
-- Reproducible experiment metadata
-- Device inventory probe
-- [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md)
-- [Session transfer as a capsule](docs/experiment-session-transfer-capsule.md)
-- [Agent session capsule complexity](docs/experiment-agent-session-capsule-complexity.md)
+### Documented
+
+| Experiment | Summary |
+|---|---|
+| [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md) | A markdown wiki as a knowledge cache in front of tiered models. Head questions stay local, tail questions escalate to frontier models, and frontier answers are distilled back into the wiki so the tail shrinks over time. |
+| [Session transfer as a capsule](docs/experiment-session-transfer-capsule.md) | Package an inference session (token history, KV cache, sampler state) on one machine and resume it on another. Maps where state transfer, transcript replay, or pinning the session wins. |
+| [Agent session capsule complexity](docs/experiment-agent-session-capsule-complexity.md) | Measure what an agent session capsule actually is before building transfer machinery: session sizes, what dominates the bytes, growth over a session's life, and derived state weight. |
+
+### Planned
+
+| Experiment | Summary |
+|---|---|
+| Local open weight inference baseline | Establish a reference setup and baseline numbers for running open weight models locally. |
+| Laptop only benchmark | Measure inference throughput and latency on a laptop alone. |
+| VPS only benchmark | Measure inference throughput and latency on a VPS alone. |
+| Laptop plus VPS split inference | Split a model across laptop and VPS with llama.cpp RPC and measure the cost of the split. |
+| Network tax measurement | Quantify how network latency and bandwidth dominate or disappear across split inference topologies. |
+| Job level inference routing | Route whole jobs, rather than layers or tokens, to the device best suited to run them. |
+| Quantized model variants for edge inference | Compare quantization levels for quality and speed on constrained edge devices. |
+| Edge LLM task evals | Evaluate which real tasks small edge models handle well and where they fall over. |
+| Reproducible experiment metadata | Record hardware, model, and configuration metadata so every experiment can be rerun. |
+| Device inventory probe | Probe and catalog the compute available across everyday devices. |
 
 ## Safety posture
 
