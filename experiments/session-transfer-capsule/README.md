@@ -1,5 +1,8 @@
 # Experiment: session transfer as a capsule
 
+> **Status:** 📝 Designed — the method is written up; no runs or results yet.
+> **Teaches:** KV cache internals, llama.cpp session state, transfer vs replay economics, delta sync.
+
 This experiment asks whether an inference session running on one machine can be packaged, transferred, and resumed on another machine without rebuilding its entire context.
 
 llama.cpp already supports saving and restoring internal session state. The unanswered questions are whether that state is portable across ordinary machines, whether transferring it is faster than replaying the transcript, and whether successive snapshots are stable enough for efficient delta synchronization using commodity tools such as rsync.
@@ -315,7 +318,7 @@ One caveat from the lab's llama.cpp RPC experiments: in split inference, the KV 
 
 A CLI coding agent session is a session in exactly the sense above, plus one thing the chat framing hides: the instructions. Harnesses like [pi](https://github.com/badlogic/pi-mono) assemble their system context at startup from a global `~/.pi/agent/AGENTS.md` and any `AGENTS.md` or `CLAUDE.md` found walking up from the working directory, and store the conversation as JSONL under `~/.pi/agent/sessions/`. Those instruction files are part of the prompt that produced the KV state, so any capsule that omits them cannot replay faithfully on a machine where the files differ.
 
-Which tier an agent capsule could reach is decided by the backend: a harness talking to a hosted API is permanently Tier 0, transcript and instructions only, while one talking to a local `llama-server` could in principle carry engine state. Whether any of that machinery is worth building is deliberately not assumed here. How large agent sessions actually are, what dominates their bytes, and what their derived state would weigh is measured first, as its own experiment: [agent session capsule complexity](experiment-agent-session-capsule-complexity.md).
+Which tier an agent capsule could reach is decided by the backend: a harness talking to a hosted API is permanently Tier 0, transcript and instructions only, while one talking to a local `llama-server` could in principle carry engine state. Whether any of that machinery is worth building is deliberately not assumed here. How large agent sessions actually are, what dominates their bytes, and what their derived state would weigh is measured first, as its own experiment: [agent session capsule complexity](../agent-session-capsule-complexity/README.md).
 
 ## Related work
 

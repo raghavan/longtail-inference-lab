@@ -1,5 +1,8 @@
 # Experiment: wiki memory router with knowledge caching
 
+> **Status:** 📝 Designed — the method is written up; no runs or results yet.
+> **Teaches:** knowledge caching, model routing, retrieval, distillation loops.
+
 This experiment treats a markdown wiki as a knowledge cache in front of a tiered set of models. Questions that the wiki plus a local model can answer stay local and cheap. Questions that fall in the tail escalate to frontier models, and the answers are distilled back into the wiki so the tail shrinks over time.
 
 The framing is deliberately borrowed from systems engineering. A cache has a hit path, a miss path, an eviction and refresh story, and metrics that tell you whether it is earning its keep. This experiment asks whether team or personal knowledge behaves the same way.
@@ -8,7 +11,7 @@ The framing is deliberately borrowed from systems engineering. A cache has a hit
 
 Most questions in a given domain are head questions: they repeat, they cluster, and a small local model with good retrieval can answer them well. A minority are tail questions that need frontier reasoning. If frontier answers are written back into the wiki, tail questions migrate into the head, and the local answer rate should climb over time without quality loss.
 
-![Illustrative index comparing a first run without the wiki cache (90) against a run after wiki cache distillation (60), across repo discovery, stage, and production edge cases](images/wiki-cache-distillation-index.jpeg)
+![Illustrative index comparing a first run without the wiki cache (90) against a run after wiki cache distillation (60), across repo discovery, stage, and production edge cases](assets/wiki-cache-distillation-index.jpeg)
 
 *Illustrative index. A real experiment should measure token usage, tool calls, retries, wall time, and success rate per lifecycle stage.*
 

@@ -12,21 +12,31 @@ Open weight models are making inference portable. This lab explores how inferenc
 
 The goal is not to claim that everyday devices replace GPU data centers. The goal is to measure where long tail compute is useful, where the network tax dominates, and which workloads belong on local or distributed inference fabric.
 
-## Initial experiments
+## How this repo is organized
 
-- Local open weight inference baseline
-- Laptop only benchmark
-- VPS only benchmark
-- Laptop plus VPS split inference with llama.cpp RPC
-- Network tax measurement
-- Job level inference routing
-- Quantized model variants for edge inference
-- Edge LLM task evals
-- Reproducible experiment metadata
-- Device inventory probe
-- [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md)
-- [Session transfer as a capsule](docs/experiment-session-transfer-capsule.md)
-- [Agent session capsule complexity](docs/experiment-agent-session-capsule-complexity.md)
+The lab is organized as a series of experiments, each moving through a lifecycle:
+
+**💡 Proposed → 📝 Designed → 🔬 Running → ✅ Completed** (or 🧊 Parked)
+
+| Where | What you'll find |
+|---|---|
+| [**experiments/**](experiments/README.md) | The experiment index — every experiment by status, one folder each with writeup, scripts, and results |
+| [**learning/**](learning/README.md) | A field guide to learning LLM inference: the people, essays, courses, and communities behind this field |
+| [**docs/**](docs/) | Lab-wide documentation, such as the [safety scan](docs/safety-scan.md) |
+
+**Start with the [experiment index](experiments/README.md)** to see what is new, in progress, and completed. Each experiment writeup states what it asks, what you can learn from it, and how to reproduce it. If you are new to LLM inference itself, start with the [field guide](learning/README.md) instead.
+
+## Currently designed experiments
+
+- [Wiki memory router with knowledge caching](experiments/wiki-memory-router/README.md) — a markdown wiki as a knowledge cache in front of tiered models
+- [Session transfer as a capsule](experiments/session-transfer-capsule/README.md) — packaging inference sessions to resume on another machine
+- [Agent session capsule complexity](experiments/agent-session-capsule-complexity/README.md) — measuring what agent sessions weigh before building transfer machinery
+
+Ten more proposed experiments — baselines, benchmarks, split inference, routing, and quantization — are queued in the [index](experiments/README.md#-proposed).
+
+## Contributing an experiment
+
+Copy [experiments/TEMPLATE.md](experiments/TEMPLATE.md) into a new folder under `experiments/`, add it to the index, and keep the status line current as it moves through the lifecycle.
 
 ## Safety posture
 

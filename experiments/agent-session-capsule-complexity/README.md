@@ -1,10 +1,13 @@
 # Experiment: agent session capsule complexity
 
+> **Status:** 📝 Designed — the method is written up; no runs or results yet.
+> **Teaches:** agent session anatomy, measurement-before-design, dataset schema design.
+
 Before building any transfer machinery for agent sessions, this experiment measures what an agent session capsule actually is: how large sessions are, what they are made of, how they grow over a session's lifetime, and what the derived engine state would weigh if it were ever captured. The output is a dataset, not a system. Future experiments may build on the dataset; nothing is decided now.
 
 ## Why measure first
 
-The [session transfer capsule experiment](experiment-session-transfer-capsule.md) defines capsule mechanics for raw model sessions: state files, tiers, delta sync, fidelity. Agent sessions looked like a straightforward extension, a transcript plus the instruction files that shaped it, until the design work made clear how little is actually known about agent sessions as artifacts. Typical sizes: unknown. Growth over a session's life: unknown. Whether tool output or model text dominates the bytes: unknown. Whether derived state would even be worth shipping: unknown. An earlier version of this work jumped straight to a packaging tool; it was removed in favor of this measurement pass, because every design decision it embedded was a guess about exactly these numbers.
+The [session transfer capsule experiment](../session-transfer-capsule/README.md) defines capsule mechanics for raw model sessions: state files, tiers, delta sync, fidelity. Agent sessions looked like a straightforward extension, a transcript plus the instruction files that shaped it, until the design work made clear how little is actually known about agent sessions as artifacts. Typical sizes: unknown. Growth over a session's life: unknown. Whether tool output or model text dominates the bytes: unknown. Whether derived state would even be worth shipping: unknown. An earlier version of this work jumped straight to a packaging tool; it was removed in favor of this measurement pass, because every design decision it embedded was a guess about exactly these numbers.
 
 ## Questions
 
