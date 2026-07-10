@@ -25,6 +25,7 @@ The goal is not to claim that everyday devices replace GPU data centers. The goa
 - Reproducible experiment metadata
 - Device inventory probe
 - [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md)
+- [Session transfer as a capsule](docs/experiment-session-transfer-capsule.md)
 
 ## Safety posture
 
