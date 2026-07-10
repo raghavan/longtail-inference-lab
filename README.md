@@ -14,21 +14,17 @@ This lab studies the boundary between those paths. Each experiment starts with a
 
 ## Current experiments
 
-### 01 Memory Wiki
+### [01 Memory Wiki](projects/01_memory_wiki/README.md)
 
 **Status:** Specified
 
 **Question:** Can a human readable knowledge cache help a local model answer more recurring questions while preserving quality and reducing frontier model usage?
 
-[Open the experiment](projects/01_memory_wiki/README.md)
-
-### 02 Session Capsule Analysis
+### [02 Session Capsule Analysis](projects/02_session_capsule_analysis/README.md)
 
 **Status:** Specified
 
 **Question:** What does a real coding agent session contain, how does it grow, and when might replay, compression, or portable state become worthwhile?
-
-[Open the experiment](projects/02_session_capsule_analysis/README.md)
 
 ## PARA organization
 
