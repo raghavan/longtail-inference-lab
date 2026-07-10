@@ -78,9 +78,67 @@ The loop looks like:
 
 The detail that makes the cadence forgiving is hybrid resume. The synced state file is a checkpoint at some token count N, and the transcript names every token after N. On failover, the standby restores the checkpoint and prefills only the tail since the last sync. The recovery point is not the last sync; it is the last transcript update, which is kilobytes and can be synced on every turn. The state file just determines how much prefill the standby has to do, so even a lazy sync cadence, say every ten minutes on an idle link, keeps failover fast.
 
-Two cautions. First, `--inplace` trades away the atomic rename for less temporary disk usage; do not use it here, a torn capsule on the standby defeats the purpose. Second, `-z` compression buys little on F16 KV payloads, which are close to incompressible noise; quantizing the KV cache at save time is the effective compression. And as everywhere in this repo, the capsule carries the full private conversation, so the transport is SSH and the standby's copy is treated with the same care as the original.
+Two cautions. First, `--inplace` trades away the atomic rename for less temporary disk usage, which opens a window where the standby's copy is torn; avoid it by default, and if a small disk forces it, gate every restore on a payload hash check as in the runbook below. Second, `-z` compression buys little on F16 KV payloads, which are close to incompressible noise; quantizing the KV cache at save time is the effective compression. And as everywhere in this repo, the capsule carries the full private conversation, so the transport is SSH and the standby's copy is treated with the same care as the original.
 
 This is still Tier 1 correctness wise: same model, same KV cache type, close engine versions on both machines, with the transcript as the always available fallback.
+
+## First run: laptop and VPS hot swap with live rsync
+
+This section is the concrete first experiment: one local machine and one VPS, a live rsync loop keeping the KV cache replicated, and a hot swap of the active session in both directions. Hostnames below are SSH config aliases, `local` and `vps`, in keeping with this repo's rule against committing real hostnames or addresses.
+
+### Preconditions
+
+- The same GGUF model file on both machines, verified once: `sha256sum` output must match. Record the hash in the capsule manifest.
+- The same llama.cpp release tag built on both machines, even though the backends differ, GPU or CPU on the laptop and CPU on the VPS. State files serialize to a common format, but this pairing is exactly what the fidelity metric below exists to verify before trusting it.
+- The same KV cache type on both sides, for example both default F16 or both `--cache-type-k q8_0 --cache-type-v q8_0`.
+- Both machines run `llama-server` with a dedicated capsule directory: `llama-server -m model.gguf --slot-save-path ~/capsules ...` with matching context settings. The standby sits warm with the model loaded and zero traffic.
+
+### The live sync loop
+
+On the active machine, after each completed response, or on a timer during long generations:
+
+```bash
+# 1. snapshot the slot (never sync what the engine is mid-write on)
+curl -s -X POST "http://127.0.0.1:8080/slots/0?action=save" \
+  -H 'Content-Type: application/json' -d '{"filename":"session.bin"}'
+
+# 2. ship the payload, then the manifest, in that order
+rsync -a --partial --stats ~/capsules/session.bin vps:capsules/ >> sync.log
+sha256sum ~/capsules/session.bin > ~/capsules/session.manifest
+rsync -a ~/capsules/session.manifest ~/capsules/transcript.json vps:capsules/
+```
+
+The two rsync calls are deliberate. The manifest carries the payload hash and lands only after the payload it describes, so the standby can always tell a settled capsule from one still in flight. This ordering is also what makes an `--inplace` variant safe on a disk constrained VPS: rsync's default temp file and rename needs headroom equal to the state file size, and `--inplace` removes that, at the cost of a window where `session.bin` is torn. With hash verification gating every restore, a torn payload fails the check and the standby falls back to the previous transcript plus replay, so nothing incorrect can be resumed. Use the default rename mode when disk allows; use `--inplace` plus mandatory hash check when it does not.
+
+`--stats` in the payload sync is not decoration, it is the experiment: `Total bytes sent` per sync, logged against the token count, is the delta efficiency measurement.
+
+### The swap, planned
+
+1. Stop sending new requests to the active machine and let the in flight response finish.
+2. Run one final iteration of the sync loop. This delta is one response worth of KV, typically a few MB, seconds even on a residential uplink.
+3. On the standby: verify and restore.
+
+```bash
+cd ~/capsules && sha256sum -c session.manifest && \
+curl -s -X POST "http://127.0.0.1:8080/slots/0?action=restore" \
+  -H 'Content-Type: application/json' -d '{"filename":"session.bin"}'
+```
+
+4. Repoint the client at the other machine. The clean way is to never point clients at machines at all: put the gateway from the wiki memory router experiment in front, and the swap becomes a backend flip in LiteLLM config while the client URL never changes.
+5. Reverse the roles. The old active machine becomes the standby, and the sync loop runs in the opposite direction. Nothing about the loop is direction specific.
+
+The swap back, VPS to laptop when the laptop returns, is the same five steps with the aliases exchanged. A session can bounce between the two machines indefinitely, and after the first full sync in each direction, every subsequent sync is a delta.
+
+### The swap, unplanned
+
+If the active machine disappears without a final sync, the standby holds the last settled capsule at token count N and a transcript that is at most one sync interval stale. Restore the capsule, replay whatever transcript tail exists beyond N, and accept that anything generated after the last transcript sync is lost. This is the recovery point objective of the setup, and it is bounded by the sync cadence, which is exactly why the transcript, being kilobytes, should ride along on every loop iteration.
+
+### What to record per run
+
+- Per sync: `Total bytes sent`, wall time, and the session token count at save time. Plot bytes against new tokens since the previous sync; the slope is the delta efficiency, and the theoretical floor is the KV bytes per token of the model.
+- Per swap: end to end time from the last client response on machine A to the first token of a continued response on machine B, broken into final sync, restore, and any tail prefill.
+- Fidelity: immediately after each swap, run a fixed continuation prompt at temperature 0 on the restored session and compare it against the same continuation on an unswapped control session. Divergence here, on the GPU to CPU pairing especially, is a finding, not a nuisance.
+- The control: the same swap done as Tier 0, transcript only with full prefill on the target, so every hot swap number has its recompute baseline next to it.
 
 ## The break even rule
 
