@@ -4,41 +4,96 @@
 
 # Long Tail Inference Lab
 
-Experiments in edge LLM inference, open weight model serving, laptop plus VPS split inference, and long tail compute across everyday devices.
+A research lab for discovering where everyday devices, local models, durable memory, and portable session state can absorb the long tail of inference work.
 
 ## Thesis
 
-Open weight models are making inference portable. This lab explores how inference can run, split, route, benchmark, and be verified across the machines we already own: laptops, VPS instances, home servers, and edge devices.
+Frontier models are valuable, but not every request needs frontier compute. A large portion of useful inference may be handled by smaller models, cached knowledge, existing session context, and the machines people already own.
 
-The goal is not to claim that everyday devices replace GPU data centers. The goal is to measure where long tail compute is useful, where the network tax dominates, and which workloads belong on local or distributed inference fabric.
+This lab studies the boundary between those paths. Each experiment starts with a measurable question, records what happened, and publishes useful negative results as carefully as positive ones.
 
-## Initial experiments
+## Current experiments
 
-- Local open weight inference baseline
-- Laptop only benchmark
-- VPS only benchmark
-- Laptop plus VPS split inference with llama.cpp RPC
-- Network tax measurement
-- Job level inference routing
-- Quantized model variants for edge inference
-- Edge LLM task evals
-- Reproducible experiment metadata
-- Device inventory probe
-- [Wiki memory router with knowledge caching](docs/experiment-wiki-memory-router.md)
-- [Session transfer as a capsule](docs/experiment-session-transfer-capsule.md)
-- [Agent session capsule complexity](docs/experiment-agent-session-capsule-complexity.md)
+### 01 Memory Wiki
+
+**Status:** Specified
+
+**Question:** Can a human readable knowledge cache help a local model answer more recurring questions while preserving quality and reducing frontier model usage?
+
+[Open the experiment](projects/01_memory_wiki/README.md)
+
+### 02 Session Capsule Analysis
+
+**Status:** Specified
+
+**Question:** What does a real coding agent session contain, how does it grow, and when might replay, compression, or portable state become worthwhile?
+
+[Open the experiment](projects/02_session_capsule_analysis/README.md)
+
+## PARA organization
+
+```text
+projects/
+  01_memory_wiki/
+  02_session_capsule_analysis/
+
+areas/
+  lab_operations/
+
+resources/
+  learning/
+  experiment_template/
+
+archives/
+```
+
+### Projects
+
+Projects are active experiments with a bounded research question and a clear completion condition. This folder intentionally contains only work receiving active attention.
+
+### Areas
+
+Areas are ongoing responsibilities that keep the lab trustworthy, including reproducibility, safety, experiment discipline, and result quality.
+
+### Resources
+
+Resources are reusable learning material, references, concepts, and templates. They support many experiments but do not have a completion date.
+
+### Archives
+
+Archives hold completed, paused, or superseded experiments. A negative result belongs here once the experiment is complete because it still narrows the search space.
+
+## Experiment lifecycle
+
+```text
+Idea → Specified → Running → Analyzing → Complete → Archive
+```
+
+An experiment is complete only when its results, interpretation, and limitations are published. A merged design document does not make an experiment complete.
+
+## Learn through the lab
+
+Every project is designed to work as a learning module:
+
+1. Read the research question and background.
+2. Understand the hypothesis and measurements.
+3. Reproduce a run on available hardware.
+4. Inspect the results and limitations.
+5. Propose the next measurable question.
+
+Start with the [field guide to learning LLM inference](resources/learning/field_guide.md).
 
 ## Safety posture
 
-This repo intentionally avoids committing private hostnames, IP addresses, SSH details, API keys, tunnel configuration, private prompts, and local machine paths. A lightweight safety scan is included for local pre commit usage and CI.
+This repository avoids committing private hostnames, IP addresses, SSH details, API keys, tunnel configuration, private prompts, session content, and local machine paths.
 
-Run locally:
+Run the safety scan locally:
 
 ```bash
 python3 scripts/safety_scan.py
 ```
 
-Or with pre commit:
+Or run it through pre commit:
 
 ```bash
 pre-commit run --all-files
