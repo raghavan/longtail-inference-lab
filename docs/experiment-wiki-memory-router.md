@@ -8,6 +8,10 @@ The framing is deliberately borrowed from systems engineering. A cache has a hit
 
 Most questions in a given domain are head questions: they repeat, they cluster, and a small local model with good retrieval can answer them well. A minority are tail questions that need frontier reasoning. If frontier answers are written back into the wiki, tail questions migrate into the head, and the local answer rate should climb over time without quality loss.
 
+![Illustrative index comparing a first run without the wiki cache (90) against a run after wiki cache distillation (60), across repo discovery, stage, and production edge cases](images/wiki-cache-distillation-index.jpeg)
+
+*Illustrative index. A real experiment should measure token usage, tool calls, retries, wall time, and success rate per lifecycle stage.*
+
 ## Architecture
 
 ### Gateway
