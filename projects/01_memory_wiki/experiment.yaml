@@ -1,0 +1,19 @@
+id: experiment_01
+name: Memory Wiki
+status: specified
+track: knowledge_caching
+question: Can a markdown knowledge cache increase reliable local answer rate while reducing frontier inference usage?
+difficulty: intermediate
+created_at: 2026_07_10
+updated_at: 2026_07_10
+results: projects/01_memory_wiki/results/README.md
+learning_outcomes:
+  - Understand retrieval guided inference routing
+  - Measure local answer rate and routing regret
+  - Design a reviewed knowledge write back loop
+completion_requires:
+  - Published evaluation set
+  - Frontier baseline
+  - Routed baseline
+  - Reviewed write back cycle
+  - Results and limitations
