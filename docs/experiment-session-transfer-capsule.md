@@ -311,6 +311,12 @@ Replication:
 
 One caveat from the lab's llama.cpp RPC experiments: in split inference, the KV cache for offloaded layers lives on the RPC backend, not the host. A capsule captured on the host must gather state across the split, and a session resumed into a different split topology is effectively a different engine configuration. Simplest position for now: capsules are captured and restored on single machine sessions, and split sessions fall back to token replay.
 
+## Agent sessions as capsules
+
+A CLI coding agent session is a session in exactly the sense above, plus one thing the chat framing hides: the instructions. Harnesses like [pi](https://github.com/badlogic/pi-mono) assemble their system context at startup from a global `~/.pi/agent/AGENTS.md` and any `AGENTS.md` or `CLAUDE.md` found walking up from the working directory, and store the conversation as JSONL under `~/.pi/agent/sessions/`. Those instruction files are part of the prompt that produced the KV state, so any capsule that omits them cannot replay faithfully on a machine where the files differ.
+
+Which tier an agent capsule could reach is decided by the backend: a harness talking to a hosted API is permanently Tier 0, transcript and instructions only, while one talking to a local `llama-server` could in principle carry engine state. Whether any of that machinery is worth building is deliberately not assumed here. How large agent sessions actually are, what dominates their bytes, and what their derived state would weigh is measured first, as its own experiment: [agent session capsule complexity](experiment-agent-session-capsule-complexity.md).
+
 ## Related work
 
 Hot swapping in flight LLM requests between machines is an active research area, and most of it bears on the hypotheses above:
