@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/longtail-inference-lab-hero.png" alt="Long Tail Inference Lab system diagram" width="100%">
+  <img src="resources/assets/longtail-inference-lab-hero.png" alt="Long Tail Inference Lab system diagram" width="100%">
 </p>
 
 # Long Tail Inference Lab
@@ -37,8 +37,10 @@ areas/
   lab_operations/
 
 resources/
-  learning/
+  assets/
   experiment_template/
+  learning/
+  project_proposals/
 
 archives/
 ```
@@ -53,11 +55,13 @@ Areas are ongoing responsibilities that keep the lab trustworthy, including repr
 
 ### Resources
 
-Resources are reusable learning material, references, concepts, and templates. They support many experiments but do not have a completion date.
+Resources are reusable learning material, references, concepts, proposals, templates, and media. They support many experiments but do not have a completion date.
 
 ### Archives
 
 Archives hold completed, paused, or superseded experiments. A negative result belongs here once the experiment is complete because it still narrows the search space.
+
+GitHub requires workflow configuration to remain under `.github/`. That folder is repository plumbing rather than research content, and it includes its own README.
 
 ## Experiment lifecycle
 
@@ -86,7 +90,7 @@ This repository avoids committing private hostnames, IP addresses, SSH details, 
 Run the safety scan locally:
 
 ```bash
-python3 scripts/safety_scan.py
+python3 areas/lab_operations/safety_scan.py
 ```
 
 Or run it through pre commit:

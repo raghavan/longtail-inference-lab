@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: longtail-safety-scan
         name: Longtail safety scan
-        entry: python scripts/safety_scan.py
+        entry: python areas/lab_operations/safety_scan.py
         language: system
         types: [text]
         pass_filenames: true
