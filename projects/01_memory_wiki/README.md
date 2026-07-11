@@ -26,7 +26,7 @@ This experiment treats a markdown wiki as a cache in front of local and frontier
 
 Most questions inside a stable domain repeat or cluster. If high quality frontier answers are reviewed and written into a searchable wiki, the fraction of questions answered reliably by a local model should increase over time without a meaningful drop in answer quality.
 
-![Illustrative comparison of inference effort before and after wiki distillation](../../docs/images/wiki-cache-distillation-index.jpeg)
+![Illustrative comparison of inference effort before and after wiki distillation](../../resources/assets/wiki-cache-distillation-index.jpeg)
 
 The image is illustrative. The experiment must measure actual model usage, tool calls, retries, wall time, and task success.
 
