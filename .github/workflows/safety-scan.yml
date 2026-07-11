@@ -19,4 +19,4 @@ jobs:
           python-version: "3.11"
 
       - name: Run repository safety scan
-        run: python scripts/safety_scan.py
+        run: python areas/lab_operations/safety_scan.py

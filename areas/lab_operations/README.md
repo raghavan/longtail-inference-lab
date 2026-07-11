@@ -1,6 +1,11 @@
 # Lab Operations
 
-This Area contains the practices that apply to every Long Tail Inference Lab project.
+This Area contains the practices and shared tools that apply to every Long Tail Inference Lab project.
+
+## Contents
+
+1. [`safety_scan.py`](safety_scan.py) provides the lightweight repository safety scanner.
+2. [`safety_scan.md`](safety_scan.md) explains how to run and interpret the scanner.
 
 ## Experiment discipline
 
@@ -60,7 +65,7 @@ Never commit credentials, private network details, session text, private prompts
 Run:
 
 ```bash
-python3 scripts/safety_scan.py
+python3 areas/lab_operations/safety_scan.py
 ```
 
 The safety scan is a guardrail, not a replacement for reviewing the actual diff.
