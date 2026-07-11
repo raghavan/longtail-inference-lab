@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "website/**"
+      - "areas/public_website/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -34,7 +34,7 @@ jobs:
       - name: Upload static website
         uses: actions/upload-pages-artifact@v3
         with:
-          path: website
+          path: areas/public_website
 
       - name: Deploy website
         id: deployment
