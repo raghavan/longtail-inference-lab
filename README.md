@@ -35,6 +35,7 @@ projects/
 
 areas/
   lab_operations/
+  public_website/
 
 resources/
   assets/
@@ -51,7 +52,9 @@ Projects are active experiments with a bounded research question and a clear com
 
 ### Areas
 
-Areas are ongoing responsibilities that keep the lab trustworthy, including reproducibility, safety, experiment discipline, and result quality.
+Areas are ongoing responsibilities that keep the lab trustworthy, including reproducibility, safety, experiment discipline, result quality, repository maintenance, and public communication.
+
+The [public website](areas/public_website/README.md) is an Area because it remains active as the laboratory evolves rather than ending with a single experiment.
 
 ### Resources
 
