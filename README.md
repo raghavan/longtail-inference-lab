@@ -64,7 +64,7 @@ Resources are reusable learning material, references, concepts, proposals, templ
 
 Archives hold completed, paused, or superseded experiments. A negative result belongs here once the experiment is complete because it still narrows the search space.
 
-GitHub requires workflow configuration to remain under `.github/`. That folder is repository plumbing rather than research content, and it includes its own README.
+GitHub requires workflow configuration to remain under `.github/`. That folder is repository plumbing rather than research content. Its purpose is documented in [`.github/CONFIGURATION.md`](.github/CONFIGURATION.md).
 
 ## Experiment lifecycle
 
