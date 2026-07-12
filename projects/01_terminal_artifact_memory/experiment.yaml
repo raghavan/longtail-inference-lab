@@ -1,0 +1,37 @@
+id: experiment_01
+name: Terminal Artifact Memory
+status: specified
+track: artifact_memory
+question: Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
+difficulty: intermediate
+created_at: 2026_07_12
+updated_at: 2026_07_12
+workload: terminal_benchmark_subset
+results: projects/01_terminal_artifact_memory/results/README.md
+core_control:
+  model_weights: fixed
+  model_configuration: fixed
+  prompt_template: fixed
+  inference_runtime: fixed
+  hardware: fixed
+  memory_size: variable
+memory_conditions:
+  - no_memory
+  - sanitized_evidence
+  - distilled_wiki
+  - evidence_plus_wiki
+learning_outcomes:
+  - Build privacy safe artifact memory from verified terminal work
+  - Measure memory lift while local model capability remains fixed
+  - Compare raw evidence with distilled human readable knowledge
+  - Evaluate exact recurrence structural recurrence and novel controls
+  - Train and validate an interpretable local success predictor
+completion_requires:
+  - Published benchmark subset and task family split
+  - Frozen local model baseline
+  - Privacy safe artifact collector
+  - At least three memory checkpoints
+  - Objective verifier results
+  - Learned judge validation
+  - Stress and removal tests
+  - Operational conclusion and limitations

@@ -1,0 +1,54 @@
+.archive-note {
+  max-width: 34rem;
+  margin-top: 1.5rem;
+  color: var(--graphite);
+  font-size: 0.94rem;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+.method-steps {
+  list-style: none;
+  margin-top: 2.25rem;
+  border-top: 1px solid var(--ink);
+}
+
+.method-steps li {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1.25rem;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.step-number {
+  padding-top: 0.2rem;
+  color: var(--bronze);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.method-steps strong {
+  display: block;
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.method-steps small {
+  display: block;
+  max-width: 31rem;
+  margin-top: 0.35rem;
+  color: var(--graphite);
+  font-size: 0.94rem;
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+@media (max-width: 520px) {
+  .method-steps li {
+    grid-template-columns: 2.4rem 1fr;
+    gap: 0.8rem;
+  }
+}
