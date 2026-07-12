@@ -4,34 +4,38 @@
 
 # Long Tail Inference Lab
 
-A research lab for discovering where everyday devices, local models, durable memory, and portable session state can absorb the long tail of inference work.
+A research lab for testing whether verified terminal work can become reusable local intelligence.
 
 ## Thesis
 
-Frontier models are valuable, but not every request needs frontier compute. A large portion of useful inference may be handled by smaller models, cached knowledge, existing session context, and the machines people already own.
+A lightweight local model does not need to know everything to become useful. It may need access to the right evidence from work that has already been completed and verified.
 
-This lab studies the boundary between those paths. Each experiment starts with a measurable question, records what happened, and publishes useful negative results as carefully as positive ones.
+Lily studies whether terminal artifacts can be transformed into durable memory that raises local task success over time. The model stays fixed during the core experiment. The memory grows. Executable tests decide whether capability actually improves.
 
-## Current experiments
+## Active experiment
 
-### [01 Memory Wiki](projects/01_memory_wiki/README.md)
-
-**Status:** Specified
-
-**Question:** Can a human readable knowledge cache help a local model answer more recurring questions while preserving quality and reducing frontier model usage?
-
-### [02 Session Capsule Analysis](projects/02_session_capsule_analysis/README.md)
+### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
 **Status:** Specified
 
-**Question:** What does a real coding agent session contain, how does it grow, and when might replay, compression, or portable state become worthwhile?
+**Question:** Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
+
+The experiment runs terminal tasks, preserves privacy safe evidence, distills that evidence into a human readable Markdown wiki, and measures local model performance at successive memory checkpoints.
+
+## How the lab arrived here
+
+Two earlier specifications explored the pieces separately:
+
+1. [Memory Wiki](archives/experiments/01_memory_wiki/README.md) explored durable knowledge, retrieval, routing regret, and reviewed write back.
+2. [Session Capsule Analysis](archives/experiments/02_session_capsule_analysis/README.md) explored privacy safe artifact collection and measurement before systems design.
+
+They were archived before execution because the new experiment provides a clearer workload, a stronger verifier, and one integrated learning curve. No empirical results were discarded.
 
 ## PARA organization
 
 ```text
 projects/
-  01_memory_wiki/
-  02_session_capsule_analysis/
+  01_terminal_artifact_memory/
 
 areas/
   lab_operations/
@@ -39,32 +43,36 @@ areas/
 
 resources/
   assets/
+  briefs/
   experiment_template/
   learning/
   project_proposals/
 
 archives/
+  experiments/
+    01_memory_wiki/
+    02_session_capsule_analysis/
 ```
 
 ### Projects
 
-Projects are active experiments with a bounded research question and a clear completion condition. This folder intentionally contains only work receiving active attention.
+Projects contain active experiments with a bounded research question, a measurement plan, and a completion condition. The lab intentionally has one active experiment until its first baseline and memory checkpoint results are published.
 
 ### Areas
 
 Areas are ongoing responsibilities that keep the lab trustworthy, including reproducibility, safety, experiment discipline, result quality, repository maintenance, and public communication.
 
-The [public website](areas/public_website/README.md) is an Area because it remains active as the laboratory evolves rather than ending with a single experiment.
+The [public website](areas/public_website/README.md) is an Area because it remains active as the laboratory evolves.
 
 ### Resources
 
-Resources are reusable learning material, references, concepts, proposals, templates, and media. They support many experiments but do not have a completion date.
+Resources contain reusable learning material, references, proposals, templates, briefs, and media.
 
 ### Archives
 
-Archives hold completed, paused, or superseded experiments. A negative result belongs here once the experiment is complete because it still narrows the search space.
+Archives preserve complete, paused, or superseded work. Superseded specifications remain visible so the path to the current experiment is inspectable.
 
-GitHub requires workflow configuration to remain under `.github/`. That folder is repository plumbing rather than research content. Its purpose is documented in [`.github/CONFIGURATION.md`](.github/CONFIGURATION.md).
+GitHub requires workflow configuration under `.github/`. That folder is repository plumbing rather than research content. Its purpose is documented in [`.github/CONFIGURATION.md`](.github/CONFIGURATION.md).
 
 ## Experiment lifecycle
 
@@ -72,17 +80,19 @@ GitHub requires workflow configuration to remain under `.github/`. That folder i
 Idea → Specified → Running → Analyzing → Complete → Archive
 ```
 
-An experiment is complete only when its results, interpretation, and limitations are published. A merged design document does not make an experiment complete.
+An experiment is complete only when its baseline, results, interpretation, limitations, and operational conclusion are published.
 
 ## Learn through the lab
 
-Every project is designed to work as a learning module:
+The active project is designed as a learning module:
 
-1. Read the research question and background.
-2. Understand the hypothesis and measurements.
-3. Reproduce a run on available hardware.
-4. Inspect the results and limitations.
-5. Propose the next measurable question.
+1. Understand how terminal work produces reusable evidence.
+2. Build a privacy safe artifact pipeline.
+3. Compare raw evidence with distilled Markdown memory.
+4. Hold the local model fixed while memory grows.
+5. Measure exact recurrence, structural recurrence, and novel controls.
+6. Validate the learned success predictor against executable outcomes.
+7. Publish positive, negative, and inconclusive results.
 
 Start with the [field guide to learning LLM inference](resources/learning/field_guide.md).
 
