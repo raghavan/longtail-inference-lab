@@ -2,6 +2,8 @@
 
 This Area owns the public entry point for Lily, the Longtail Inference Laboratory.
 
+The site is published at <https://raghavan.github.io/longtail-inference-lab/>.
+
 ## Why this is an Area
 
 The website is an ongoing responsibility rather than a bounded research project. It remains active as the laboratory evolves and keeps the public presentation aligned with the current research record.
