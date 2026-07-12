@@ -12,11 +12,13 @@ The lab currently has two active experiments and one larger project direction:
 2. [Session Capsule Analysis](../../projects/02_session_capsule_analysis/README.md) asks what coding agent sessions contain and when replay, compression, or portable state becomes worthwhile.
 3. [Privacy Aware Inference Boundary](../project_proposals/privacy_aware_inference_boundary.md) asks what information may safely cross from local systems to remote models and tools.
 
+The repository has also adopted a more pragmatic and risk aware experiment template. That makes the most useful readings those that expose costs by phase, identify tail behavior, define failure boundaries, and suggest measurements that can prevent premature systems work.
+
 This edition contains two papers published during the previous two weeks. The older selections remain because they connect unusually well to the lab's current measurable questions.
 
 ## 1. Treat KV cache design as three separate systems problems
 
-**Source:** [Towards Efficient Large Language Model Serving: A Survey on System Aware KV Cache Optimization](https://arxiv.org/abs/2607.08057), submitted July 9, 2026.
+**Source:** [Towards Efficient Large Language Model Serving: A Survey on System Aware KV Cache Optimization](https://arxiv.org/abs/2607.08057), submitted July 9 2026.
 
 **What it is**
 
@@ -38,11 +40,11 @@ Read the taxonomy and the discussion of interactions among scheduling, placement
 
 **Experiment question**
 
-For each measured coding session, can the lab estimate four costs separately: reconstruct, retain, migrate, and reactivate? At what context size, bandwidth, and expected reuse count does migration become preferable to replay?
+For each measured coding session, can the lab estimate four costs separately: reconstruct, retain, migrate, and reactivate? At what context size, bandwidth, expected reuse count, and failure probability does migration become preferable to replay?
 
 ## 2. A close external comparison for the privacy boundary proposal
 
-**Source:** [SurrogateShield: Beyond Redaction for High Utility, Privacy Preserving LLM Interactions](https://arxiv.org/abs/2606.29567), submitted June 28, 2026.
+**Source:** [SurrogateShield: Beyond Redaction for High Utility, Privacy Preserving LLM Interactions](https://arxiv.org/abs/2606.29567), submitted June 28 2026.
 
 **What it is**
 
@@ -64,11 +66,11 @@ On a synthetic multi turn benchmark, how do typed placeholders, type preserving 
 
 **Skeptical note**
 
-Treat the reported numbers as hypotheses to reproduce, not settled facts. Semantic similarity metrics alone do not establish that a response remains operationally correct. The lab should measure downstream task success and unsafe restoration directly.
+Treat the reported numbers as hypotheses to reproduce, not settled facts. Semantic similarity metrics alone do not establish that a response remains operationally correct. The lab should measure downstream task success, missed sensitive spans, and unsafe restoration directly.
 
 ## 3. Memory has a write path, a read path, and an amortization curve
 
-**Source:** [Agent Memory: Characterization and System Implications of Stateful Long Horizon Workloads](https://arxiv.org/abs/2606.06448), submitted June 4, 2026.
+**Source:** [Agent Memory: Characterization and System Implications of Stateful Long Horizon Workloads](https://arxiv.org/abs/2606.06448), submitted June 4 2026.
 
 **What it is**
 
@@ -84,11 +86,11 @@ Read the system taxonomy, phase aware profiling method, and recommendations conc
 
 **Experiment question**
 
-How many successful future retrievals must a reviewed wiki entry support before its frontier generation, distillation, review, indexing, and maintenance cost breaks even?
+How many successful future retrievals must a reviewed wiki entry support before its frontier generation, distillation, review, indexing, and maintenance cost breaks even? What stale entry rate would erase that benefit?
 
 ## 4. Routing decisions can become a form of reusable memory
 
-**Source:** [Learning Agent Routing From Early Experience](https://arxiv.org/abs/2605.07180), submitted May 8, 2026.
+**Source:** [Learning Agent Routing From Early Experience](https://arxiv.org/abs/2605.07180), submitted May 8 2026.
 
 **What it is**
 
@@ -104,11 +106,11 @@ Read the BoundaryRouter method and the RouteBench evaluation setup. Focus on col
 
 **Experiment question**
 
-Does a compact experience memory reduce routing regret beyond similarity thresholds and explicit rules for a fixed set of coding questions?
+Does a compact experience memory reduce routing regret beyond similarity thresholds and explicit rules for a fixed set of coding questions? Measure false local routing separately from unnecessary escalation because their costs are not symmetric.
 
 ## 5. Heterogeneous inference may require specialization, not equal participation
 
-**Source:** [E2LLM: Towards Efficient LLM Serving in Heterogeneous Edge and Fog Environments](https://arxiv.org/abs/2606.03770), submitted June 2, 2026.
+**Source:** [E2LLM: Towards Efficient LLM Serving in Heterogeneous Edge and Fog Environments](https://arxiv.org/abs/2606.03770), submitted June 2 2026.
 
 **What it is**
 
@@ -157,16 +159,18 @@ Read SurrogateShield Sections 3 and 5 closely and compare every component agains
 
 Create a seed routing dataset for Memory Wiki with 30 coding questions. Label the expected path for each question as wiki, local model, frontier model, or full agent. Include paraphrases and genuinely novel questions. Record the reason for each route and define the cost of both false local routing and unnecessary escalation.
 
-This dataset can later compare:
+The dataset should compare:
 
 1. Explicit rules.
 2. Retrieval similarity thresholds.
 3. Local confidence signals.
 4. Experience memory from previous routing outcomes.
 
+Publish the full distribution of outcomes rather than only the average route accuracy.
+
 ## Idea that should not be pursued yet
 
-Do not build cross device KV cache migration yet. First complete Session Capsule Analysis and measure transcript size, compressibility, context length, estimated KV amplification, network transfer time, and replay time. A sophisticated state transfer system is only justified if a meaningful portion of real sessions crosses the measured break even boundary.
+Do not build cross device KV cache migration yet. First complete Session Capsule Analysis and measure transcript size, compressibility, context length, estimated KV amplification, network transfer time, replay time, and the tail of unusually large sessions. A sophisticated state transfer system is only justified if a meaningful portion of real sessions crosses the measured break even boundary.
 
 ## Knowledge map
 
@@ -194,6 +198,11 @@ E2LLM
 Content defined chunking
     -> Session Capsule delta storage and transfer
     -> Privacy Boundary metadata leakage questions
+
+Risk aware experiment template
+    -> tail measurements
+    -> explicit stop conditions
+    -> smaller justified interventions
 ```
 
 ## Source quality note
