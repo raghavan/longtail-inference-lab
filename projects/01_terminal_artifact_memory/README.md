@@ -45,34 +45,11 @@ flowchart TD
     K --> L[Learning curve and failure analysis]
 ```
 
-## Why this replaces the earlier experiments
-
-The archived [Memory Wiki](../../archives/experiments/01_memory_wiki/README.md) contributed:
-
-1. Human readable Markdown memory.
-2. Retrieval guided local inference.
-3. Exact, paraphrased, and novel questions.
-4. Routing regret.
-5. Reviewed write back.
-6. Wiki health.
-7. The question of when local inference becomes good enough.
-
-The archived [Session Capsule Analysis](../../archives/experiments/02_session_capsule_analysis/README.md) contributed:
-
-1. Privacy safe artifact extraction.
-2. Provenance.
-3. Separation of raw evidence from derived representations.
-4. Distribution and tail measurements.
-5. Measurement before systems design.
-6. Protection against committing session content and machine details.
-
-This experiment combines those ideas around one concrete workload and an objective verification path.
-
-## Conceptual predecessor
+## Hypothesis illustration
 
 ![Illustrative comparison of inference effort before and after knowledge distillation](../../resources/assets/wiki-cache-distillation-index.jpeg)
 
-This image came from the Memory Wiki exploration. It illustrates the hypothesis that reusable knowledge can reduce repeated inference effort. It is not an experiment result.
+This image illustrates the hypothesis that reusable verified knowledge can reduce repeated inference effort. It is not an experiment result.
 
 ## Decision being informed
 

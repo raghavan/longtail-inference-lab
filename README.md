@@ -22,15 +22,6 @@ Lily studies whether terminal artifacts can be transformed into durable memory t
 
 The experiment runs terminal tasks, preserves privacy safe evidence, distills that evidence into a human readable Markdown wiki, and measures local model performance at successive memory checkpoints.
 
-## How the lab arrived here
-
-Two earlier specifications explored the pieces separately:
-
-1. [Memory Wiki](archives/experiments/01_memory_wiki/README.md) explored durable knowledge, retrieval, routing regret, and reviewed write back.
-2. [Session Capsule Analysis](archives/experiments/02_session_capsule_analysis/README.md) explored privacy safe artifact collection and measurement before systems design.
-
-They were archived before execution because the new experiment provides a clearer workload, a stronger verifier, and one integrated learning curve. No empirical results were discarded.
-
 ## PARA organization
 
 ```text
@@ -47,11 +38,6 @@ resources/
   experiment_template/
   learning/
   project_proposals/
-
-archives/
-  experiments/
-    01_memory_wiki/
-    02_session_capsule_analysis/
 ```
 
 ### Projects
@@ -68,16 +54,12 @@ The [public website](areas/public_website/README.md) is an Area because it remai
 
 Resources contain reusable learning material, references, proposals, templates, briefs, and media.
 
-### Archives
-
-Archives preserve complete, paused, or superseded work. Superseded specifications remain visible so the path to the current experiment is inspectable.
-
 GitHub requires workflow configuration under `.github/`. That folder is repository plumbing rather than research content. Its purpose is documented in [`.github/CONFIGURATION.md`](.github/CONFIGURATION.md).
 
 ## Experiment lifecycle
 
 ```text
-Idea → Specified → Running → Analyzing → Complete → Archive
+Idea → Specified → Running → Analyzing → Complete
 ```
 
 An experiment is complete only when its baseline, results, interpretation, limitations, and operational conclusion are published.

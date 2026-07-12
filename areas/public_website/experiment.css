@@ -1,12 +1,3 @@
-.archive-note {
-  max-width: 34rem;
-  margin-top: 1.5rem;
-  color: var(--graphite);
-  font-size: 0.94rem;
-  font-style: italic;
-  line-height: 1.55;
-}
-
 .method-steps {
   list-style: none;
   margin-top: 2.25rem;

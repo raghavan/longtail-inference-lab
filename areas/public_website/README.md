@@ -12,18 +12,17 @@ The website is an ongoing responsibility rather than a bounded research project.
 
 1. [`index.html`](index.html) contains the single page website.
 2. [`styles.css`](styles.css) contains the shared visual system and responsive behavior.
-3. [`experiment.css`](experiment.css) contains styles for the current experiment method and archive note.
+3. [`experiment.css`](experiment.css) contains styles for the current experiment method.
 
 ## Responsibilities
 
 1. Keep claims aligned with published research.
 2. Present the single active experiment clearly.
-3. Label archived explorations as archived rather than active evidence.
-4. Keep experiment and archive links current.
-5. Preserve accessibility and responsive behavior.
-6. Maintain the luxury minimalist design language: warm ivory paper, soft black ink, a single bronze accent, fine hairline rules, and generous white space.
-7. Avoid analytics, trackers, credentials, and private infrastructure details.
-8. Keep deployment reproducible.
+3. Keep experiment links current.
+4. Preserve accessibility and responsive behavior.
+5. Maintain the luxury minimalist design language: warm ivory paper, soft black ink, a single bronze accent, fine hairline rules, and generous white space.
+6. Avoid analytics, trackers, credentials, and private infrastructure details.
+7. Keep deployment reproducible.
 
 ## Publishing
 
@@ -36,8 +35,8 @@ The workflow remains under `.github/workflows/` because GitHub requires that loc
 Before publishing a change:
 
 1. Confirm that every research claim is supported by the repository.
-2. Confirm that active and archived work are distinguished clearly.
-3. Confirm that links point to current Projects, Archives, or Resources.
+2. Confirm that the site reflects the latest active experiment and current laboratory direction.
+3. Confirm that links point to current Projects or Resources.
 4. Preview desktop and mobile layouts.
 5. Preserve keyboard focus and reduced motion behavior.
 6. Run `python3 areas/lab_operations/safety_scan.py`.

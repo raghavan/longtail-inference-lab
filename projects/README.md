@@ -14,10 +14,6 @@ Can verified artifacts from completed terminal benchmark tasks make a fixed ligh
 
 This is intentionally the only active experiment. The lab will establish the baseline, artifact pipeline, first memory checkpoints, and failure boundaries before adding another active project.
 
-## Superseded explorations
-
-The earlier Memory Wiki and Session Capsule Analysis specifications are preserved under [Archives](../archives/experiments/README.md). Their strongest ideas now inform the active experiment.
-
 ## Status meanings
 
 ```text
@@ -27,7 +23,4 @@ Running
 Analyzing
 Complete
 Paused
-Superseded
 ```
-
-Complete, paused, and superseded projects move to `archives/`. The root README continues to surface important findings and the reasoning behind major changes in direction.
