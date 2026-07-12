@@ -12,6 +12,18 @@ These instructions are for all AI coding assistants working in this repository, 
 
 Long Tail Inference Lab explores how everyday devices, local models, durable memory, session state, and selective frontier escalation can absorb long tail inference work.
 
+## Required experiment intake
+
+Before proposing, scaffolding, coding, or opening an issue, branch, or pull request for a new experiment:
+
+1. Read and use `resources/experiment_template/README.md` as the source of truth for experiment intake and design.
+2. Ask the user the unanswered questions needed to complete the relevant template sections.
+3. When the current conversation already answers part of the template, summarize those answers and ask only for the material gaps.
+4. Do not begin implementation until the material questions are answered and the user explicitly asks to proceed.
+5. Record the agreed answers in a copy of the experiment template before or alongside implementation.
+
+Do not duplicate the template's question set in this file. Update the template when the lab's research intake method changes.
+
 ## Repository organization
 
 Research content must live under one of the PARA folders:
