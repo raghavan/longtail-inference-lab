@@ -14,6 +14,14 @@ Long Tail Inference Lab currently focuses on one active experiment: whether veri
 
 Keep the local model, prompt, runtime, and hardware fixed during the core learning curve unless a documented experiment phase explicitly changes one of those controls.
 
+## Current work is authoritative
+
+1. Treat the latest active experiment and current repository direction as the source of truth.
+2. Keep the root README, active project documentation, website, learning material, and public descriptions focused on current work.
+3. Do not mention, compare, explain, or link to superseded work from active or public facing content.
+4. Historical material belongs only inside `archives/` unless the user explicitly asks for historical context.
+5. When the active direction changes, update every active surface so older framing does not remain visible.
+
 ## Required experiment intake
 
 Before proposing, scaffolding, coding, or opening an issue, branch, or pull request for a new experiment:
@@ -30,7 +38,7 @@ Do not duplicate the template question set in this file. Update the template whe
 
 1. Keep `projects/` limited to work receiving active attention.
 2. Do not add another active experiment until the current project has a published baseline and at least one measured memory checkpoint, unless the user explicitly changes that rule.
-3. Preserve superseded specifications under `archives/`.
+3. Move superseded specifications into `archives/` without carrying their narrative into active surfaces.
 4. Never present synthetic seed data or illustrative diagrams as measured results.
 
 ## Repository organization
