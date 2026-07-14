@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrative terminal artifact memory learning curve</title>
+  <desc id="desc">A line rises from 22 percent structural recurrence pass rate with zero verified memory contributions to 68 percent with twelve contributions. The data is illustrative and not measured.</desc>
+  <rect width="1400" height="820" fill="#ffffff"/>
+  <rect x="70" y="55" width="1260" height="710" rx="18" fill="#ffffff" stroke="#111111" stroke-width="2"/>
+
+  <text x="120" y="125" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700" fill="#111111">Primary result: verified memory learning curve</text>
+  <text x="120" y="170" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#444444">Fixed local model, growing verified artifact memory</text>
+
+  <rect x="1040" y="98" width="235" height="54" rx="27" fill="#111111"/>
+  <text x="1157.5" y="133" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" fill="#ffffff">ILLUSTRATIVE DATA</text>
+
+  <line x1="180" y1="650" x2="1240" y2="650" stroke="#111111" stroke-width="3"/>
+  <line x1="180" y1="235" x2="180" y2="650" stroke="#111111" stroke-width="3"/>
+
+  <g font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">
+    <line x1="180" y1="650" x2="1240" y2="650" stroke="#d7d7d7" stroke-width="1"/>
+    <text x="145" y="657" text-anchor="end">0%</text>
+
+    <line x1="180" y1="546" x2="1240" y2="546" stroke="#d7d7d7" stroke-width="1"/>
+    <text x="145" y="553" text-anchor="end">20%</text>
+
+    <line x1="180" y1="443" x2="1240" y2="443" stroke="#d7d7d7" stroke-width="1"/>
+    <text x="145" y="450" text-anchor="end">40%</text>
+
+    <line x1="180" y1="339" x2="1240" y2="339" stroke="#d7d7d7" stroke-width="1"/>
+    <text x="145" y="346" text-anchor="end">60%</text>
+
+    <line x1="180" y1="235" x2="1240" y2="235" stroke="#d7d7d7" stroke-width="1"/>
+    <text x="145" y="242" text-anchor="end">80%</text>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#333333" text-anchor="middle">
+    <line x1="180" y1="650" x2="180" y2="662" stroke="#111111" stroke-width="2"/>
+    <text x="180" y="695">0</text>
+    <line x1="445" y1="650" x2="445" y2="662" stroke="#111111" stroke-width="2"/>
+    <text x="445" y="695">3</text>
+    <line x1="710" y1="650" x2="710" y2="662" stroke="#111111" stroke-width="2"/>
+    <text x="710" y="695">6</text>
+    <line x1="975" y1="650" x2="975" y2="662" stroke="#111111" stroke-width="2"/>
+    <text x="975" y="695">9</text>
+    <line x1="1240" y1="650" x2="1240" y2="662" stroke="#111111" stroke-width="2"/>
+    <text x="1240" y="695">12</text>
+  </g>
+
+  <text x="710" y="742" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#111111">Verified memory contributions</text>
+  <text x="52" y="443" text-anchor="middle" transform="rotate(-90 52 443)" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#111111">Structural recurrence pass rate</text>
+
+  <polyline points="180,536 445,474 710,411 975,355 1240,297" fill="none" stroke="#111111" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <g fill="#ffffff" stroke="#111111" stroke-width="6">
+    <circle cx="180" cy="536" r="13"/>
+    <circle cx="445" cy="474" r="13"/>
+    <circle cx="710" cy="411" r="13"/>
+    <circle cx="975" cy="355" r="13"/>
+    <circle cx="1240" cy="297" r="13"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#111111" text-anchor="middle">
+    <text x="180" y="508">22%</text>
+    <text x="445" y="446">34%</text>
+    <text x="710" y="383">46%</text>
+    <text x="975" y="327">57%</text>
+    <text x="1240" y="269">68%</text>
+  </g>
+
+  <path d="M 230 530 C 320 500, 350 490, 410 480" fill="none" stroke="#777777" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="340" y="565" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#555555">Only memory changes</text>
+
+  <text x="120" y="790" font-family="Arial, Helvetica, sans-serif" font-size="17" fill="#666666">Planning preview only. Replace every point with measured verifier outcomes before publication.</text>
+</svg>
