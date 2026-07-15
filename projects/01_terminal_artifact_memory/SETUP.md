@@ -1,4 +1,4 @@
-# Lean Experiment Setup
+# Minimal Experiment Setup
 
 **Experiment:** Terminal Artifact Memory  
 **Status:** Pilot setup  
@@ -6,18 +6,11 @@
 
 ## Principle
 
-The pilot should use the fewest tools needed to protect the validity of the result.
+Use the smallest credible stack that can preserve isolation, verification, artifact safety, reproducibility, and the primary result.
 
-A tool belongs in the setup only when it does at least one of the following:
+A tool belongs in the pilot only when removing it would weaken one of those five properties.
 
-1. Provides the benchmark and authoritative verifier.
-2. Isolates agent execution from the host.
-3. Runs the fixed local model.
-4. Prevents unsafe or contaminated artifacts from entering memory.
-5. Makes a measured run reproducible.
-6. Produces the primary result.
-
-The research contribution is the verified memory layer and the measurement of whether it improves a fixed local model on structurally recurring terminal tasks. Lily does not need to become a general agent platform, model serving platform, experiment tracker, or workflow system.
+The research contribution is not a new benchmark runner, agent framework, model server, database, experiment tracker, or workflow system. It is the verified memory layer and the measurement of whether that memory improves one fixed local model on structurally recurring terminal tasks.
 
 ## Pilot question
 
@@ -31,6 +24,18 @@ M2: the same fixed local model with retrieved Markdown memory
 ```
 
 The model, prompt, runtime, hardware, context limit, tool permissions, and execution budget remain fixed. Only the verified memory grows.
+
+## Final pilot stack
+
+The pilot uses five tools.
+
+1. Harbor ecosystem
+2. llama.cpp
+3. uv
+4. Gitleaks
+5. matplotlib
+
+Python and Git are assumed foundations rather than experiment tools.
 
 ## Lean architecture
 
@@ -46,47 +51,15 @@ flowchart TD
     G --> I[Lily sanitizer]
     H --> I
     I --> J[Verified Markdown memory]
-    J --> K[SQLite FTS5 retrieval]
+    J --> K[Direct Markdown retrieval]
     K --> C
     F --> L[JSON and CSV results]
     L --> M[matplotlib learning curve]
 ```
 
-## Where the system runs
+## 1. Harbor ecosystem
 
-### Laptop
-
-Use the laptop for:
-
-1. Writing and reviewing Lily code.
-2. Running unit tests.
-3. Running sanitizer self tests.
-4. Performing small development runs.
-5. Reviewing every pilot artifact before it enters memory.
-6. Inspecting and plotting results.
-
-### VPS
-
-Use the VPS for:
-
-1. Long running Terminal Bench trials.
-2. Repeated M0 and M2 evaluation runs.
-3. Storing run directories and experiment artifacts.
-4. Running the same checks used on the laptop.
-
-The laptop and VPS use the same locked Python environment and the same pinned system tool versions.
-
-### GitHub
-
-GitHub stores code, documentation, prompts, manifests, and reviewed result summaries.
-
-GitHub Actions is not required for the pilot. The experiment runs on the laptop or VPS. Hosted CI may be added later when several contributors are working on the repository or when clean environment checks provide clear operational value.
-
-## Tools retained for the pilot
-
-### 1. Harbor ecosystem
-
-Treat Terminal Bench, Harbor, Terminus 2, and ATIF as one platform decision.
+Treat Terminal Bench, Harbor, Terminus 2, ATIF, Docker isolation, and the executable verifier as one platform decision.
 
 Harbor should provide:
 
@@ -98,19 +71,17 @@ Harbor should provide:
 6. Terminal Bench verifier execution.
 7. Standard trial artifacts.
 
-Lily should not create another benchmark scheduler, terminal agent loop, verifier, or trajectory format.
+Lily should not create another benchmark scheduler, terminal agent loop, verifier, trajectory format, or container orchestration layer.
 
-### 2. Docker
+Docker remains necessary for isolation, but Lily should interact with it through Harbor rather than maintain separate Docker infrastructure.
 
-Every agent action runs inside the benchmark task container.
-
-The host machine must never be exposed as the agent terminal. Only explicitly permitted artifacts may leave the task container.
-
-### 3. llama.cpp
+## 2. llama.cpp
 
 llama.cpp serves one fixed local model through an OpenAI compatible endpoint.
 
-The pilot manifest records:
+No additional model gateway is required for the pilot.
+
+The manifest records:
 
 ```yaml
 model:
@@ -124,124 +95,75 @@ model:
   seed: REQUIRED_WHERE_SUPPORTED
 ```
 
-The model file is downloaded once, hashed, and frozen. Model comparisons begin only after the memory effect has been measured.
+The model file is downloaded once, hashed, and frozen before measured runs begin.
 
-### 4. Python standard library
+Model comparisons begin only after the memory effect has been measured.
 
-Use the Python standard library for:
+## 3. uv
 
-1. JSON manifests and run records.
-2. CSV result tables.
-3. File and directory management.
-4. Hashing.
-5. Regular expression based artifact redaction.
-6. Experiment coordination.
-7. Basic paired outcome counting.
+uv manages the Python environment, lock file, dependency installation, and script execution.
 
-Do not add a framework where a small inspectable script is sufficient.
+The pilot should not use separate virtual environment instructions, pip requirement files, task runners, or hook frameworks.
 
-### 5. SQLite FTS5
-
-SQLite FTS5 provides the first retrieval baseline with built in BM25 ranking.
-
-```sql
-CREATE VIRTUAL TABLE wiki_index USING fts5(
-    page_id UNINDEXED,
-    title,
-    problem_pattern,
-    symptoms,
-    environment_assumptions,
-    diagnostic_sequence,
-    verified_resolution,
-    limitations
-);
-```
-
-A fixed query returns the top K pages. Embeddings and vector databases are excluded from the pilot.
-
-### 6. Gitleaks
-
-Gitleaks scans exported artifacts for credentials, tokens, private keys, and related secret patterns.
-
-A Gitleaks finding blocks the artifact from entering memory until it is resolved.
-
-### 7. Lily sanitizer
-
-One small Python sanitizer handles experiment specific contamination risks that generic secret scanners do not understand.
-
-It must detect and remove:
-
-1. Home and workspace paths.
-2. Internal hostnames.
-3. Private network addresses.
-4. Git remote addresses.
-5. Private repository names.
-6. Machine identifiers.
-7. Docker mount paths.
-8. Hidden test paths.
-9. Reference solution paths.
-10. Benchmark answer leakage.
-11. Canary values inserted by the safety tests.
-
-Every pilot artifact also receives manual review before it enters searchable memory.
-
-### 8. pytest
-
-pytest tests only Lily specific behavior:
-
-1. Sanitizer rules.
-2. Canary detection.
-3. Artifact allowlist enforcement.
-4. Memory schema validation.
-5. Retrieval determinism.
-6. M0 and M2 configuration equivalence.
-7. Result calculations.
-
-### 9. uv
-
-uv manages and locks the small Python environment.
-
-### 10. matplotlib
-
-matplotlib produces the primary structural recurrence learning curve and small supporting figures from measured CSV results.
-
-## Minimal Python dependencies
-
-The exact versions are pinned when implementation begins.
+The dependency file can remain minimal:
 
 ```toml
 [project]
 dependencies = [
-    "matplotlib",
-]
-
-[dependency-groups]
-dev = [
-    "pytest",
+  "matplotlib",
 ]
 ```
 
-Harbor, Docker, llama.cpp, Gitleaks, and SQLite are system tools and are pinned in the experiment manifest or setup script.
+Testing uses Python standard library `unittest`.
 
-## Lily code
+## 4. Gitleaks
 
-The initial implementation should remain small enough to inspect directly.
+Gitleaks scans exported artifacts before they enter searchable memory.
+
+Lily adds a small transparent sanitizer for experiment specific content such as:
+
+1. Home directory paths.
+2. Workspace paths.
+3. Repository names.
+4. Git remote addresses.
+5. Hostnames.
+6. Private network addresses.
+7. Docker mount paths.
+8. Hidden test paths.
+9. Reference solution paths.
+10. Canary strings.
+
+The pilot does not need a general purpose personal information platform. Every accepted artifact also receives manual review.
+
+## 5. matplotlib
+
+matplotlib produces the primary learning curve and any compact supporting figures.
+
+The Python standard library handles JSON, CSV, hashing, statistics, file traversal, regular expressions, subprocess execution, and tests.
+
+## Direct Markdown retrieval
+
+The pilot does not need SQLite, embeddings, or a vector database.
+
+The memory retriever should:
+
+1. Read every Markdown page in `memory/wiki/`.
+2. Extract deterministic searchable fields.
+3. Tokenize the current task description.
+4. Score pages using a simple fixed lexical rule.
+5. Return the top K pages within a fixed token budget.
+6. Record the retrieved page identifiers and scores.
+
+This direct file scan is both the simplest implementation and the baseline the experiment should beat before more advanced retrieval is considered.
+
+## Minimal Lily code
 
 ```text
 01_terminal_artifact_memory/
   README.md
   SETUP.md
-  experiment.yaml
   pyproject.toml
   uv.lock
-
-  prompts/
-    terminus_system.md
-    memory_context.md
-
-  benchmark/
-    split.yaml
-    task_families.yaml
 
   lily/
     experiment.py
@@ -249,9 +171,12 @@ The initial implementation should remain small enough to inspect directly.
     memory.py
     analyze.py
 
+  prompts/
+    system.md
+    memory.md
+
   memory/
     wiki/
-    index.db
 
   runs/
   results/
@@ -261,19 +186,23 @@ Directories should be added only when the pilot actually needs them.
 
 ### experiment.py
 
-Runs controlled Harbor jobs for M0 and M2 and verifies that all non memory controls remain identical.
+Runs controlled Harbor jobs for M0 and M2.
+
+It verifies that all non memory controls remain identical and stores one self contained run directory for each trial.
 
 ### sanitize.py
 
-Reads exported trial artifacts, runs the Lily redaction rules, invokes Gitleaks, validates the allowlist, tests canaries, and produces a sanitizer report.
+Reads exported trial artifacts, invokes Gitleaks, applies Lily redaction rules, validates the allowlist, tests canaries, and writes a sanitizer report.
 
 ### memory.py
 
-Converts a sanitized successful trajectory and verifier result into one provenance linked Markdown page. It also builds and queries the SQLite FTS5 index.
+Converts one sanitized successful trajectory and verifier result into a provenance linked Markdown page.
+
+It also performs deterministic direct file retrieval over the Markdown wiki.
 
 ### analyze.py
 
-Reads paired run results and produces:
+Reads paired JSON results and produces:
 
 1. Structural recurrence pass rates.
 2. Positive transfer count.
@@ -285,6 +214,37 @@ Reads paired run results and produces:
 8. The primary learning curve.
 
 Terminal Bench remains the authority on whether a task passed.
+
+## Where the system runs
+
+### Laptop
+
+Start on the laptop.
+
+Use it for:
+
+1. Writing and reviewing code.
+2. Running standard library tests.
+3. Running sanitizer self tests.
+4. Running small development trials.
+5. Reviewing every pilot artifact before it enters memory.
+6. Inspecting and plotting results.
+
+### VPS
+
+The VPS is optional capacity rather than part of the architecture.
+
+Use it only when local runs become too long or resource intensive.
+
+The VPS uses the same Git revision, uv lock file, model hash, prompt revision, and pinned system tool versions as the laptop.
+
+### GitHub
+
+GitHub stores code, documentation, prompts, manifests, and reviewed result summaries.
+
+GitHub Actions is not required for the pilot.
+
+Large raw artifacts may remain on the laptop or VPS. Only reviewed summaries and compact measured results should be committed.
 
 ## Run storage
 
@@ -305,8 +265,6 @@ runs/
 
 A measured run must be reconstructable from its directory and the referenced Git revision.
 
-Large raw artifacts may remain on the VPS. Reviewed summaries and compact measured results may be committed to GitHub.
-
 ## Reproducibility manifest
 
 Every measured run records:
@@ -326,30 +284,42 @@ run_environment:
   retrieval_revision: REQUIRED
   sanitizer_revision: REQUIRED
   python_lock_hash: REQUIRED
-  docker_version: REQUIRED
   operating_system: REQUIRED
   hardware_description: REQUIRED
 ```
 
 A run missing a required control is a development run and cannot enter the primary result.
 
-## Local checks
+## Local commands
 
-Run the same checks on the laptop and VPS:
+Run the same commands on the laptop and VPS:
 
 ```bash
 uv sync
-uv run pytest
+uv run python -m unittest
+
 gitleaks detect
 uv run python lily/sanitize.py --self-test
 ```
 
-These commands may later be wrapped in one small shell script or Make target. A separate local hook framework is unnecessary for the pilot.
+Run the experiment:
+
+```bash
+uv run python lily/experiment.py
+```
+
+Produce the measured result:
+
+```bash
+uv run python lily/analyze.py
+```
+
+No Makefile, pre commit framework, or hosted workflow is required for the pilot.
 
 ## Pilot sequence
 
-1. Install Harbor, Docker, llama.cpp, Gitleaks, uv, and SQLite on the selected machine.
-2. Pin the Terminal Bench task revision and the Harbor ecosystem versions.
+1. Install Harbor, llama.cpp, uv, and Gitleaks.
+2. Pin the Terminal Bench task revision and Harbor ecosystem versions.
 3. Download, hash, and freeze one local model.
 4. Run one oracle task to validate the environment and verifier.
 5. Run one Terminus 2 task with no memory.
@@ -357,10 +327,10 @@ These commands may later be wrapped in one small shell script or Make target. A 
 7. Run Gitleaks, Lily redaction rules, allowlist validation, and canary tests.
 8. Manually review the exported artifact.
 9. Distill one verified run into a Markdown memory page.
-10. Index that page with SQLite FTS5.
+10. Retrieve relevant pages using the fixed direct file scan.
 11. Run the same held out probes under M0 and M2.
 12. Store each run in a self contained run directory.
-13. Produce the paired transfer counts and first measured learning curve.
+13. Produce paired transfer counts and the first measured learning curve.
 
 ## Safety gate
 
@@ -378,45 +348,49 @@ Before an artifact enters searchable memory, all of the following must pass:
 
 A failed gate blocks the artifact from memory.
 
-## Tools deliberately deferred
+## Tools deliberately excluded from the pilot
 
-The following tools are not required for the first credible experiment:
+The first credible experiment does not require:
 
 1. GitHub Actions.
 2. MLflow.
 3. Presidio.
 4. pandas.
 5. statsmodels.
-6. Pyright.
-7. pre commit.
-8. Vector databases.
-9. Embedding models.
-10. Neural rerankers.
-11. Knowledge graphs.
-12. Fine tuning frameworks.
-13. Multiple model serving systems.
-14. LiteLLM.
-15. DVC.
-16. Kubernetes.
-17. Distributed workflow schedulers.
-18. Custom dashboards.
-19. OpenTelemetry infrastructure.
+6. pytest.
+7. Pyright.
+8. pre commit.
+9. SQLite FTS5.
+10. Vector databases.
+11. Embedding models.
+12. Neural rerankers.
+13. Knowledge graphs.
+14. Fine tuning frameworks.
+15. Multiple model serving systems.
+16. LiteLLM.
+17. DVC.
+18. Kubernetes.
+19. Distributed workflow schedulers.
+20. Custom dashboards.
+21. OpenTelemetry infrastructure.
 
-A deferred tool must earn inclusion by solving an observed problem or improving a measured decision.
+A new tool must solve an observed problem or improve a measured decision before it is added.
 
 ## When to add more infrastructure
 
-Add GitHub Actions when several contributors need automatic clean environment checks.
+Add SQLite only when direct Markdown scanning becomes operationally inconvenient.
 
-Add MLflow when run directories become difficult to compare or several models and machines are active.
+Add semantic retrieval only after the direct lexical baseline is frozen and the same probes show a measurable improvement.
 
-Add pandas when result manipulation becomes awkward with CSV and the standard library.
+Add pytest only when the standard library test suite becomes awkward to maintain.
 
-Add statsmodels when the evaluation set is large enough for a preregistered statistical test to be meaningful.
+Add pandas only when result manipulation becomes difficult with JSON, CSV, and the standard library.
 
-Add Presidio when artifacts include real human conversations, customer information, or heterogeneous documents.
+Add statsmodels only when the evaluation set is large enough for a preregistered statistical test to be meaningful.
 
-Add semantic retrieval only after SQLite FTS5 establishes the lexical baseline and the same frozen probes demonstrate a measurable benefit.
+Add MLflow only when self contained run directories become difficult to compare across several models, machines, or researchers.
+
+Add GitHub Actions only when several contributors need automatic clean environment checks.
 
 ## Definition of pilot ready
 
@@ -427,9 +401,9 @@ The setup is ready for measured experimentation when:
 3. ATIF trajectories and verifier results are preserved.
 4. Successful artifacts pass Gitleaks, the Lily sanitizer, canary tests, allowlist validation, and manual review.
 5. The memory distiller produces provenance linked Markdown.
-6. SQLite FTS5 retrieves the expected pages under a frozen configuration.
-7. The coordinator runs paired M0 and M2 probes with identical controls.
-8. Every run is reconstructable from its run directory and manifest.
+6. Direct Markdown retrieval returns the expected pages under a frozen configuration.
+7. The experiment script runs paired M0 and M2 probes with identical controls.
+8. Every measured run is reconstructable from its run directory.
 9. The analysis script reproduces the paired transfer counts and primary learning curve.
 
-At that point Lily should collect evidence rather than build more infrastructure.
+At that point, Lily can begin collecting evidence instead of building infrastructure.
