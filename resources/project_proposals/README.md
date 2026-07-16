@@ -6,6 +6,10 @@ A proposal belongs here while it is being shaped. It moves into `projects/` only
 
 ## Proposals
 
+### [Lily Pocket: Offline Voice Intelligence Device](lily_pocket_offline_voice_device.md)
+
+A portable, self contained voice intelligence appliance that performs speech recognition, local open weight inference, and spoken response generation without internet access or a companion computer.
+
 ### [Privacy Aware Inference Boundary](privacy_aware_inference_boundary.md)
 
 A local privacy gateway that sanitizes sensitive values before remote inference and restores approved values only at a trusted local boundary.
