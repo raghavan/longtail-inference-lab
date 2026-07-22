@@ -1,0 +1,7 @@
+{
+  "hostnames": ["builder.internal.example"],
+  "workspace_paths": ["/srv/lily/workspace"],
+  "repository_names": ["owner/private-repo"],
+  "docker_mount_paths": ["/var/lib/docker/volumes/task01"],
+  "canaries": ["CANARY_TOKEN_9f3c"]
+}
