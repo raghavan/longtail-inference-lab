@@ -14,6 +14,13 @@ Long Tail Inference Lab currently focuses on one active experiment: whether veri
 
 Keep the local model, prompt, runtime, and hardware fixed during the core learning curve unless a documented experiment phase explicitly changes one of those controls.
 
+## Naming and branding
+
+1. Use clear, descriptive research and project names by default.
+2. Do not introduce the word `Lily` into project names, proposals, documentation, website copy, or branding unless the user explicitly requests it.
+3. When the user explicitly requests that shorthand, use it selectively rather than repeating it as a prefix across unrelated work.
+4. Prefer `Long Tail Inference Lab`, `Longtail Inference Laboratory`, or a specific project name when identifying the repository or its work.
+
 ## Current work is authoritative
 
 1. Treat the latest active experiment and current repository direction as the source of truth.
