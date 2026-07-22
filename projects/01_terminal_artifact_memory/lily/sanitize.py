@@ -240,7 +240,7 @@ class SanitizerSelfTest(unittest.TestCase):
         return sanitize_tree(self.tmp / "in", out, self.config)
 
     def test_canary_is_detected_and_redacted(self) -> None:
-        self._write("log.txt", "export TOKEN=CANARY_TOKEN_9f3c done")
+        self._write("log.txt", "canary value CANARY_TOKEN_9f3c recorded")
         report = self._run()
         self.assertEqual(report["canaries"]["missing"], [])
         sanitized = (self.tmp / "out" / "log.txt").read_text()
@@ -255,7 +255,7 @@ class SanitizerSelfTest(unittest.TestCase):
     def test_private_ip_and_git_remote_redacted(self) -> None:
         self._write(
             "notes.md",
-            "ssh 192.168.1.20 then clone git@git.internal.example:org/repo.git",
+            "connect 192.168.1.20 then clone git@git.internal.example:org/repo.git",
         )
         report = self._run()
         sanitized = (self.tmp / "out" / "notes.md").read_text()
