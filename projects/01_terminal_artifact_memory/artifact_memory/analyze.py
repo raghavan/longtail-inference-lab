@@ -8,6 +8,7 @@ import json
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
+from statistics import median
 from typing import Iterable, Mapping, Sequence
 
 try:
@@ -74,6 +75,7 @@ def _validate_result(result: Mapping[str, object]) -> None:
         "question_type",
         "memory_checkpoint",
         "memory_contributions",
+        "baseline_memory_contributions",
         "observed_memory_pages",
         "memory_condition",
         "verifier_passed",
@@ -93,9 +95,14 @@ def _validate_result(result: Mapping[str, object]) -> None:
         raise AnalysisError("only the Terminal Bench executable verifier may score a result")
     if result["memory_condition"] not in {"M0", "M2"}:
         raise AnalysisError("pilot analysis accepts only M0 and M2")
-    if result["memory_contributions"] != result["observed_memory_pages"]:
+    expected_pages = (
+        result["baseline_memory_contributions"]
+        if result["memory_condition"] == "M0"
+        else result["memory_contributions"]
+    )
+    if expected_pages != result["observed_memory_pages"]:
         raise AnalysisError(
-            "declared memory contributions disagree with the observed admitted memory index"
+            "condition-specific memory contributions disagree with the observed admitted memory index"
         )
     if not isinstance(result["retrieved_page_ids"], list) or not isinstance(
         result["expected_relevant_pages"], list
@@ -139,7 +146,7 @@ def pair_results(
             "question_type",
             "memory_checkpoint",
             "memory_contributions",
-            "observed_memory_pages",
+            "baseline_memory_contributions",
             "data_classification",
         ):
             if m0[field] != m2[field]:
@@ -201,6 +208,13 @@ def _pair_rows(pairs: Sequence[Pair]) -> list[dict[str, object]]:
                 "expected_relevant_pages": ";".join(sorted(str(item) for item in expected)),
                 "retrieval_covered": "N/A" if not expected else bool(expected & set(retrieved)),
                 "wiki_bytes": pair.m2["wiki_bytes"],
+                "m0_latency_seconds": pair.m0.get("latency_seconds", "N/A"),
+                "m2_latency_seconds": pair.m2.get("latency_seconds", "N/A"),
+                "m0_prompt_tokens": pair.m0.get("prompt_tokens", "N/A"),
+                "m2_prompt_tokens": pair.m2.get("prompt_tokens", "N/A"),
+                "m0_output_tokens": pair.m0.get("output_tokens", "N/A"),
+                "m2_output_tokens": pair.m2.get("output_tokens", "N/A"),
+                "m2_retrieval_seconds": pair.m2.get("retrieval_seconds", "N/A"),
                 "control_digest": pair.m0["control_digest"],
             }
         )
@@ -228,6 +242,16 @@ def _checkpoint_metrics(pairs: Sequence[Pair]) -> list[dict[str, object]]:
         contribution_count = contributions.pop()
         wiki_bytes = wiki_sizes.pop()
         net_structural = structural_m2 - structural_m0
+        m0_latencies = [
+            float(pair.m0["latency_seconds"])
+            for pair in group
+            if isinstance(pair.m0.get("latency_seconds"), (int, float))
+        ]
+        m2_latencies = [
+            float(pair.m2["latency_seconds"])
+            for pair in group
+            if isinstance(pair.m2.get("latency_seconds"), (int, float))
+        ]
         rows.append(
             {
                 "checkpoint": checkpoint,
@@ -249,6 +273,13 @@ def _checkpoint_metrics(pairs: Sequence[Pair]) -> list[dict[str, object]]:
                 ),
                 "knowledge_efficiency_per_mb": (
                     "N/A" if wiki_bytes == 0 else f"{net_structural / (wiki_bytes / 1_000_000):.3f}"
+                ),
+                "wiki_bytes": wiki_bytes,
+                "m0_median_latency_seconds": (
+                    "N/A" if len(m0_latencies) != len(group) else f"{median(m0_latencies):.3f}"
+                ),
+                "m2_median_latency_seconds": (
+                    "N/A" if len(m2_latencies) != len(group) else f"{median(m2_latencies):.3f}"
                 ),
             }
         )
@@ -358,8 +389,8 @@ Terminal Bench executable verifier outcomes are authoritative. Learned-judge fie
 ## Checkpoints
 
 {_markdown_table(
-    ["Checkpoint", "M0 pass", "M2 pass", "Structural M0", "Structural M2", "Structural lift", "Positive", "Negative", "Stable", "Unresolved", "Retrieval coverage", "Verified knowledge yield"],
-    ([row['checkpoint'], row['m0_pass_rate'], row['m2_pass_rate'], row['structural_m0_pass_rate'], row['structural_m2_pass_rate'], row['structural_memory_lift'], row['positive_transfer'], row['negative_transfer'], row['stable_success'], row['unresolved_task'], row['retrieval_coverage'], row['verified_knowledge_yield']] for row in checkpoint_rows),
+    ["Checkpoint", "M0 pass", "M2 pass", "Structural M0", "Structural M2", "Structural lift", "Positive", "Negative", "Stable", "Unresolved", "Retrieval coverage", "Verified knowledge yield", "Wiki bytes", "M0 median seconds", "M2 median seconds"],
+    ([row['checkpoint'], row['m0_pass_rate'], row['m2_pass_rate'], row['structural_m0_pass_rate'], row['structural_m2_pass_rate'], row['structural_memory_lift'], row['positive_transfer'], row['negative_transfer'], row['stable_success'], row['unresolved_task'], row['retrieval_coverage'], row['verified_knowledge_yield'], row['wiki_bytes'], row['m0_median_latency_seconds'], row['m2_median_latency_seconds']] for row in checkpoint_rows),
 )}
 
 ## Task families

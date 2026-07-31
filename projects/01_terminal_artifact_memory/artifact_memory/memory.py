@@ -55,7 +55,11 @@ REQUIRED_PROVENANCE = (
     "task_family",
     "code_revision",
     "harbor_version",
+    "docker_version",
     "terminal_bench_version",
+    "terminal_bench_revision",
+    "registry_snapshot_sha256",
+    "task_instruction_sha256",
     "task_container_digest",
     "terminus_version",
     "atif_schema_version",
@@ -331,11 +335,15 @@ def _validate_provenance(provenance: Mapping[str, object]) -> None:
         raise MemoryAdmissionError("pilot memory task_family must be environment_setup")
     if not REVISION_RE.fullmatch(str(provenance["code_revision"])):
         raise MemoryAdmissionError("code_revision must be a full Git revision")
+    if not REVISION_RE.fullmatch(str(provenance["terminal_bench_revision"])):
+        raise MemoryAdmissionError("terminal_bench_revision must be a full Git revision")
     if not CONTAINER_DIGEST_RE.fullmatch(str(provenance["task_container_digest"])):
         raise MemoryAdmissionError("task_container_digest must be an immutable SHA-256 digest")
     for field in (
         "model_sha256",
         "python_lock_hash",
+        "registry_snapshot_sha256",
+        "task_instruction_sha256",
         "trajectory_sha256",
         "verifier_artifact_sha256",
         "sanitized_artifact_sha256",

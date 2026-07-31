@@ -1,14 +1,14 @@
 # Terminal Artifact Memory Results
 
-**Status:** No measured runs recorded
+**Status:** First preregistered pilot halted; no paired result
 
-The paired analyzer is runnable and writes reviewed candidates under `generated/`, but this workspace contains no genuine measured output yet. It refuses development and fixture records by default. The primary chart currently uses illustrative planning data and must never be presented as an experiment result.
+The [2026-07-31 pilot](2026-07-31-measured-pilot/summary.md) passed development validation but exceeded the frozen context on its first M0 probe before executable verification. Its compact accounting is genuine run evidence, but it is not a scored baseline and supports no M0/M2 claim. The paired analyzer still refuses development, fixture, and incomplete records by default. The primary chart uses illustrative planning data and must never be presented as an experiment result.
 
 ## Primary result
 
 ![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../../resources/assets/terminal_artifact_memory_learning_curve.svg)
 
-The final version of this chart will plot structural recurrence verifier pass rate against the number of verified memory contributions while the model and all core controls remain fixed.
+A future measured version of this chart will require complete structural recurrence verifier outcomes. The halted pilot contributes no point to the curve.
 
 ## Required outputs
 

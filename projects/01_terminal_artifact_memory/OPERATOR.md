@@ -1,6 +1,6 @@
 # Pilot operator guide
 
-The pilot software is runnable. No measured baseline exists yet. Harbor, Terminal Bench tasks, the model, and their exact revisions still have to be selected and pinned locally before a measured run.
+The pilot software is runnable and the first external stack was pinned in the 2026-07-31 preregistration. That run halted without a scored baseline when the first M0 trajectory exceeded the fixed context before verification. Reuse the workflow below only with a newly preregistered protocol revision; never rerun or relabel the consumed attempt.
 
 ## Upstream interfaces used
 
@@ -50,11 +50,14 @@ Copy `manifests/measured-run-template.v1.json` to a local, uncommitted path unde
 
 Unresolved values are detected by the uppercase template convention only: `REQUIRED_...`, `TBD...`, `CHANGEME`, and `PLACEHOLDER`. Ordinary prose such as a task description containing "required" is accepted, so never leave a real value in that uppercase marker form.
 
-Set the three environment variables named by the manifest:
+Set the environment variables named by the manifest:
 
 - `ARTIFACT_MEMORY_MODEL_PATH`: local GGUF path.
 - `ARTIFACT_MEMORY_LLAMA_API_BASE`: loopback OpenAI-compatible `/v1` endpoint.
 - `ARTIFACT_MEMORY_LLAMA_API_KEY`: local endpoint credential or a non-secret local sentinel when the endpoint requires none.
+- `ARTIFACT_MEMORY_PINNED_TASKS_PATH`: private task directory whose selected `task.toml` files use immutable image digests. Measured preflight also verifies the public instruction hash.
+
+A memory-build manifest may additionally name a private `extra_instruction_path_env` containing only its non-solution sanitizer canary metadata. Never commit that file or its value.
 
 Values are read at runtime and are not copied into the fixed-control manifest. The endpoint credential is forwarded to each Harbor trial only through the child process environment, under the variable named by `external.agent_api_key_env` (`OPENAI_API_KEY` by default, which is what the Terminus-2 OpenAI-compatible client reads). It never appears in a command argument, manifest, run record, or log.
 
@@ -68,7 +71,7 @@ uv run python -m artifact_memory.experiment plan \
   --memory-index memory/manifests/artifact_index.jsonl
 ```
 
-`plan` is planning output, never a measured result. Both `plan` and `run` recompute the memory state from the admitted-page index: every wiki page must be an admitted, unsuperseded page whose content still hashes to its admission record. `memory_contributions` and `memory_checkpoint` are both the verified contributions available, so each must equal that observed page count exactly; checkpoints are numbered by contribution count, not by run order.
+`plan` is planning output, never a measured result. `plan`, `run`, and `run-condition` recompute memory state from the admitted-page index: every wiki page must be admitted, unsuperseded, and unchanged. For staged runs, M0 requires the observed count to equal `baseline_memory_contributions`; M2 requires both `memory_contributions` and `memory_checkpoint` to equal the observed admitted count. Checkpoints are numbered by contribution count, not run order.
 
 ## Start the local model endpoint
 
@@ -84,19 +87,32 @@ Inspect and execute that command in a separate terminal. The pilot does not mana
 uv run python -m artifact_memory.experiment check-prereqs --manifest config/local/pilot.json
 ```
 
-This checks tool availability and pins, Docker, Harbor's required flags, the loopback `/health` and `/v1/models` routes, a clean worktree at the declared Git revision, prompt and lock hashes, and the GGUF hash.
+This checks tool availability and pins, Docker, Harbor 0.20.0's `--include-task-name` interface, the immutable local task instruction and image reference, the loopback `/health` and `/v1/models` routes, a clean worktree at the declared Git revision, prompt and lock hashes, and the GGUF hash.
 
-## Run a paired probe
+## Run a staged paired probe
+
+The measured ordering records M0 before memory construction and M2 after the approved checkpoint. Both conditions use the same preregistered manifest. `baseline_memory_contributions` states the pages permitted during M0; `memory_contributions` and `memory_checkpoint` state the pages required during M2.
 
 ```bash
-uv run python -m artifact_memory.experiment run \
+uv run python -m artifact_memory.experiment run-condition \
+  --condition M0 \
   --manifest config/local/pilot.json \
-  --wiki-dir memory/wiki \
-  --memory-index memory/manifests/artifact_index.jsonl \
-  --runs-dir runs
+  --wiki-dir PRIVATE_MEMORY_WIKI \
+  --memory-index PRIVATE_MEMORY_INDEX \
+  --runs-dir PRIVATE_RUNS
+
+# After sanitizer gates, external review, and admission:
+uv run python -m artifact_memory.experiment run-condition \
+  --condition M2 \
+  --manifest config/local/pilot.json \
+  --wiki-dir PRIVATE_MEMORY_WIKI \
+  --memory-index PRIVATE_MEMORY_INDEX \
+  --runs-dir PRIVATE_RUNS
 ```
 
-Harbor owns Docker isolation, Terminus-2, ATIF capture, and the executable verifier. Each condition receives the same versioned skill template. M0 gets an empty memory marker; M2 gets deterministic retrieved pages. The runner records the fixed-control digest and rejects an overwrite.
+Harbor owns Docker isolation, Terminus-2, ATIF capture, and the executable verifier. Each condition receives the same versioned skill template. M0 gets an empty memory marker; M2 gets deterministic retrieved pages. The runner records each condition's observed admitted-page state, latency, ATIF numeric metrics, fixed-control digest, and refuses an overwrite. It creates `pair.json` only after both conditions exist and pass control equivalence.
+
+The `run` command remains available for non-staged fixture smoke only. It requires `baseline_memory_contributions` to equal `memory_contributions` and executes M0 and M2 consecutively against that one already-observed memory state; use `run-condition` whenever those counts differ.
 
 Raw run directories are local and ignored because trajectories can contain sensitive data. A result is measured only when its input manifest says `measured`, contains complete provenance, and passes the checks above.
 

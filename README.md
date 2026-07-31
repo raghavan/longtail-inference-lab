@@ -16,13 +16,13 @@ Long Tail Inference Lab studies whether terminal artifacts can be transformed in
 
 ### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
-**Status:** Specified (runnable pilot implementation; measured baseline pending)
+**Status:** Running (first preregistered pilot halted without a paired result)
 
 **Question:** Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
 
 The experiment runs terminal tasks, preserves privacy safe evidence, distills that evidence into a human readable Markdown wiki, and measures local model performance at successive memory checkpoints.
 
-The standard-library pilot runner, sanitizer, verified-memory gate, deterministic retriever, and paired analyzer are now implemented. Measured execution still requires locally pinned Harbor/Terminal Bench tasks, a Qwen-family 7B GGUF Q4 model, llama.cpp, Gitleaks, and preregistered environment-setup probes. No measured result has been recorded.
+The standard-library runner, sanitizer, verified-memory gate, deterministic retriever, and paired analyzer are implemented. The first genuine pilot pinned the complete local stack and passed its development checks, but the first M0 probe exceeded the frozen 16,384-token context before executable verification. The protocol stopped at the one-attempt boundary, so no M0/M2 claim or memory checkpoint exists. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md).
 
 ## PARA organization
 

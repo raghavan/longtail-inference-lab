@@ -1,7 +1,7 @@
 # Minimal Pilot Setup
 
 **Experiment:** Terminal Artifact Memory  
-**Status:** Runnable implementation; pinned external inputs pending
+**Status:** Runnable implementation; stack pinned, context protocol revision needed
 **Last updated:** July 31 2026
 
 ## Principle
@@ -379,7 +379,7 @@ Add GitHub Actions only when several contributors need automatic clean environme
 
 ## Current readiness
 
-The standard-library implementation and synthetic fixture smoke are runnable. Measured experimentation is not yet ready because Harbor, llama.cpp, Gitleaks, the model, the benchmark task revision, and the task/probe split have not been locally pinned and validated.
+The standard-library implementation, synthetic fixture smoke, pinned Harbor/Terminal Bench stack, fixed local model endpoint, Docker isolation, Terminus-2, ATIF capture, and executable verifier were validated in the 2026-07-31 pilot. That pilot halted before scoring because the first M0 trajectory exceeded the frozen 16,384-token context with summarization disabled. A new measured run is not ready until a revised context-management control is explicitly preregistered.
 
 ## Definition of pilot ready
 
@@ -395,4 +395,4 @@ The setup is ready for measured experimentation when:
 8. Every measured trial is reconstructable from its run directory.
 9. The analysis script reproduces the paired CSV and Markdown result files.
 
-At that point, Terminal Artifact Memory can begin collecting evidence instead of building infrastructure.
+The 2026-07-31 run met the platform checks but exposed a protocol-level context limit. Future readiness therefore also requires demonstrating, in development only, that the newly preregistered context policy can reach executable verification without changing controls mid-run.

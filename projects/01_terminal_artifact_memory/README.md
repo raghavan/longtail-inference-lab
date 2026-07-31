@@ -1,6 +1,6 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Specified (runnable pilot implementation; measured baseline pending)
+**Status:** Running (first preregistered pilot halted without a paired result)
 **Track:** Artifact memory and local inference  
 **Difficulty:** Intermediate  
 **Last updated:** July 31 2026
@@ -41,7 +41,7 @@ The first standard-library pilot is runnable from this directory:
 4. `artifact_memory.analyze` emits CSV and Markdown verifier-authoritative paired summaries and refuses non-measured data by default.
 5. Synthetic fixture tests cover the safety, control, retrieval, admission, and analysis boundaries without creating measured data.
 
-See [`OPERATOR.md`](OPERATOR.md) for prerequisites and commands. A genuine run still requires locally selected and pinned Harbor/Terminal Bench environment-setup tasks, separate held-out probes, license-compatible Qwen-family 7B GGUF Q4 weights, and installed pinned Harbor, llama.cpp, and Gitleaks versions. No measured baseline or memory checkpoint exists yet.
+See [`OPERATOR.md`](OPERATOR.md) for prerequisites and commands. The first genuine pilot pinned Harbor 0.20.0, Terminal Bench 2.0 tasks and images, llama.cpp, Gitleaks, the fixed Qwen model, prompts, retrieval, and budgets. Development validation passed. The first M0 probe then exceeded the frozen context before executable verification, so the preregistered stop boundary left no measured baseline or memory checkpoint.
 
 ## Exact condition being tested
 
@@ -600,7 +600,7 @@ The experiment is complete when:
 
 ## Results
 
-Results have not yet been collected. The chart at the top uses illustrative data only.
+The [2026-07-31 measured pilot](results/2026-07-31-measured-pilot/summary.md) halted on its first M0 attempt when the fixed 16,384-token context was exceeded before verification. It produced no scored pair and supports no memory-effect claim. The chart at the top remains illustrative only.
 
 [Open the results workspace](results/README.md)
 
@@ -612,11 +612,8 @@ It asks a narrower question: whether verified work can become useful local evide
 
 ## Next measured steps
 
-1. Select and preregister three environment-setup memory-build tasks and separate structural probes.
-2. Pin the Harbor, Terminal Bench, Terminus-2, ATIF, Docker task image, llama.cpp, Gitleaks, model, hardware, prompt, retrieval, sanitizer, and budget controls in complete local manifests.
-3. Run one oracle development task to validate the environment and verifier without treating it as a result.
-4. Record the M0 baseline for every held-out probe.
-5. Run and verify the memory-build tasks, sanitize their trajectories, and manually approve one provenance-linked page per admitted task.
-6. Record M2 for the same probes and generate the paired summaries.
-7. Inspect every retrieval, positive transfer, negative transfer, and unresolved task manually.
-8. Continue only if genuine measured signal appears without a safety or contamination breach.
+1. Treat the halted pilot and its one consumed attempt as immutable run accounting.
+2. Preregister a new protocol revision; do not relabel or pool it with the halted controls.
+3. Choose one explicit context-management change, such as a larger fixed context, bounded compaction, or a lower turn budget.
+4. Revalidate the complete pinned stack and begin the new baseline from attempt one.
+5. Continue to memory construction only after every preregistered M0 probe produces an executable-verifier record.

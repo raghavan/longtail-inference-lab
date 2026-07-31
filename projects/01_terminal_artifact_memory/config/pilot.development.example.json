@@ -4,6 +4,7 @@
   "pair_id": "REQUIRED_DEVELOPMENT_PAIR_ID",
   "memory_checkpoint": 1,
   "memory_contributions": 1,
+  "baseline_memory_contributions": 0,
   "task": {
     "task_id": "REQUIRED_PUBLIC_TASK_ID",
     "task_name": "REQUIRED_HARBOR_TASK_NAME",
@@ -17,10 +18,14 @@
   "run_environment": {
     "code_revision": "REQUIRED_DEVELOPMENT_REVISION",
     "harbor_version": "REQUIRED_DEVELOPMENT_HARBOR_VERSION",
+    "docker_version": "REQUIRED_DEVELOPMENT_DOCKER_VERSION",
     "terminal_bench_version": "REQUIRED_DEVELOPMENT_TASK_VERSION",
+    "terminal_bench_revision": "REQUIRED_DEVELOPMENT_TASK_REVISION",
+    "registry_snapshot_sha256": "REQUIRED_DEVELOPMENT_REGISTRY_SHA256",
+    "task_instruction_sha256": "REQUIRED_DEVELOPMENT_INSTRUCTION_SHA256",
     "task_container_digest": "REQUIRED_DEVELOPMENT_CONTAINER_DIGEST",
     "terminus_version": "REQUIRED_DEVELOPMENT_TERMINUS_VERSION",
-    "atif_schema_version": "1.7",
+    "atif_schema_version": "ATIF-v1.7",
     "llama_cpp_revision": "REQUIRED_DEVELOPMENT_LLAMA_REVISION",
     "model_sha256": "REQUIRED_MODEL_SHA256",
     "quantization": "GGUF-Q4_K_M",
@@ -72,7 +77,7 @@
     "enable_summarize": false
   },
   "harbor": {
-    "dataset": "terminal-bench/terminal-bench-2@REQUIRED_PINNED_VERSION",
+    "dataset": "terminal-bench@REQUIRED_PINNED_VERSION",
     "agent": "terminus-2",
     "environment": "docker",
     "n_concurrent": 1
