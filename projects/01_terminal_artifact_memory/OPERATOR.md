@@ -112,7 +112,7 @@ uv run python -m artifact_memory.experiment run-condition \
 
 Harbor owns Docker isolation, Terminus-2, ATIF capture, and the executable verifier. Each condition receives the same versioned skill template. M0 gets an empty memory marker; M2 gets deterministic retrieved pages. The runner records each condition's observed admitted-page state, latency, ATIF numeric metrics, fixed-control digest, and refuses an overwrite. It creates `pair.json` only after both conditions exist and pass control equivalence.
 
-The `run` command remains available for non-staged fixture smoke and executes M0 and M2 consecutively against one already-observed memory state.
+The `run` command remains available for non-staged fixture smoke only. It requires `baseline_memory_contributions` to equal `memory_contributions` and executes M0 and M2 consecutively against that one already-observed memory state; use `run-condition` whenever those counts differ.
 
 Raw run directories are local and ignored because trajectories can contain sensitive data. A result is measured only when its input manifest says `measured`, contains complete provenance, and passes the checks above.
 

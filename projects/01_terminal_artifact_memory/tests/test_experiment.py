@@ -21,6 +21,7 @@ from artifact_memory.experiment import (
     control_snapshot,
     harbor_environment,
     load_manifest,
+    run_pair,
     validate_manifest,
     verified_memory_state,
 )
@@ -79,6 +80,22 @@ class ManifestTests(unittest.TestCase):
                 verified_memory_state(manifest, wiki, index)
             manifest["memory_checkpoint"] = 0
             self.assertEqual(verified_memory_state(manifest, wiki, index).admitted_pages, 0)
+
+    def test_paired_run_rejects_staged_memory_states(self) -> None:
+        manifest = synthetic_manifest()
+        manifest["baseline_memory_contributions"] = 0
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with self.assertRaisesRegex(ManifestError, "use run-condition"):
+                run_pair(
+                    manifest,
+                    wiki_dir=root / "wiki",
+                    index_path=root / "index.jsonl",
+                    runs_dir=root / "runs",
+                    preflight=False,
+                )
+
+        self.assertFalse((root / "runs").exists())
 
     def test_measured_container_digest_must_be_immutable(self) -> None:
         for digest in ("sha256:abc123", "sha256:changeme", "sha256:" + "g" * 64):

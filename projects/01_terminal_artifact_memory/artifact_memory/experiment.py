@@ -713,6 +713,11 @@ def run_pair(
     validate_manifest(manifest)
     if _find_placeholders(manifest):
         raise ManifestError("a runnable manifest cannot contain unresolved placeholders")
+    if manifest["baseline_memory_contributions"] != manifest["memory_contributions"]:
+        raise ManifestError(
+            "run requires baseline_memory_contributions to equal memory_contributions; "
+            "use run-condition for staged memory states"
+        )
     memory_state = verified_memory_state(manifest, wiki_dir, index_path)
     if preflight:
         check_prerequisites(manifest, runner)
