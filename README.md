@@ -10,17 +10,19 @@ A research lab for testing whether verified terminal work can become reusable lo
 
 A lightweight local model does not need to know everything to become useful. It may need access to the right evidence from work that has already been completed and verified.
 
-Lily studies whether terminal artifacts can be transformed into durable memory that raises local task success over time. The model stays fixed during the core experiment. The memory grows. Executable tests decide whether capability actually improves.
+Long Tail Inference Lab studies whether terminal artifacts can be transformed into durable memory that raises local task success over time. The model stays fixed during the core experiment. The memory grows. Executable tests decide whether capability actually improves.
 
 ## Active experiment
 
 ### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
-**Status:** Specified
+**Status:** Specified (runnable pilot implementation; measured baseline pending)
 
 **Question:** Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
 
 The experiment runs terminal tasks, preserves privacy safe evidence, distills that evidence into a human readable Markdown wiki, and measures local model performance at successive memory checkpoints.
+
+The standard-library pilot runner, sanitizer, verified-memory gate, deterministic retriever, and paired analyzer are now implemented. Measured execution still requires locally pinned Harbor/Terminal Bench tasks, a Qwen-family 7B GGUF Q4 model, llama.cpp, Gitleaks, and preregistered environment-setup probes. No measured result has been recorded.
 
 ## PARA organization
 

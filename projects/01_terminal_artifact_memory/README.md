@@ -1,9 +1,9 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Specified  
+**Status:** Specified (runnable pilot implementation; measured baseline pending)
 **Track:** Artifact memory and local inference  
 **Difficulty:** Intermediate  
-**Last updated:** July 14 2026
+**Last updated:** July 31 2026
 
 ## Primary result we want to produce
 
@@ -30,6 +30,18 @@ The model remains fixed. Only the number of verified memory contributions grows.
 **Success boundary:** Structural recurrence improves materially over the no memory baseline, negative transfer remains acceptably low, unsafe confident errors remain rare, and the benefit survives held out task family evaluation.
 
 **Stop boundary:** Stop or simplify if memory only helps exact repeats, if stale or irrelevant memory creates meaningful regressions, if simple file search performs nearly as well, or if the benefit disappears on held out task families.
+
+## Implementation status
+
+The first standard-library pilot is runnable from this directory:
+
+1. `artifact_memory.experiment` validates complete provenance, checks pinned external boundaries, performs deterministic retrieval, and runs controlled Harbor M0/M2 pairs through Terminus-2, Docker, llama.cpp, ATIF, and the executable verifier.
+2. `artifact_memory.sanitize` applies experiment-specific redaction and contamination blocking and requires a clean Gitleaks scan, canary removal, and an explicit allowlist.
+3. `artifact_memory.memory` admits only verifier-passing, provenance-complete, sanitized, human-approved contributions and retrieves Markdown pages with a frozen lexical rule.
+4. `artifact_memory.analyze` emits CSV and Markdown verifier-authoritative paired summaries and refuses non-measured data by default.
+5. Synthetic fixture tests cover the safety, control, retrieval, admission, and analysis boundaries without creating measured data.
+
+See [`OPERATOR.md`](OPERATOR.md) for prerequisites and commands. A genuine run still requires locally selected and pinned Harbor/Terminal Bench environment-setup tasks, separate held-out probes, license-compatible Qwen-family 7B GGUF Q4 weights, and installed pinned Harbor, llama.cpp, and Gitleaks versions. No measured baseline or memory checkpoint exists yet.
 
 ## Exact condition being tested
 
@@ -297,21 +309,14 @@ Later extensions may test structured facts, embeddings, hybrid retrieval, learne
 ## Wiki structure
 
 ```text
-wiki/
-  index.md
-  task_patterns/
-  failure_modes/
-  commands/
-  solutions/
-  evidence/
-    task_001/
-      manifest.json
-      command_outcomes.jsonl
-      verifier_result.json
-      sanitized_log.txt
+memory/
+  wiki/
+    <page_id>.md
   manifests/
     artifact_index.jsonl
 ```
+
+`artifact_memory.memory` writes one flat Markdown page per admitted contribution and the retriever scans `memory/wiki/*.md` only. Every file in that directory must be an admitted, unsuperseded page whose content still hashes to its admission record, so no index page, subdirectory, or draft may be placed there. See [`memory/README.md`](memory/README.md) for the workspace rules. Sanitized evidence bundles stay in the local run directories until the M1 and M3 representation conditions are implemented.
 
 Each distilled page records:
 
@@ -344,7 +349,7 @@ Keep these fixed during the core learning curve:
 9. Tool permissions.
 10. Maximum retrieved context.
 
-Qwen and GLM are candidate model families. The first run uses one pinned lightweight model. Model comparisons begin only after the memory effect has been measured with a fixed model.
+The pilot target is one pinned Qwen-family 7B GGUF Q4 model. `artifact_memory.experiment` rejects a manifest declaring any other family, parameter size, or quantization. Model comparisons begin only after the memory effect has been measured with that fixed model.
 
 ## Retrieval plan
 
@@ -540,7 +545,7 @@ Any breach stops the affected run and triggers artifact removal, root cause anal
 
 ## Data schema
 
-The main run record is `runs.csv`.
+The pilot writes one compact `result.json` per condition under `runs/<pair-id>/{M0,M2}/`, and `artifact_memory.analyze` emits `results/generated/results.csv` from those records. The columns below are the target schema for the complete experiment; the pilot emits the verifier, retrieval, transfer, control, and provenance subset of them.
 
 <table>
 <thead>
@@ -572,7 +577,7 @@ The main run record is `runs.csv`.
 </tbody>
 </table>
 
-Also publish `retrieval.jsonl` and `artifact_manifest.jsonl` with safe identifiers, scores, ranks, hashes, sanitizer version, provenance, verifier outcome, and supersession state.
+The pilot records this detail across two files: the per-trial `retrieval.json` holds the frozen retrieval revision, query hash, and every retrieved page identifier, lexical score, rank, and token count, and `memory/manifests/artifact_index.jsonl` holds the page, artifact, run, and sanitizer report hashes, the reviewer identity and timestamp, and the supersession state. Publish only reviewed compact summaries derived from them.
 
 ## Completion condition
 
@@ -605,15 +610,13 @@ This experiment does not claim that a wiki changes model weights, that exact rec
 
 It asks a narrower question: whether verified work can become useful local evidence, how efficiently that evidence extends capability, where it helps, and where it causes regressions.
 
-## Next smallest implementation
+## Next measured steps
 
-1. Select three memory build tasks from one recurring family.
-2. Select separate structural recurrence probes from the same family.
-3. Freeze the model, runtime, prompt, retriever, and evaluation rules.
-4. Record M0 results for every probe.
-5. Run and verify the memory build tasks.
-6. Produce sanitized evidence bundles and one distilled page per task.
-7. Record M2 results for the same probes.
-8. Report positive transfer, negative transfer, retrieval coverage, and verified knowledge yield.
-9. Inspect every retrieval and answer manually.
-10. Continue only if the pilot reveals measurable signal and no ruin boundary breach.
+1. Select and preregister three environment-setup memory-build tasks and separate structural probes.
+2. Pin the Harbor, Terminal Bench, Terminus-2, ATIF, Docker task image, llama.cpp, Gitleaks, model, hardware, prompt, retrieval, sanitizer, and budget controls in complete local manifests.
+3. Run one oracle development task to validate the environment and verifier without treating it as a result.
+4. Record the M0 baseline for every held-out probe.
+5. Run and verify the memory-build tasks, sanitize their trajectories, and manually approve one provenance-linked page per admitted task.
+6. Record M2 for the same probes and generate the paired summaries.
+7. Inspect every retrieval, positive transfer, negative transfer, and unresolved task manually.
+8. Continue only if genuine measured signal appears without a safety or contamination breach.

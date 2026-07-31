@@ -1,11 +1,13 @@
 id: experiment_01
 name: Terminal Artifact Memory
 status: specified
+implementation_status: runnable_pilot_awaiting_pinned_inputs
+results_status: no_measured_runs
 track: artifact_memory
 question: Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
 difficulty: intermediate
 created_at: 2026_07_12
-updated_at: 2026_07_12
+updated_at: 2026_07_31
 workload: terminal_benchmark_subset
 results: projects/01_terminal_artifact_memory/results/README.md
 core_control:

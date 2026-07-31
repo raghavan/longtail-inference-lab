@@ -1,0 +1,14 @@
+{
+  "revision": "direct-markdown-lexical-v1",
+  "top_k": 3,
+  "token_budget": 1800,
+  "token_unit": "lexical tokens matched by [a-z0-9]+(?:[._+-][a-z0-9]+)* over NFKC-lowercased page content; punctuation, symbols, and whitespace are excluded, so this count is smaller than the model tokenizer count for the same Markdown and must not be sized directly against controls.model.context_size",
+  "searchable_fields": [
+    "title",
+    "problem_pattern",
+    "observable_symptoms",
+    "environment_assumptions",
+    "limitations"
+  ],
+  "score_rule": "sum((1 + ln(tf_page)) * (1 + ln((N + 1) / (df + 1)))) over unique query terms; ties by page_id"
+}

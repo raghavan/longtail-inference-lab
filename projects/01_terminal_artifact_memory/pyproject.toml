@@ -1,0 +1,9 @@
+[project]
+name = "terminal-artifact-memory"
+version = "0.1.0"
+description = "Runnable pilot for paired terminal artifact memory experiments"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+package = false

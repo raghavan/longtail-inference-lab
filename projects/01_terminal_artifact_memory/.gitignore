@@ -1,0 +1,7 @@
+# Raw Harbor/ATIF trial data stays local until separately sanitized and reviewed.
+runs/*
+!runs/.gitkeep
+!runs/README.md
+
+# Local manifests, model paths, canaries, and private-term lists are never committed.
+config/local/
