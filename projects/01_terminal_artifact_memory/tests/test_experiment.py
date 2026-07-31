@@ -127,7 +127,7 @@ class ExternalCommandTests(unittest.TestCase):
         self.assertEqual(command[:2], ["harbor", "run"])
         for flag in (
             "--dataset",
-            "--task-name",
+            "--include-task-name",
             "--agent",
             "--model",
             "--env",
@@ -162,7 +162,7 @@ class ExternalCommandTests(unittest.TestCase):
             observed_environments.append(environment)
             stdout = ""
             if command == ["harbor", "run", "--help"]:
-                stdout = "--dataset --path --task-name --agent-kwarg --skill --jobs-dir --job-name"
+                stdout = "--dataset --path --include-task-name --agent-kwarg --skill --jobs-dir --job-name --extra-instruction-path"
             return SimpleNamespace(returncode=0, stdout=stdout, stderr="")
 
         parent = dict(self.environment)

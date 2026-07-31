@@ -11,6 +11,8 @@ import shlex
 import shutil
 import subprocess
 import sys
+import time
+import tomllib
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -62,7 +64,11 @@ DEFAULT_AGENT_API_KEY_ENV = "OPENAI_API_KEY"
 REQUIRED_RUN_ENVIRONMENT = (
     "code_revision",
     "harbor_version",
+    "docker_version",
     "terminal_bench_version",
+    "terminal_bench_revision",
+    "registry_snapshot_sha256",
+    "task_instruction_sha256",
     "task_container_digest",
     "terminus_version",
     "atif_schema_version",
@@ -134,13 +140,20 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
     classification = manifest.get("data_classification")
     if classification not in {MEASURED, "development", "synthetic_fixture_not_measured"}:
         raise ManifestError("data_classification must explicitly identify measured or non-measured data")
-    for field in ("pair_id", "memory_checkpoint", "memory_contributions", "task"):
+    for field in (
+        "pair_id",
+        "memory_checkpoint",
+        "memory_contributions",
+        "baseline_memory_contributions",
+        "task",
+    ):
         if manifest.get(field) in (None, ""):
             raise ManifestError(f"missing required manifest field: {field}")
-    if not isinstance(manifest["memory_checkpoint"], int) or int(manifest["memory_checkpoint"]) < 0:
-        raise ManifestError("memory_checkpoint must be a non-negative integer")
-    if not isinstance(manifest["memory_contributions"], int) or int(manifest["memory_contributions"]) < 0:
-        raise ManifestError("memory_contributions must be a non-negative integer")
+    for field in ("memory_checkpoint", "memory_contributions", "baseline_memory_contributions"):
+        if not isinstance(manifest[field], int) or int(manifest[field]) < 0:
+            raise ManifestError(f"{field} must be a non-negative integer")
+    if manifest["baseline_memory_contributions"] > manifest["memory_contributions"]:
+        raise ManifestError("baseline_memory_contributions cannot exceed memory_contributions")
 
     task = _mapping(manifest["task"], "task")
     missing_task = _missing(
@@ -201,6 +214,12 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
         raise ManifestError("configure exactly one Harbor dataset or dataset_path_env")
     if harbor.get("n_concurrent") != 1:
         raise ManifestError("paired laptop pilot requires n_concurrent=1")
+    extra_instruction_env = harbor.get("extra_instruction_path_env")
+    if extra_instruction_env is not None and (
+        not isinstance(extra_instruction_env, str)
+        or not SAFE_NAME_RE.fullmatch(extra_instruction_env)
+    ):
+        raise ManifestError("harbor.extra_instruction_path_env must name a local environment variable")
 
     external = _mapping(manifest.get("external"), "external")
     for field in ("llama_api_base_env", "llama_api_key_env", "model_path_env"):
@@ -228,7 +247,14 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
             raise ManifestError(
                 "measured task_container_digest must be an immutable sha256:<64 hex> digest"
             )
-        for field in ("model_sha256", "python_lock_hash"):
+        if not REVISION_RE.fullmatch(str(run_environment["terminal_bench_revision"])):
+            raise ManifestError("measured terminal_bench_revision must be a full Git revision")
+        for field in (
+            "model_sha256",
+            "python_lock_hash",
+            "registry_snapshot_sha256",
+            "task_instruction_sha256",
+        ):
             if not SHA256_RE.fullmatch(str(run_environment[field])):
                 raise ManifestError(f"measured {field} must be a SHA-256 digest")
         dataset = harbor.get("dataset")
@@ -255,25 +281,38 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
 
 
 def verified_memory_state(
-    manifest: Mapping[str, object], wiki_dir: Path, index_path: Path
+    manifest: Mapping[str, object],
+    wiki_dir: Path,
+    index_path: Path,
+    *,
+    condition: str | None = None,
 ) -> MemoryState:
-    """Check the declared memory state against the admitted-page index and wiki."""
+    """Check the condition-specific declared state against the admitted wiki.
+
+    A staged baseline may run before memory construction. Its manifest still
+    preregisters the later checkpoint, while baseline_memory_contributions
+    records the pages actually allowed to exist during M0 execution.
+    """
 
     try:
         state = observed_memory_state(wiki_dir, index_path)
     except MemoryStateError as exc:
         raise ManifestError(f"admitted memory state is not verifiable: {exc}") from exc
-    checkpoint = int(manifest["memory_checkpoint"])
-    contributions = int(manifest["memory_contributions"])
-    if contributions != state.admitted_pages:
+    expected = int(
+        manifest["baseline_memory_contributions"]
+        if condition == "M0"
+        else manifest["memory_contributions"]
+    )
+    if expected != state.admitted_pages:
+        label = "baseline_memory_contributions" if condition == "M0" else "memory_contributions"
         raise ManifestError(
-            f"declared memory_contributions ({contributions}) disagrees with the "
-            f"admitted memory index ({state.admitted_pages} pages)"
+            f"declared {label} ({expected}) disagrees with the admitted memory index "
+            f"({state.admitted_pages} pages)"
         )
-    if checkpoint != state.admitted_pages:
+    if condition != "M0" and int(manifest["memory_checkpoint"]) != state.admitted_pages:
         raise ManifestError(
-            f"declared memory_checkpoint ({checkpoint}) is not the verified contribution "
-            f"count available in the admitted memory index ({state.admitted_pages})"
+            f"declared memory_checkpoint ({manifest['memory_checkpoint']}) is not the verified "
+            f"contribution count available in the admitted memory index ({state.admitted_pages})"
         )
     return state
 
@@ -286,6 +325,7 @@ def control_snapshot(manifest: Mapping[str, object]) -> dict[str, object]:
         "controls": deepcopy(dict(_mapping(manifest["controls"], "controls"))),
         "harbor": harbor,
         "memory_checkpoint": manifest["memory_checkpoint"],
+        "baseline_memory_contributions": manifest["baseline_memory_contributions"],
     }
 
 
@@ -380,7 +420,7 @@ def build_harbor_command(
         command.extend(["--path", dataset_path])
     command.extend(
         [
-            "--task-name",
+            "--include-task-name",
             str(task["task_name"]),
             "--agent",
             str(harbor["agent"]),
@@ -412,6 +452,16 @@ def build_harbor_command(
             "llm_call_kwargs=" + json.dumps({"seed": decoding["seed"]}, separators=(",", ":")),
         ]
     )
+    extra_instruction_env = harbor.get("extra_instruction_path_env")
+    if extra_instruction_env:
+        if not isinstance(extra_instruction_env, str) or not SAFE_NAME_RE.fullmatch(extra_instruction_env):
+            raise ManifestError("harbor.extra_instruction_path_env must name a local environment variable")
+        extra_instruction = os.environ.get(extra_instruction_env)
+        if not extra_instruction:
+            raise PrerequisiteError(
+                f"required local environment variable is unset: {extra_instruction_env}"
+            )
+        command.extend(["--extra-instruction-path", extra_instruction])
     return command
 
 
@@ -425,6 +475,36 @@ def _run_version(command: list[str], runner: Runner, environment: Mapping[str, s
 def _require_executable(name: str) -> None:
     if shutil.which(name) is None:
         raise PrerequisiteError(f"required executable not found: {name}")
+
+
+def _check_local_task_pin(manifest: Mapping[str, object]) -> None:
+    harbor = _mapping(manifest["harbor"], "harbor")
+    dataset_path_env = harbor.get("dataset_path_env")
+    if not dataset_path_env:
+        return
+    dataset_path = os.environ.get(str(dataset_path_env))
+    if not dataset_path:
+        raise PrerequisiteError(
+            f"required local environment variable is unset: {dataset_path_env}"
+        )
+    task = _mapping(manifest["task"], "task")
+    root = Path(dataset_path)
+    task_dir = root if (root / "task.toml").is_file() else root / str(task["task_name"])
+    task_toml = task_dir / "task.toml"
+    instruction = task_dir / "instruction.md"
+    if not task_toml.is_file() or not instruction.is_file():
+        raise PrerequisiteError("pinned local task is missing task.toml or instruction.md")
+    try:
+        metadata = tomllib.loads(task_toml.read_text())
+        image = str(metadata["environment"]["docker_image"])
+    except (OSError, tomllib.TOMLDecodeError, KeyError, TypeError) as exc:
+        raise PrerequisiteError("pinned local task does not declare a readable Docker image") from exc
+    run_environment = _mapping(manifest["run_environment"], "run_environment")
+    expected_digest = str(run_environment["task_container_digest"])
+    if not image.endswith("@" + expected_digest):
+        raise PrerequisiteError("local task Docker image is not pinned to the measured digest")
+    if sha256_file(instruction) != run_environment["task_instruction_sha256"]:
+        raise PrerequisiteError("local task instruction hash does not match measured provenance")
 
 
 def _check_local_endpoint(api_base: str, api_key: str) -> None:
@@ -454,7 +534,16 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
         _require_executable(executable)
 
     versions = {
-        "docker": _run_version(["docker", "--version"], runner, environment),
+        "docker": _run_version(
+            [
+                "docker",
+                "version",
+                "--format",
+                "client={{.Client.Version}} server={{.Server.Version}} api={{.Server.APIVersion}}",
+            ],
+            runner,
+            environment,
+        ),
         "harbor": _run_version(["harbor", "--version"], runner, environment),
         "gitleaks": _run_version(["gitleaks", "version"], runner, environment),
         "llama_cpp": _run_version([llama_executable, "--version"], runner, environment),
@@ -468,17 +557,19 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
     for flag in (
         "--dataset",
         "--path",
-        "--task-name",
+        "--include-task-name",
         "--agent-kwarg",
         "--skill",
         "--jobs-dir",
         "--job-name",
+        "--extra-instruction-path",
     ):
         if flag not in harbor_help:
             raise PrerequisiteError(f"installed Harbor does not expose required flag: {flag}")
 
     run_environment = _mapping(manifest["run_environment"], "run_environment")
     expected = {
+        "docker": str(run_environment.get("docker_version", "")),
         "harbor": str(run_environment.get("harbor_version", "")),
         "gitleaks": str(run_environment.get("gitleaks_version", "")),
         "llama_cpp": str(run_environment.get("llama_cpp_revision", "")),
@@ -503,6 +594,7 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
             raise PrerequisiteError("measured runs require a clean tracked and untracked worktree")
         if sha256_file(LOCK_PATH) != run_environment["python_lock_hash"]:
             raise PrerequisiteError("uv.lock hash does not match measured-run provenance")
+        _check_local_task_pin(manifest)
         controls = _mapping(manifest["controls"], "controls")
         prompt = _mapping(controls["prompt"], "controls.prompt")
         for name in ("system", "memory"):
@@ -547,7 +639,12 @@ def _empty_retrieval(query: str, top_k: int, token_budget: int) -> RetrievalResu
     )
 
 
-def _extract_harbor_result(job_root: Path, trial_dir: Path) -> tuple[bool, Path, Path]:
+def _extract_harbor_result(
+    job_root: Path,
+    trial_dir: Path,
+    *,
+    expected_atif_schema: str | None = None,
+) -> tuple[bool, Path, Path, dict[str, int | float | None]]:
     rewards = sorted(job_root.glob("**/verifier/reward.txt"))
     trajectories = sorted(job_root.glob("**/agent/trajectory.json"))
     if len(rewards) != 1:
@@ -559,6 +656,28 @@ def _extract_harbor_result(job_root: Path, trial_dir: Path) -> tuple[bool, Path,
     except (OSError, ValueError) as exc:
         raise RuntimeError("Harbor verifier reward is unreadable") from exc
     passed = reward == 1.0
+    try:
+        trajectory = json.loads(trajectories[0].read_text())
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError("Harbor ATIF trajectory is unreadable") from exc
+    if not isinstance(trajectory, Mapping):
+        raise RuntimeError("Harbor ATIF trajectory must be a JSON object")
+    if expected_atif_schema and trajectory.get("schema_version") != expected_atif_schema:
+        raise RuntimeError("Harbor trajectory does not match the pinned ATIF schema")
+    final_metrics = trajectory.get("final_metrics")
+    metrics: dict[str, int | float | None] = {
+        "prompt_tokens": None,
+        "output_tokens": None,
+        "total_steps": None,
+    }
+    if isinstance(final_metrics, Mapping):
+        metrics = {
+            "prompt_tokens": final_metrics.get("total_prompt_tokens"),
+            "output_tokens": final_metrics.get("total_completion_tokens"),
+            "total_steps": final_metrics.get("total_steps"),
+        }
+        if not all(value is None or isinstance(value, (int, float)) for value in metrics.values()):
+            raise RuntimeError("Harbor ATIF final metrics contain invalid numeric fields")
     trajectory_destination = trial_dir / "trajectory.json"
     shutil.copy2(trajectories[0], trajectory_destination)
     verifier_destination = trial_dir / "verifier.json"
@@ -575,7 +694,7 @@ def _extract_harbor_result(job_root: Path, trial_dir: Path) -> tuple[bool, Path,
         )
         + "\n"
     )
-    return passed, trajectory_destination, verifier_destination
+    return passed, trajectory_destination, verifier_destination, metrics
 
 
 def _wiki_bytes(wiki_dir: Path) -> int:
@@ -669,7 +788,13 @@ def run_pair(
         )
         if completed.returncode != 0:
             raise RuntimeError(f"Harbor failed for {condition}; inspect the local trial directory")
-        passed, trajectory_path, verifier_path = _extract_harbor_result(jobs_dir, trial_dir)
+        passed, trajectory_path, verifier_path, trajectory_metrics = _extract_harbor_result(
+            jobs_dir,
+            trial_dir,
+            expected_atif_schema=str(
+                _mapping(manifest["run_environment"], "run_environment")["atif_schema_version"]
+            ),
+        )
         retrieved_ids = [page.page_id for page in retrieval_result.pages]
         expected = list(task["expected_relevant_pages"])
         result = {
@@ -682,6 +807,7 @@ def run_pair(
             "question_type": task["question_type"],
             "memory_checkpoint": manifest["memory_checkpoint"],
             "memory_contributions": manifest["memory_contributions"],
+            "baseline_memory_contributions": manifest["baseline_memory_contributions"],
             "observed_memory_pages": memory_state.admitted_pages,
             "observed_memory_page_ids": list(memory_state.page_ids),
             "memory_condition": condition,
@@ -698,6 +824,9 @@ def run_pair(
             "control_snapshot": snapshot,
             "trajectory_sha256": sha256_file(trajectory_path),
             "verifier_artifact_sha256": sha256_file(verifier_path),
+            "trajectory_bytes": trajectory_path.stat().st_size,
+            "verifier_artifact_bytes": verifier_path.stat().st_size,
+            **trajectory_metrics,
         }
         (trial_dir / "result.json").write_text(
             json.dumps(result, indent=2, sort_keys=True) + "\n"
@@ -718,6 +847,174 @@ def run_pair(
         + "\n"
     )
     return pair_dir
+
+
+def run_condition(
+    manifest: Mapping[str, object],
+    *,
+    condition: str,
+    wiki_dir: Path,
+    index_path: Path,
+    runs_dir: Path,
+    runner: Runner = subprocess.run,
+    preflight: bool = True,
+) -> Path:
+    """Run one stage of a preregistered pair without relabeling its memory state."""
+
+    if condition not in CONDITIONS:
+        raise ManifestError(f"unsupported memory condition: {condition}")
+    validate_manifest(manifest)
+    if _find_placeholders(manifest):
+        raise ManifestError("a runnable manifest cannot contain unresolved placeholders")
+    memory_state = verified_memory_state(
+        manifest, wiki_dir, index_path, condition=condition
+    )
+    if preflight:
+        check_prerequisites(manifest, runner)
+    trial_environment = harbor_environment(manifest)
+    pair_dir = runs_dir / str(manifest["pair_id"])
+    pair_dir.mkdir(parents=True, exist_ok=True)
+    trial_dir = pair_dir / condition
+    if trial_dir.exists():
+        raise FileExistsError(f"refusing to overwrite existing condition run: {trial_dir}")
+    trial_dir.mkdir()
+
+    snapshot = control_snapshot(manifest)
+    digest = canonical_sha256(snapshot)
+    task = _mapping(manifest["task"], "task")
+    controls = _mapping(manifest["controls"], "controls")
+    retrieval_config = _mapping(controls["retrieval"], "controls.retrieval")
+    query = str(task["retrieval_query"])
+    retrieval_started = time.monotonic()
+    retrieval_result = (
+        _empty_retrieval(
+            query,
+            int(retrieval_config["top_k"]),
+            int(retrieval_config["token_budget"]),
+        )
+        if condition == "M0"
+        else retrieve(
+            query,
+            wiki_dir,
+            top_k=int(retrieval_config["top_k"]),
+            token_budget=int(retrieval_config["token_budget"]),
+        )
+    )
+    retrieval_seconds = time.monotonic() - retrieval_started
+    retrieval_record = {
+        **retrieval_result.to_dict(),
+        "memory_condition": condition,
+        "retrieval_performed": condition == "M2",
+        "expected_relevant_pages": list(task["expected_relevant_pages"]),
+        "retrieval_seconds": round(retrieval_seconds, 6),
+    }
+    (trial_dir / "retrieval.json").write_text(
+        json.dumps(retrieval_record, indent=2, sort_keys=True) + "\n"
+    )
+    skill_dir = trial_dir / "retrieved-memory-skill"
+    _build_skill(skill_dir, retrieval_result, wiki_dir)
+    trial_manifest = {
+        **deepcopy(dict(manifest)),
+        "memory_condition": condition,
+        "control_digest": digest,
+        "control_snapshot": snapshot,
+    }
+    (trial_dir / "manifest.json").write_text(
+        json.dumps(trial_manifest, indent=2, sort_keys=True) + "\n"
+    )
+    jobs_dir = trial_dir / "harbor-jobs"
+    command = build_harbor_command(
+        manifest, condition=condition, jobs_dir=jobs_dir, skill_dir=skill_dir
+    )
+    started = time.monotonic()
+    completed = runner(
+        command,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=trial_environment,
+    )
+    latency_seconds = time.monotonic() - started
+    (trial_dir / "harbor-command.json").write_text(
+        json.dumps(
+            {
+                "argv": command,
+                "exit_code": completed.returncode,
+                "stdout_sha256": hashlib.sha256(completed.stdout.encode()).hexdigest(),
+                "stderr_sha256": hashlib.sha256(completed.stderr.encode()).hexdigest(),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(f"Harbor failed for {condition}; inspect the local trial directory")
+    run_environment = _mapping(manifest["run_environment"], "run_environment")
+    passed, trajectory_path, verifier_path, trajectory_metrics = _extract_harbor_result(
+        jobs_dir,
+        trial_dir,
+        expected_atif_schema=str(run_environment["atif_schema_version"]),
+    )
+    retrieved_ids = [page.page_id for page in retrieval_result.pages]
+    expected = list(task["expected_relevant_pages"])
+    result = {
+        "schema_version": "paired-result-v1",
+        "data_classification": manifest["data_classification"],
+        "run_id": f"{manifest['pair_id']}-{condition.lower()}",
+        "pair_id": manifest["pair_id"],
+        "task_id": task["task_id"],
+        "task_family": task["task_family"],
+        "question_type": task["question_type"],
+        "memory_checkpoint": manifest["memory_checkpoint"],
+        "memory_contributions": manifest["memory_contributions"],
+        "baseline_memory_contributions": manifest["baseline_memory_contributions"],
+        "observed_memory_pages": memory_state.admitted_pages,
+        "observed_memory_page_ids": list(memory_state.page_ids),
+        "memory_condition": condition,
+        "verifier_passed": passed,
+        "verifier_authority": "terminal-bench-executable",
+        "retrieved_page_ids": retrieved_ids,
+        "expected_relevant_pages": expected,
+        "retrieval_covered": bool(set(retrieved_ids) & set(expected)) if expected else None,
+        "retrieval_revision": retrieval_result.revision,
+        "retrieval_top_k": retrieval_result.top_k,
+        "retrieval_token_budget": retrieval_result.token_budget,
+        "retrieval_seconds": round(retrieval_seconds, 6),
+        "wiki_bytes": _wiki_bytes(wiki_dir),
+        "latency_seconds": round(latency_seconds, 6),
+        "control_digest": digest,
+        "control_snapshot": snapshot,
+        "trajectory_sha256": sha256_file(trajectory_path),
+        "verifier_artifact_sha256": sha256_file(verifier_path),
+        "trajectory_bytes": trajectory_path.stat().st_size,
+        "verifier_artifact_bytes": verifier_path.stat().st_size,
+        **trajectory_metrics,
+    }
+    (trial_dir / "result.json").write_text(
+        json.dumps(result, indent=2, sort_keys=True) + "\n"
+    )
+
+    other = "M2" if condition == "M0" else "M0"
+    other_result_path = pair_dir / other / "result.json"
+    if other_result_path.is_file():
+        other_result = json.loads(other_result_path.read_text())
+        m0, m2 = (result, other_result) if condition == "M0" else (other_result, result)
+        assert_control_equivalence(m0, m2)
+        (pair_dir / "pair.json").write_text(
+            json.dumps(
+                {
+                    "pair_id": manifest["pair_id"],
+                    "control_digest": digest,
+                    "conditions": list(CONDITIONS),
+                    "result_paths": ["M0/result.json", "M2/result.json"],
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
+    return trial_dir
 
 
 def plan_pair(manifest: Mapping[str, object], wiki_dir: Path, index_path: Path) -> dict[str, object]:
@@ -747,14 +1044,23 @@ def plan_pair(manifest: Mapping[str, object], wiki_dir: Path, index_path: Path) 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run controlled Harbor M0/M2 trials.")
     subparsers = parser.add_subparsers(dest="command", required=True)
-    for name in ("validate", "check-prereqs", "llama-command", "plan", "run"):
+    for name in (
+        "validate",
+        "check-prereqs",
+        "llama-command",
+        "plan",
+        "run",
+        "run-condition",
+    ):
         command = subparsers.add_parser(name)
         command.add_argument("--manifest", type=Path, required=True)
-        if name in {"plan", "run"}:
+        if name in {"plan", "run", "run-condition"}:
             command.add_argument("--wiki-dir", type=Path, required=True)
             command.add_argument("--memory-index", type=Path, required=True)
-        if name == "run":
+        if name in {"run", "run-condition"}:
             command.add_argument("--runs-dir", type=Path, required=True)
+        if name == "run-condition":
+            command.add_argument("--condition", choices=CONDITIONS, required=True)
     args = parser.parse_args(argv)
     manifest = load_manifest(args.manifest)
 
@@ -776,6 +1082,16 @@ def main(argv: Sequence[str] | None = None) -> int:
                 plan_pair(manifest, args.wiki_dir, args.memory_index), indent=2, sort_keys=True
             )
         )
+        return 0
+    if args.command == "run-condition":
+        trial_dir = run_condition(
+            manifest,
+            condition=args.condition,
+            wiki_dir=args.wiki_dir,
+            index_path=args.memory_index,
+            runs_dir=args.runs_dir,
+        )
+        print(trial_dir)
         return 0
     pair_dir = run_pair(
         manifest,

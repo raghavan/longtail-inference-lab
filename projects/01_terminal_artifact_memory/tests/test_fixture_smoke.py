@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from artifact_memory.analyze import analyze_results, discover_results
-from artifact_memory.experiment import run_pair
+from artifact_memory.experiment import run_condition
 from artifact_memory.memory import admit_memory
 from tests.helpers import admission_fixture, synthetic_manifest
 
@@ -22,8 +22,8 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
             root = Path(directory)
             request, _, _ = admission_fixture(root)
             wiki = root / "wiki"
+            wiki.mkdir()
             index = root / "artifact-index.jsonl"
-            admit_memory(request, wiki, index)
 
             def synthetic_harbor(
                 command: list[str],
@@ -46,7 +46,7 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
                 (trial / "agent" / "trajectory.json").write_text(
                     json.dumps(
                         {
-                            "schema_version": "synthetic-fixture-atif",
+                            "schema_version": "fixture-atif-v0",
                             "session_id": "synthetic-fixture-session",
                             "steps": [],
                         }
@@ -61,15 +61,31 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
                 "ARTIFACT_MEMORY_FIXTURE_API_KEY": "synthetic-fixture-key",
                 "ARTIFACT_MEMORY_FIXTURE_MODEL_PATH": "models/synthetic-fixture.gguf",
             }
+            manifest = synthetic_manifest()
+            manifest["baseline_memory_contributions"] = 0
             with patch.dict(os.environ, environment, clear=False):
-                pair_dir = run_pair(
-                    synthetic_manifest(),
+                m0_dir = run_condition(
+                    manifest,
+                    condition="M0",
                     wiki_dir=wiki,
                     index_path=index,
                     runs_dir=root / "runs",
                     runner=synthetic_harbor,
                     preflight=False,
                 )
+                admit_memory(request, wiki, index)
+                m2_dir = run_condition(
+                    manifest,
+                    condition="M2",
+                    wiki_dir=wiki,
+                    index_path=index,
+                    runs_dir=root / "runs",
+                    runner=synthetic_harbor,
+                    preflight=False,
+                )
+            pair_dir = m0_dir.parent
+            self.assertEqual(m2_dir.parent, pair_dir)
+            self.assertTrue((pair_dir / "pair.json").is_file())
 
             m0_skill = (pair_dir / "M0" / "retrieved-memory-skill" / "SKILL.md").read_text()
             m2_skill = (pair_dir / "M2" / "retrieved-memory-skill" / "SKILL.md").read_text()
