@@ -1,0 +1,12 @@
+data_classification,stage,task_id,memory_condition,attempt,status,verifier_executed,verifier_passed,scored_result,reason
+non_measured_development,development,hello-world,oracle,1,passed,true,true,false,development validation excluded
+non_measured_development,development,hello-world,M0,1,passed,true,true,false,development validation excluded
+invalid_measured_attempt,probe,build-pmars,M0,1,invalid,false,,false,context limit exceeded before verifier
+not_run,probe,build-cython-ext,M0,,not_run,false,,false,protocol stopped after invalid first measured attempt
+not_run,probe,nginx-request-logging,M0,,not_run,false,,false,protocol stopped after invalid first measured attempt
+not_run,memory_build,sqlite-with-gcov,M0,,not_run,false,,false,protocol stopped before memory construction
+not_run,memory_build,modernize-scientific-stack,M0,,not_run,false,,false,protocol stopped before memory construction
+not_run,memory_build,pypi-server,M0,,not_run,false,,false,protocol stopped before memory construction
+not_run,probe,build-pmars,M2,,not_run,false,,false,no admitted checkpoint
+not_run,probe,build-cython-ext,M2,,not_run,false,,false,no admitted checkpoint
+not_run,probe,nginx-request-logging,M2,,not_run,false,,false,no admitted checkpoint

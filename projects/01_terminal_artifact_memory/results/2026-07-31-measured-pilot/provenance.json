@@ -1,0 +1,110 @@
+{
+  "attempt": {
+    "atif_schema_version": "ATIF-v1.7",
+    "attempt": 1,
+    "attempt_budget": 1,
+    "context_limit": 16384,
+    "control_digest": "f5343c165c4ee4a7632611c09da5ee989c731128e9b6421db4a67dcab9138cae",
+    "exception_class": "ContextLengthExceededError",
+    "finished_at": "2026-07-31T18:07:43.358840Z",
+    "memory_condition": "M0",
+    "paired_result_written": false,
+    "request_tokens": 16616,
+    "started_at": "2026-07-31T17:58:08.353041Z",
+    "task_id": "build-pmars",
+    "trajectory_sha256": "85496732b81769ae5668ddc20ac288bf43c86314f4d816a2801353b3e6db384f",
+    "verifier_executed": false
+  },
+  "controls": {
+    "decoding": {
+      "seed": 42,
+      "temperature": 0
+    },
+    "enable_summarize": false,
+    "execution_budget": {
+      "max_turns": 40,
+      "n_attempts": 1,
+      "timeout_multiplier": 1.0
+    },
+    "model": {
+      "context_size": 16384,
+      "family": "Qwen",
+      "id": "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF@13fb94bfda8c8cf22497dc57b78f391a9acb426a:q4_k_m",
+      "parameters": "7B",
+      "quantization": "GGUF-Q4_K_M",
+      "sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c"
+    },
+    "prompt": {
+      "memory_sha256": "a274f71dc6aae550995c6ce801fc15d9420bce50e82ccd66ead93631697abd6d",
+      "revision": "system-v1+memory-v1",
+      "system_sha256": "7c21baeb6445e013972bdd6bbb941d2b367cb6b5d2e9a9b0e4c8bbef1bb5b015"
+    },
+    "retrieval": {
+      "revision": "direct-markdown-lexical-v1",
+      "token_budget": 1800,
+      "top_k": 3
+    },
+    "runtime": {
+      "harbor_model": "openai/fixed-qwen-7b-q4",
+      "name": "llama.cpp",
+      "revision": "5f55650a7"
+    },
+    "tool_permissions": [
+      "terminal",
+      "task-container-filesystem"
+    ]
+  },
+  "data_classification": "halted_no_measured_result",
+  "harbor": {
+    "agent": "terminus-2",
+    "environment": "docker",
+    "n_concurrent": 1,
+    "public_dataset": "terminal-bench@2.0",
+    "task_selection_interface": "--include-task-name"
+  },
+  "llama_server": {
+    "ctx_size": 16384,
+    "executable": "llama-server",
+    "host": "127.0.0.1",
+    "model_argument": "supplied privately; identified by controls.model.sha256",
+    "port": 8080,
+    "task_owned_process_stopped": true
+  },
+  "memory": {
+    "admitted_pages": 0,
+    "candidates": 0,
+    "wiki_bytes": 0
+  },
+  "observed_runtime": {
+    "llama_cpp_build": "10200",
+    "task_container_architecture": "linux/amd64",
+    "terminus_agent_version": "2.0.0"
+  },
+  "preregistration": {
+    "path": "preregistrations/2026-07-31-measured-pilot.md",
+    "sha256": "3199f3eb8098f1248d2a6d46c920a8f1f650ff05716eb5b73438ee59c8c2e5c9"
+  },
+  "run_environment": {
+    "atif_schema_version": "ATIF-v1.7",
+    "code_revision": "b0b12701e7c074505f74588e3721770d02a75546",
+    "docker_version": "client=24.0.4 server=28.3.2 api=1.51",
+    "gitleaks_version": "8.30.1",
+    "harbor_version": "0.20.0",
+    "hardware_description": "M2 Pro MacBook Pro, 16 GB",
+    "llama_cpp_revision": "5f55650a7",
+    "model_sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
+    "operating_system": "macOS 26.6 arm64",
+    "prompt_revision": "system-v1+memory-v1",
+    "python_lock_hash": "c3366e15a5706a4e497eebe344a9be45e7947ae8ababe8408dae239d2888f8ac",
+    "quantization": "GGUF-Q4_K_M",
+    "registry_snapshot_sha256": "da1446bce05eabbd72a25eb9eef5a2f5db94645ce88c28e2497581433b3d2e60",
+    "retrieval_revision": "direct-markdown-lexical-v1",
+    "sanitizer_revision": "artifact_memory-sanitizer-v1",
+    "task_container_digest": "sha256:57a82706f7491e0b2d1ff7e927e97ae5339892dd09c47ac43290b4ba1f5abc6f",
+    "task_instruction_sha256": "1606850579342a8b8f2189de0e499fae6be21198150d8dd1e4d18c2efbcf3b82",
+    "terminal_bench_revision": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+    "terminal_bench_version": "2.0",
+    "terminus_version": "harbor-0.20.0-built-in-terminus-2"
+  },
+  "schema_version": "halted-measured-pilot-provenance-v1"
+}
