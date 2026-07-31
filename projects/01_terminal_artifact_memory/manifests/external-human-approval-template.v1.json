@@ -1,0 +1,18 @@
+{
+  "schema_version": "external-human-approval-v1",
+  "approved": false,
+  "external_human": true,
+  "reviewer_id": "REQUIRED_SAFE_EXTERNAL_REVIEWER_ID",
+  "reviewed_at": "REQUIRED_UTC_TIMESTAMP",
+  "scope": {
+    "build_id": "REQUIRED_SAFE_BUILD_ID",
+    "task_id": "REQUIRED_PUBLIC_MEMORY_BUILD_TASK_ID",
+    "page_id": "REQUIRED_SAFE_PAGE_ID",
+    "distillation_request_sha256": "REQUIRED_ALLOWLISTED_REQUEST_SHA256",
+    "distillation_draft_sha256": "REQUIRED_GPT_5_6_SOL_DRAFT_SHA256",
+    "sanitized_evidence_sha256": "REQUIRED_SANITIZED_EVIDENCE_SHA256",
+    "source_evidence_sha256": [
+      "REQUIRED_SANITIZED_EVIDENCE_SHA256"
+    ]
+  }
+}

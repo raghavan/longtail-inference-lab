@@ -1,0 +1,37 @@
+{
+  "schema_version": "verifier-qualification-v1",
+  "data_classification": "development_only_not_measured",
+  "pins": {
+    "task_id": "REQUIRED_PUBLIC_TASK_ID",
+    "terminal_bench_revision": "REQUIRED_FULL_TERMINAL_BENCH_REVISION",
+    "task_instruction_sha256": "REQUIRED_PUBLIC_INSTRUCTION_SHA256",
+    "task_container_digest": "sha256:REQUIRED_IMMUTABLE_CONTAINER_DIGEST",
+    "verifier_bundle_sha256": "REQUIRED_VERIFIER_BUNDLE_SHA256"
+  },
+  "public_requirement_classes": [
+    "REQUIRED_SAFE_PUBLIC_REQUIREMENT_CLASS_ID"
+  ],
+  "known_good_positive_control": {
+    "attempts": 0,
+    "accepted": 0
+  },
+  "targeted_negative_controls": [
+    {
+      "control_id": "REQUIRED_SAFE_MUTATION_CONTROL_ID",
+      "public_requirement_class": "REQUIRED_SAFE_PUBLIC_REQUIREMENT_CLASS_ID",
+      "attempts": 0,
+      "accepted": 0
+    }
+  ],
+  "clean_container_determinism": {
+    "runs": 0,
+    "consistent": false,
+    "distinct_reward_values": []
+  },
+  "reward_and_test_isolation": {
+    "tamper_attempts": 0,
+    "tamper_accepts": 0,
+    "isolated": false
+  },
+  "eligible": false
+}

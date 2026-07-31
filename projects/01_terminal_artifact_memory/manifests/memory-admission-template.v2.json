@@ -1,0 +1,8 @@
+{
+  "schema_version": "teacher-memory-admission-v2",
+  "page_id": "REQUIRED_SAFE_PAGE_ID",
+  "build_manifest_path": "REQUIRED_IGNORED_LOCAL_TEACHER_BUILD_MANIFEST_PATH",
+  "distillation_request_path": "REQUIRED_IGNORED_LOCAL_ALLOWLISTED_REQUEST_PATH",
+  "distillation_draft_path": "REQUIRED_IGNORED_LOCAL_GPT_5_6_SOL_DRAFT_PATH",
+  "approval_record_path": "REQUIRED_IGNORED_LOCAL_EXTERNAL_HUMAN_APPROVAL_PATH"
+}

@@ -10,9 +10,9 @@ These instructions are for all AI coding assistants working in this repository, 
 
 ## Repository intent
 
-Long Tail Inference Lab currently focuses on one active experiment: whether verified terminal artifacts can become reusable memory that makes a fixed lightweight local model increasingly useful on recurring engineering problems.
+Long Tail Inference Lab currently focuses on one active experiment: whether executable-verifier-passing public terminal work from a fixed cloud teacher can become approved Markdown memory that improves a fixed local student on disjoint held-out tasks.
 
-Keep the local model, prompt, runtime, and hardware fixed during the core learning curve unless a documented experiment phase explicitly changes one of those controls.
+Use `projects/01_terminal_artifact_memory/README.md` as the active protocol overview. Keep the local student model, prompt, runtime, and hardware fixed during the core learning curve unless a documented experiment phase explicitly changes one of those controls.
 
 ## Naming and branding
 
@@ -63,7 +63,9 @@ GitHub configuration remains under `.github/` because the platform requires that
 
 Do not commit private hostnames, IP addresses, SSH details, API keys, tunnel configuration, private prompts, unsanitized terminal output, session content, or local machine paths.
 
-Benchmark verifiers, hidden tests, and reference solutions must never be included in model retrieval context.
+Benchmark verifiers, hidden tests, and reference solutions must never be included in any model context. The executable verifier is the sole individual-run eligibility and scoring authority; private development-only qualification may establish task eligibility but never replaces or overrides it.
+
+Local retention and cloud disclosure are separate claims. Follow the exact role-specific allow/deny inventory in the active experiment; never treat “stored locally” as proof that data was never transmitted.
 
 Run the safety scan before committing changes that may include configuration or documentation:
 

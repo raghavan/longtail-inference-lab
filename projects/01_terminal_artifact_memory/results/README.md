@@ -1,106 +1,53 @@
-# Terminal Artifact Memory Results
+# Terminal Artifact Memory results
 
-**Status:** First preregistered pilot halted; no paired result
+**Status:** No teacher/student measured result exists.
 
-The [2026-07-31 pilot](2026-07-31-measured-pilot/summary.md) passed development validation but exceeded the frozen context on its first M0 probe before executable verification. Its compact accounting is genuine run evidence, but it is not a scored baseline and supports no M0/M2 claim. The paired analyzer still refuses development, fixture, and incomplete records by default. The primary chart uses illustrative planning data and must never be presented as an experiment result.
+The [2026-07-31 measured pilot](2026-07-31-measured-pilot/summary.md) remains intact and visible. Its first local Qwen M0 attempt exceeded the frozen 16,384-token context before executable verification. It produced no scored pair and no memory contribution. It must never be relabeled, repaired, or pooled with the planned teacher/student protocol.
 
-## Primary result
+The next planned experiment uses `gpt-5.6-sol` as cloud teacher and sanitized-evidence distiller, and the exact pinned local Qwen model as sole held-out M0/M2 evaluation model. No such measured run has occurred.
+
+## Evidence authority
+
+> **Do not claim success; the executable verifier alone determines whether the run is eligible for local sanitization and later distillation.**
+
+For eligible held-out student tasks, executable-verifier M0/M2 pairs are the sole efficacy evidence. Cloud-teacher build outcomes are memory provenance, never student scores. Model confidence, narrative, apparent tool exits, distillation quality, and learned judges cannot override a verifier result.
+
+Every task must first have a private development-only qualification record covering known-good acceptance, targeted broken controls for every public requirement class, clean-container determinism, and reward/test isolation. Qualification makes a task eligible or ineligible; it is not a measured outcome and cannot prove perfect verifier adequacy.
+
+## What a transfer result requires
+
+A publishable pair must establish:
+
+1. an exact qualified, preregistered held-out task;
+2. exact pinned Qwen student model, hash, prompts, runtime, context, and controls;
+3. M0 with no retrieved memory;
+4. M2 with approved teacher-derived Markdown as the only student-context difference;
+5. one executable-verifier result for each condition; and
+6. complete role, split, retrieval, memory, and artifact provenance.
+
+Positive transfer means Qwen fails the executable verifier under M0 and passes under M2. A teacher verifier pass means only that its sanitized evidence was eligible for distillation and approval.
+
+## Required reports
+
+1. Frozen teacher, distiller, student, task, runtime, prompt, split, qualification, disclosure, and context manifests.
+2. Memory-build provenance from teacher task through verifier, sanitizer, distillation, approval, and page admission.
+3. Complete held-out Qwen M0/M2 pair accounting.
+4. Positive transfer, negative transfer, stable success, and unresolved counts.
+5. Structural recurrence pass rates and memory lift by checkpoint.
+6. Retrieval coverage and relevant-page diagnosis.
+7. Verified knowledge yield per contribution and searchable byte.
+8. Latency, prompt/output tokens, wiki size, and tail behavior.
+9. Safety, contamination, qualification, stop, and missing-data accounting.
+10. Limitations and operational conclusion.
+
+The analyzer refuses non-measured and incomplete records by default and rejects teacher/distiller scores as efficacy outcomes.
+
+## Illustrative planning figure
 
 ![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../../resources/assets/terminal_artifact_memory_learning_curve.svg)
 
-A future measured version of this chart will require complete structural recurrence verifier outcomes. The halted pilot contributes no point to the curve.
+Every point in this figure is illustrative. The halted pilot contributes no point, and no teacher/student point exists yet.
 
-## Required outputs
+## Publication boundary
 
-1. Frozen model and runtime manifest.
-2. Published benchmark subset and task family split.
-3. No memory baseline.
-4. Sanitized evidence baseline.
-5. Distilled wiki baseline.
-6. Evidence plus wiki baseline.
-7. Learning curves at successive memory checkpoints.
-8. Exact recurrence, structural recurrence, and novel control results.
-9. Verified knowledge yield.
-10. Positive and negative transfer counts.
-11. Task family memory lift and regressions.
-12. Retrieval coverage and model use diagnosis.
-13. Learned judge calibration and held out task family validation.
-14. Latency, memory use, and artifact storage measurements.
-15. Stress tests, removal tests, and failure analysis.
-16. Operational conclusion.
-
-## Primary result table
-
-<table>
-<thead>
-<tr><th>Memory checkpoint</th><th>Memory condition</th><th>Exact recurrence pass rate</th><th>Structural recurrence pass rate</th><th>Novel control safe response rate</th><th>Unsafe confident error rate</th><th>Median latency</th></tr>
-</thead>
-<tbody>
-<tr><td>0</td><td>No memory</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>3</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>6</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>9</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>12</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-</tbody>
-</table>
-
-## Paired transfer table
-
-<table>
-<thead>
-<tr><th>Checkpoint</th><th>Positive transfer</th><th>Negative transfer</th><th>Stable success</th><th>Unresolved</th><th>Net memory benefit</th></tr>
-</thead>
-<tbody>
-<tr><td>3</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>6</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>9</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>12</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-</tbody>
-</table>
-
-## Verified knowledge yield
-
-```text
-verified knowledge yield
-=
-additional structural probes passed because of memory
-/
-verified memory contributions
-```
-
-Report both contribution normalized and storage normalized yield at every checkpoint.
-
-## Task family result table
-
-<table>
-<thead>
-<tr><th>Task family</th><th>M0 pass rate</th><th>M2 pass rate</th><th>Memory lift</th><th>Positive transfer</th><th>Negative transfer</th><th>Retrieval coverage</th></tr>
-</thead>
-<tbody>
-<tr><td>Dependency conflicts</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>Build failures</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-<tr><td>Environment setup</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td></tr>
-</tbody>
-</table>
-
-## Evidence standard
-
-Every published run must identify:
-
-1. Code revision.
-2. Benchmark task and task family.
-3. Exact model identifier.
-4. Quantization.
-5. Runtime and version.
-6. Device description.
-7. Prompt template version.
-8. Memory checkpoint.
-9. Retrieval configuration.
-10. Random seed where applicable.
-11. Verifier outcome.
-12. Timing and peak memory measurements.
-13. Relevant memory pages expected before retrieval.
-14. Retrieved memory pages and ranks.
-15. Paired M0 and M2 outcome classification.
-
-No private session content, credentials, hostnames, local paths, or unsanitized terminal artifacts may be committed.
+Commit only reviewed compact results and safe hashes/provenance. Never commit raw benchmark jobs, trajectories, private qualification details, hidden tests, verifier internals, reference solutions, local paths, credentials, canaries, scanner details, model weights, or fabricated measured values.

@@ -4,25 +4,27 @@
 
 # Long Tail Inference Lab
 
-A research lab for testing whether verified terminal work can become reusable local intelligence.
+A research lab for testing whether verified cloud-teacher terminal work can become reusable local intelligence.
 
 ## Thesis
 
-A lightweight local model does not need to know everything to become useful. It may need access to the right evidence from work that has already been completed and verified.
+A lightweight local model does not need to know everything to become useful. It may need access to compact approved evidence produced by a stronger teacher on separate verified work.
 
-Long Tail Inference Lab studies whether terminal artifacts can be transformed into durable memory that raises local task success over time. The model stays fixed during the core experiment. The memory grows. Executable tests decide whether capability actually improves.
+Long Tail Inference Lab's next planned protocol tests transfer from a fixed `gpt-5.6-sol` cloud teacher and sanitized-evidence distiller to one fixed local Qwen student. The student model stays fixed, approved teacher-derived Markdown memory grows, and held-out executable-verifier M0/M2 pairs decide whether capability improves.
 
 ## Active experiment
 
 ### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
-**Status:** Running (first preregistered pilot halted without a paired result)
+**Status:** Running (teacher/student machinery ready; no teacher/student measured result)
 
-**Question:** Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
+**Question:** Can verifier-passing public terminal work from a fixed `gpt-5.6-sol` cloud teacher become approved Markdown memory that improves a fixed local Qwen student on disjoint held-out tasks?
 
-The experiment runs terminal tasks, preserves privacy safe evidence, distills that evidence into a human readable Markdown wiki, and measures local model performance at successive memory checkpoints.
+The cloud teacher solves only preregistered public memory-build tasks, so that interaction crosses the selected cloud boundary. Its resulting raw capture is retained in ignored local storage and is not retransmitted for distillation; strict local sanitizer, Gitleaks, canary, contamination, and residual gates run before an allowlisted sanitized-evidence packet may be sent to the same model. External human approval scoped to exact hashes is mandatory before admission. The exact local Qwen student is then evaluated under paired M0 (no memory) and M2 (approved Markdown retrieval), with the retrieved-memory block as the only student-context difference.
 
-The standard-library runner, sanitizer, verified-memory gate, deterministic retriever, and paired analyzer are implemented. The first genuine pilot pinned the complete local stack and passed its development checks, but the first M0 probe exceeded the frozen 16,384-token context before executable verification. The protocol stopped at the one-attempt boundary, so no M0/M2 claim or memory checkpoint exists. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md).
+The executable verifier alone establishes build eligibility and held-out student outcomes. Teacher scores, model confidence, narrative success, tool-exit impressions, and distillation quality never substitute. Private verifier qualification raises confidence in each pinned task verifier without exposing hidden tests or verifier internals to either model.
+
+No cloud SDK is assumed; execution uses an operator-supplied or Harbor-compatible boundary established by current tooling. The earlier genuine pilot remains intact: its first local Qwen M0 probe exceeded the frozen 16,384-token context before executable verification, so it produced no pair or memory checkpoint. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md). No teacher/student experiment has been measured yet.
 
 ## PARA organization
 
@@ -70,13 +72,13 @@ An experiment is complete only when its baseline, results, interpretation, limit
 
 The active project is designed as a learning module:
 
-1. Understand how terminal work produces reusable evidence.
-2. Build a privacy safe artifact pipeline.
-3. Compare raw evidence with distilled Markdown memory.
-4. Hold the local model fixed while memory grows.
-5. Measure exact recurrence, structural recurrence, and novel controls.
-6. Validate the learned success predictor against executable outcomes.
-7. Publish positive, negative, and inconclusive results.
+1. Separate cloud teacher, cloud distiller, and local student roles.
+2. Qualify task verifiers without exposing verifier internals to a model.
+3. Build an explicit local-retention and cloud-disclosure boundary.
+4. Admit only verifier-passing, sanitized, hash-approved Markdown.
+5. Hold exact local Qwen controls fixed while memory grows.
+6. Measure positive and negative transfer on disjoint held-out tasks.
+7. Publish positive, negative, halted, and inconclusive results.
 
 Start with the [field guide to learning LLM inference](resources/learning/field_guide.md).
 

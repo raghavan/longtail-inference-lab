@@ -28,11 +28,36 @@ try:
         MemoryState,
         MemoryStateError,
         RetrievalResult,
+        memory_provenance_snapshot,
         observed_memory_state,
         render_retrieved_memory,
         retrieve,
+        validate_memory_split,
     )
     from .sanitize import SANITIZER_REVISION, sha256_file
+    from .verifier_qualification import (
+        VerifierQualificationError,
+        validate_qualification_path,
+    )
+    from .transfer import (
+        DISTILLER_PROMPT_REVISION,
+        DISTILLER_PROMPT_SHA256,
+        PROTOCOL_REVISION,
+        STUDENT_HF_REVISION,
+        STUDENT_LICENSE,
+        STUDENT_MEMORY_PROMPT_SHA256,
+        STUDENT_MODEL_ID,
+        STUDENT_MODEL_SHA256,
+        STUDENT_PROMPT_REVISION,
+        STUDENT_QUANTIZATION,
+        STUDENT_SYSTEM_PROMPT_SHA256,
+        TEACHER_PROMPT_REVISION,
+        TEACHER_PROMPT_SHA256,
+        TransferError,
+        validate_roles,
+        validate_split,
+        validate_transmission_policy,
+    )
 except ImportError:  # Allow `python artifact_memory/experiment.py` from the project directory.
     from memory import (
         CONTAINER_DIGEST_RE,
@@ -41,11 +66,36 @@ except ImportError:  # Allow `python artifact_memory/experiment.py` from the pro
         MemoryState,
         MemoryStateError,
         RetrievalResult,
+        memory_provenance_snapshot,
         observed_memory_state,
         render_retrieved_memory,
         retrieve,
+        validate_memory_split,
     )
     from sanitize import SANITIZER_REVISION, sha256_file
+    from verifier_qualification import (
+        VerifierQualificationError,
+        validate_qualification_path,
+    )
+    from transfer import (
+        DISTILLER_PROMPT_REVISION,
+        DISTILLER_PROMPT_SHA256,
+        PROTOCOL_REVISION,
+        STUDENT_HF_REVISION,
+        STUDENT_LICENSE,
+        STUDENT_MEMORY_PROMPT_SHA256,
+        STUDENT_MODEL_ID,
+        STUDENT_MODEL_SHA256,
+        STUDENT_PROMPT_REVISION,
+        STUDENT_QUANTIZATION,
+        STUDENT_SYSTEM_PROMPT_SHA256,
+        TEACHER_PROMPT_REVISION,
+        TEACHER_PROMPT_SHA256,
+        TransferError,
+        validate_roles,
+        validate_split,
+        validate_transmission_policy,
+    )
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROMPT_PATHS = {
@@ -55,7 +105,9 @@ PROMPT_PATHS = {
 LOCK_PATH = PROJECT_ROOT / "uv.lock"
 MEASURED = "measured"
 CONDITIONS = ("M0", "M2")
-SCHEMA_VERSION = "paired-run-manifest-v1"
+SCHEMA_VERSION = "teacher-student-paired-run-manifest-v2"
+LEGACY_SCHEMA_VERSION = "paired-run-manifest-v1"
+RESULT_SCHEMA_VERSION = "student-paired-result-v2"
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 REVISION_RE = re.compile(r"[0-9a-f]{40}")
 SAFE_NAME_RE = re.compile(r"[a-zA-Z_][a-zA-Z0-9_]{1,127}")
@@ -73,9 +125,15 @@ REQUIRED_RUN_ENVIRONMENT = (
     "terminus_version",
     "atif_schema_version",
     "llama_cpp_revision",
-    "model_sha256",
+    "student_model_sha256",
     "quantization",
-    "prompt_revision",
+    "student_prompt_revision",
+    "teacher_prompt_revision",
+    "teacher_prompt_sha256",
+    "distiller_prompt_revision",
+    "distiller_prompt_sha256",
+    "student_system_prompt_sha256",
+    "student_memory_prompt_sha256",
     "retrieval_revision",
     "sanitizer_revision",
     "python_lock_hash",
@@ -135,8 +193,38 @@ def load_manifest(path: Path) -> dict[str, object]:
 
 
 def validate_manifest(manifest: Mapping[str, object]) -> None:
+    if manifest.get("schema_version") == LEGACY_SCHEMA_VERSION:
+        raise ManifestError(
+            "legacy paired-run-manifest-v1 is not valid for teacher-student measurement; "
+            "use the v2 template (the halted 16K pilot remains an immutable historical record)"
+        )
     if manifest.get("schema_version") != SCHEMA_VERSION:
         raise ManifestError(f"schema_version must be {SCHEMA_VERSION}")
+    expected_top_level = {
+        "schema_version",
+        "protocol_revision",
+        "data_classification",
+        "pair_id",
+        "memory_checkpoint",
+        "memory_contributions",
+        "baseline_memory_contributions",
+        "task",
+        "split",
+        "roles",
+        "data_transmission",
+        "run_environment",
+        "controls",
+        "harbor",
+        "llama_cpp",
+        "external",
+    }
+    if set(manifest) != expected_top_level:
+        raise ManifestError(
+            "v2 manifest fields must match the auditable role contract; unexpected or missing: "
+            + ", ".join(sorted(set(manifest) ^ expected_top_level))
+        )
+    if manifest.get("protocol_revision") != PROTOCOL_REVISION:
+        raise ManifestError(f"protocol_revision must be {PROTOCOL_REVISION}")
     classification = manifest.get("data_classification")
     if classification not in {MEASURED, "development", "synthetic_fixture_not_measured"}:
         raise ManifestError("data_classification must explicitly identify measured or non-measured data")
@@ -158,16 +246,58 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
     task = _mapping(manifest["task"], "task")
     missing_task = _missing(
         task,
-        ("task_id", "task_name", "task_family", "question_type", "retrieval_query"),
+        (
+            "task_id",
+            "task_name",
+            "task_family",
+            "task_role",
+            "executed_by_role",
+            "question_type",
+            "retrieval_query",
+            "verifier_bundle_sha256",
+            "verifier_qualification_record_path",
+            "verifier_qualification_record_sha256",
+        ),
     )
     if missing_task:
         raise ManifestError("incomplete task controls: " + ", ".join(missing_task))
+    expected_task_fields = {
+        "task_id",
+        "task_name",
+        "task_family",
+        "task_role",
+        "executed_by_role",
+        "question_type",
+        "retrieval_query",
+        "expected_relevant_pages",
+        "verifier_bundle_sha256",
+        "verifier_qualification_record_path",
+        "verifier_qualification_record_sha256",
+    }
+    if set(task) != expected_task_fields:
+        raise ManifestError(
+            "evaluation task fields must match the auditable contract; unexpected or missing: "
+            + ", ".join(sorted(set(task) ^ expected_task_fields))
+        )
     if task.get("task_family") != "environment_setup":
         raise ManifestError("the first pilot is locked to the environment_setup task family")
+    if task.get("executed_by_role") != "local_student":
+        raise ManifestError("held-out evaluation tasks must be executed only by the local_student")
+    try:
+        validate_split(
+            manifest.get("split"), task, expected_task_role="held_out_student_evaluation"
+        )
+        validate_roles(manifest.get("roles"))
+        validate_transmission_policy(manifest.get("data_transmission"))
+    except TransferError as exc:
+        raise ManifestError(str(exc)) from exc
     if task.get("question_type") not in {"exact", "structural", "novel"}:
         raise ManifestError("question_type must be exact, structural, or novel")
     if "expected_relevant_pages" not in task or not isinstance(task.get("expected_relevant_pages"), list):
         raise ManifestError("expected_relevant_pages must be an explicit list")
+    for field in ("verifier_bundle_sha256", "verifier_qualification_record_sha256"):
+        if not SHA256_RE.fullmatch(str(task.get(field, ""))):
+            raise ManifestError(f"task.{field} must be a SHA-256 digest")
 
     controls = _mapping(manifest.get("controls"), "controls")
     model = _mapping(controls.get("model"), "controls.model")
@@ -176,12 +306,34 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
     prompt = _mapping(controls.get("prompt"), "controls.prompt")
     budget = _mapping(controls.get("execution_budget"), "controls.execution_budget")
     retrieval_config = _mapping(controls.get("retrieval"), "controls.retrieval")
-    if _missing(model, ("family", "parameters", "id", "sha256", "quantization", "context_size")):
-        raise ManifestError("model controls are incomplete")
-    if not str(model["family"]).lower().startswith("qwen") or str(model["parameters"]).lower() != "7b":
-        raise ManifestError("the approved pilot target is a Qwen-family 7B model")
-    if "q4" not in str(model["quantization"]).lower():
-        raise ManifestError("the approved pilot target uses GGUF Q4 quantization")
+    if _missing(
+        model,
+        (
+            "family",
+            "parameters",
+            "id",
+            "hugging_face_revision",
+            "sha256",
+            "quantization",
+            "license",
+            "context_size",
+        ),
+    ):
+        raise ManifestError("student model controls are incomplete")
+    exact_student = {
+        "family": "Qwen",
+        "parameters": "7B",
+        "id": STUDENT_MODEL_ID,
+        "hugging_face_revision": STUDENT_HF_REVISION,
+        "sha256": STUDENT_MODEL_SHA256,
+        "quantization": STUDENT_QUANTIZATION,
+        "license": STUDENT_LICENSE,
+    }
+    for field, expected in exact_student.items():
+        if model.get(field) != expected:
+            raise ManifestError(f"student model {field} does not match the exact approved pin")
+    if not isinstance(model.get("context_size"), int) or int(model["context_size"]) < 1:
+        raise ManifestError("student context_size must be a positive preregistered integer")
     if runtime.get("name") != "llama.cpp":
         raise ManifestError("runtime control must be llama.cpp")
     if _missing(runtime, ("name", "revision", "harbor_model")):
@@ -189,7 +341,13 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
     if decoding.get("temperature") != 0 or not isinstance(decoding.get("seed"), int):
         raise ManifestError("temperature must be 0 and seed must be an integer")
     if _missing(prompt, ("revision", "system_sha256", "memory_sha256")):
-        raise ManifestError("prompt controls are incomplete")
+        raise ManifestError("student prompt controls are incomplete")
+    if (
+        prompt.get("revision") != STUDENT_PROMPT_REVISION
+        or prompt.get("system_sha256") != STUDENT_SYSTEM_PROMPT_SHA256
+        or prompt.get("memory_sha256") != STUDENT_MEMORY_PROMPT_SHA256
+    ):
+        raise ManifestError("student prompt revision or hashes do not match the pinned role contract")
     if _missing(budget, ("max_turns", "timeout_multiplier", "n_attempts")):
         raise ManifestError("execution budget controls are incomplete")
     if budget.get("n_attempts") != 1:
@@ -250,7 +408,7 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
         if not REVISION_RE.fullmatch(str(run_environment["terminal_bench_revision"])):
             raise ManifestError("measured terminal_bench_revision must be a full Git revision")
         for field in (
-            "model_sha256",
+            "student_model_sha256",
             "python_lock_hash",
             "registry_snapshot_sha256",
             "task_instruction_sha256",
@@ -269,11 +427,17 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
 
     if run_environment:
         cross_checks = {
-            "model_sha256": model.get("sha256"),
+            "student_model_sha256": model.get("sha256"),
             "quantization": model.get("quantization"),
             "llama_cpp_revision": runtime.get("revision"),
-            "prompt_revision": prompt.get("revision"),
+            "student_prompt_revision": prompt.get("revision"),
             "retrieval_revision": retrieval_config.get("revision"),
+            "teacher_prompt_revision": TEACHER_PROMPT_REVISION,
+            "teacher_prompt_sha256": TEACHER_PROMPT_SHA256,
+            "distiller_prompt_revision": DISTILLER_PROMPT_REVISION,
+            "distiller_prompt_sha256": DISTILLER_PROMPT_SHA256,
+            "student_system_prompt_sha256": STUDENT_SYSTEM_PROMPT_SHA256,
+            "student_memory_prompt_sha256": STUDENT_MEMORY_PROMPT_SHA256,
         }
         for field, control_value in cross_checks.items():
             if run_environment.get(field) != control_value:
@@ -296,6 +460,7 @@ def verified_memory_state(
 
     try:
         state = observed_memory_state(wiki_dir, index_path)
+        validate_memory_split(index_path, _mapping(manifest["split"], "split"))
     except MemoryStateError as exc:
         raise ManifestError(f"admitted memory state is not verifiable: {exc}") from exc
     expected = int(
@@ -320,7 +485,13 @@ def verified_memory_state(
 def control_snapshot(manifest: Mapping[str, object]) -> dict[str, object]:
     harbor = deepcopy(dict(_mapping(manifest["harbor"], "harbor")))
     return {
+        "protocol_revision": manifest["protocol_revision"],
         "task": deepcopy(dict(_mapping(manifest["task"], "task"))),
+        "split": deepcopy(dict(_mapping(manifest["split"], "split"))),
+        "roles": deepcopy(dict(_mapping(manifest["roles"], "roles"))),
+        "data_transmission": deepcopy(
+            dict(_mapping(manifest["data_transmission"], "data_transmission"))
+        ),
         "run_environment": deepcopy(dict(_mapping(manifest["run_environment"], "run_environment"))),
         "controls": deepcopy(dict(_mapping(manifest["controls"], "controls"))),
         "harbor": harbor,
@@ -477,7 +648,25 @@ def _require_executable(name: str) -> None:
         raise PrerequisiteError(f"required executable not found: {name}")
 
 
+def _check_verifier_qualification(manifest: Mapping[str, object]) -> None:
+    task = _mapping(manifest["task"], "task")
+    run_environment = _mapping(manifest["run_environment"], "run_environment")
+    try:
+        validate_qualification_path(
+            Path(str(task["verifier_qualification_record_path"])),
+            expected_record_sha256=str(task["verifier_qualification_record_sha256"]),
+            task_id=str(task["task_id"]),
+            terminal_bench_revision=str(run_environment["terminal_bench_revision"]),
+            task_instruction_sha256=str(run_environment["task_instruction_sha256"]),
+            task_container_digest=str(run_environment["task_container_digest"]),
+            verifier_bundle_sha256=str(task["verifier_bundle_sha256"]),
+        )
+    except VerifierQualificationError as exc:
+        raise PrerequisiteError(f"held-out task verifier is ineligible: {exc}") from exc
+
+
 def _check_local_task_pin(manifest: Mapping[str, object]) -> None:
+    _check_verifier_qualification(manifest)
     harbor = _mapping(manifest["harbor"], "harbor")
     dataset_path_env = harbor.get("dataset_path_env")
     if not dataset_path_env:
@@ -601,8 +790,11 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
             if sha256_file(PROMPT_PATHS[name]) != prompt[f"{name}_sha256"]:
                 raise PrerequisiteError(f"{name} prompt hash does not match fixed controls")
         model_path = Path(_resolved_env(manifest, "model_path_env"))
-        if not model_path.is_file() or sha256_file(model_path) != run_environment["model_sha256"]:
-            raise PrerequisiteError("local GGUF model hash does not match measured-run provenance")
+        if (
+            not model_path.is_file()
+            or sha256_file(model_path) != run_environment["student_model_sha256"]
+        ):
+            raise PrerequisiteError("local student GGUF hash does not match measured-run provenance")
 
     _check_local_endpoint(
         _resolved_env(manifest, "llama_api_base_env"),
@@ -687,6 +879,7 @@ def _extract_harbor_result(
                 "authoritative": "terminal-bench-executable",
                 "passed": passed,
                 "reward": reward,
+                "reward_artifact_count": 1,
                 "source_sha256": sha256_file(rewards[0]),
             },
             indent=2,
@@ -711,6 +904,8 @@ def run_pair(
     preflight: bool = True,
 ) -> Path:
     validate_manifest(manifest)
+    if manifest["data_classification"] == MEASURED and not preflight:
+        raise ManifestError("measured runs cannot bypass prerequisite and verifier-qualification checks")
     if _find_placeholders(manifest):
         raise ManifestError("a runnable manifest cannot contain unresolved placeholders")
     if manifest["baseline_memory_contributions"] != manifest["memory_contributions"]:
@@ -803,8 +998,13 @@ def run_pair(
         retrieved_ids = [page.page_id for page in retrieval_result.pages]
         expected = list(task["expected_relevant_pages"])
         result = {
-            "schema_version": "paired-result-v1",
+            "schema_version": RESULT_SCHEMA_VERSION,
             "data_classification": manifest["data_classification"],
+            "protocol_revision": PROTOCOL_REVISION,
+            "task_role": "held_out_student_evaluation",
+            "evaluation_actor_role": "local_student",
+            "student_model_id": STUDENT_MODEL_ID,
+            "student_model_sha256": STUDENT_MODEL_SHA256,
             "run_id": f"{manifest['pair_id']}-{condition.lower()}",
             "pair_id": manifest["pair_id"],
             "task_id": task["task_id"],
@@ -815,6 +1015,7 @@ def run_pair(
             "baseline_memory_contributions": manifest["baseline_memory_contributions"],
             "observed_memory_pages": memory_state.admitted_pages,
             "observed_memory_page_ids": list(memory_state.page_ids),
+            "memory_provenance": memory_provenance_snapshot(index_path),
             "memory_condition": condition,
             "verifier_passed": passed,
             "verifier_authority": "terminal-bench-executable",
@@ -869,6 +1070,8 @@ def run_condition(
     if condition not in CONDITIONS:
         raise ManifestError(f"unsupported memory condition: {condition}")
     validate_manifest(manifest)
+    if manifest["data_classification"] == MEASURED and not preflight:
+        raise ManifestError("measured runs cannot bypass prerequisite and verifier-qualification checks")
     if _find_placeholders(manifest):
         raise ManifestError("a runnable manifest cannot contain unresolved placeholders")
     memory_state = verified_memory_state(
@@ -964,8 +1167,13 @@ def run_condition(
     retrieved_ids = [page.page_id for page in retrieval_result.pages]
     expected = list(task["expected_relevant_pages"])
     result = {
-        "schema_version": "paired-result-v1",
+        "schema_version": RESULT_SCHEMA_VERSION,
         "data_classification": manifest["data_classification"],
+        "protocol_revision": PROTOCOL_REVISION,
+        "task_role": "held_out_student_evaluation",
+        "evaluation_actor_role": "local_student",
+        "student_model_id": STUDENT_MODEL_ID,
+        "student_model_sha256": STUDENT_MODEL_SHA256,
         "run_id": f"{manifest['pair_id']}-{condition.lower()}",
         "pair_id": manifest["pair_id"],
         "task_id": task["task_id"],
@@ -976,6 +1184,7 @@ def run_condition(
         "baseline_memory_contributions": manifest["baseline_memory_contributions"],
         "observed_memory_pages": memory_state.admitted_pages,
         "observed_memory_page_ids": list(memory_state.page_ids),
+        "memory_provenance": memory_provenance_snapshot(index_path),
         "memory_condition": condition,
         "verifier_passed": passed,
         "verifier_authority": "terminal-bench-executable",

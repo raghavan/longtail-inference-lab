@@ -1,8 +1,8 @@
 {
   "schema_version": "teacher-student-paired-run-manifest-v2",
   "protocol_revision": "teacher-student-transfer-v1",
-  "data_classification": "development",
-  "pair_id": "REQUIRED_DEVELOPMENT_PAIR_ID",
+  "data_classification": "measured",
+  "pair_id": "REQUIRED_SAFE_PAIR_ID",
   "memory_checkpoint": 1,
   "memory_contributions": 1,
   "baseline_memory_contributions": 0,

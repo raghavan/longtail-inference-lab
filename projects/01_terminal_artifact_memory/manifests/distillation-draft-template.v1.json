@@ -1,0 +1,21 @@
+{
+  "schema_version": "teacher-distillation-draft-v1",
+  "build_id": "REQUIRED_SAFE_BUILD_ID",
+  "task_id": "REQUIRED_PUBLIC_MEMORY_BUILD_TASK_ID",
+  "task_role": "memory_build",
+  "split_revision": "REQUIRED_PREREGISTERED_SPLIT_REVISION",
+  "distiller_role": "cloud_distiller",
+  "distiller_model_id": "gpt-5.6-sol",
+  "provider_runtime_or_operator_adapter": "REQUIRED_OPERATOR_SUPPLIED_DISTILLATION_ADAPTER",
+  "prompt_revision": "distillation-v1",
+  "prompt_sha256": "506cabdb4e3fc24bc102708c293fcfb424be0340d6fc0cdc7d0bc6fef330de52",
+  "distillation_request_sha256": "REQUIRED_ALLOWLISTED_REQUEST_SHA256",
+  "source_evidence_sha256": [
+    "REQUIRED_SANITIZED_EVIDENCE_SHA256"
+  ],
+  "sanitizer_revision": "artifact_memory-sanitizer-v1",
+  "evidence_ids": [
+    "REQUIRED_SAFE_BUILD_ID-sanitized-evidence"
+  ],
+  "markdown_body": "# REQUIRED_DISTILLED_TITLE\n\n## Problem pattern\n\nREQUIRED_DISTILLED_PATTERN\n\n## Observable symptoms\n\n- REQUIRED_SANITIZED_SYMPTOM\n\n## Environment assumptions\n\n- REQUIRED_SANITIZED_ASSUMPTION\n\n## Diagnostic sequence\n\n- REQUIRED_SANITIZED_DIAGNOSTIC_STEP\n\n## Verified resolution\n\n- REQUIRED_VERIFIED_OPERATIONAL_CLAIM. ([evidence:REQUIRED_SAFE_BUILD_ID-sanitized-evidence])\n\n## Supporting evidence\n\n- [evidence:REQUIRED_SAFE_BUILD_ID-sanitized-evidence]\n\n## Limitations\n\n- REQUIRED_TRANSFER_LIMITATION."
+}
