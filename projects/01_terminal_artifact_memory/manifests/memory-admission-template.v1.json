@@ -1,0 +1,68 @@
+{
+  "page_id": "REQUIRED_SAFE_PAGE_ID",
+  "sanitized_artifact_path": "REQUIRED_LOCAL_SANITIZED_ARTIFACT_PATH",
+  "sanitizer_report_path": "REQUIRED_LOCAL_SANITIZER_REPORT_PATH",
+  "verifier_artifact_path": "REQUIRED_LOCAL_VERIFIER_ARTIFACT_PATH",
+  "provenance": {
+    "artifact_id": "REQUIRED_SAFE_ARTIFACT_ID",
+    "run_id": "REQUIRED_SAFE_RUN_ID",
+    "task_id": "REQUIRED_PUBLIC_TASK_ID",
+    "task_family": "environment_setup",
+    "code_revision": "REQUIRED_FULL_GIT_REVISION",
+    "harbor_version": "REQUIRED_PINNED_HARBOR_VERSION",
+    "terminal_bench_version": "REQUIRED_PINNED_TERMINAL_BENCH_VERSION",
+    "task_container_digest": "sha256:REQUIRED_IMMUTABLE_CONTAINER_DIGEST",
+    "terminus_version": "REQUIRED_PINNED_TERMINUS_VERSION",
+    "atif_schema_version": "1.7",
+    "llama_cpp_revision": "REQUIRED_FULL_LLAMA_CPP_REVISION",
+    "model_sha256": "REQUIRED_MODEL_SHA256",
+    "quantization": "GGUF-Q4_K_M",
+    "prompt_revision": "system-v1+memory-v1",
+    "retrieval_revision": "direct-markdown-lexical-v1",
+    "sanitizer_revision": "lily-sanitizer-v1",
+    "python_lock_hash": "REQUIRED_UV_LOCK_SHA256",
+    "operating_system": "REQUIRED_OS_WITHOUT_MACHINE_ID",
+    "hardware_description": "REQUIRED_HARDWARE_CLASS_WITHOUT_MACHINE_ID",
+    "trajectory_sha256": "REQUIRED_TRAJECTORY_SHA256",
+    "verifier_artifact_sha256": "REQUIRED_VERIFIER_ARTIFACT_SHA256",
+    "sanitized_artifact_sha256": "REQUIRED_SANITIZED_ARTIFACT_SHA256",
+    "gitleaks_version": "REQUIRED_PINNED_GITLEAKS_VERSION"
+  },
+  "verifier": {
+    "passed": false,
+    "authoritative": "terminal-bench-executable"
+  },
+  "human_review": {
+    "approved": false,
+    "reviewer_id": "REQUIRED_SAFE_REVIEWER_ID",
+    "reviewed_at": "REQUIRED_UTC_TIMESTAMP",
+    "approval_scope_sha256": "REQUIRED_SANITIZED_ARTIFACT_SHA256"
+  },
+  "evidence_ids": [
+    "REQUIRED_SAFE_EVIDENCE_ID"
+  ],
+  "summary": {
+    "title": "REQUIRED_DISTILLED_TITLE",
+    "problem_pattern": "REQUIRED_DISTILLED_PATTERN",
+    "observable_symptoms": [
+      "REQUIRED_SANITIZED_SYMPTOM"
+    ],
+    "environment_assumptions": [
+      "REQUIRED_SANITIZED_ASSUMPTION"
+    ],
+    "diagnostic_sequence": [
+      "REQUIRED_SANITIZED_DIAGNOSTIC_STEP"
+    ],
+    "verified_resolution": [
+      {
+        "claim": "REQUIRED_VERIFIED_OPERATIONAL_CLAIM",
+        "evidence_ids": [
+          "REQUIRED_SAFE_EVIDENCE_ID"
+        ]
+      }
+    ],
+    "limitations": [
+      "REQUIRED_TRANSFER_LIMITATION"
+    ]
+  }
+}

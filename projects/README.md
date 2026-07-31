@@ -8,11 +8,11 @@ A folder enters Projects only when it has a research question, a measurement pla
 
 ### [01 Terminal Artifact Memory](01_terminal_artifact_memory/README.md)
 
-**Status:** Specified
+**Status:** Runnable pilot implementation; measured baseline pending
 
 Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
 
-This is intentionally the only active experiment. The lab will establish the baseline, artifact pipeline, first memory checkpoints, and failure boundaries before adding another active project.
+The pilot software is runnable, but locally pinned benchmark/model inputs and a genuine measured baseline are still pending. This is intentionally the only active experiment. The lab will establish the baseline, artifact pipeline, first memory checkpoints, and failure boundaries before adding another active project.
 
 ## Status meanings
 

@@ -1,0 +1,13 @@
+{
+  "revision": "direct-markdown-lexical-v1",
+  "top_k": 3,
+  "token_budget": 1800,
+  "searchable_fields": [
+    "title",
+    "problem_pattern",
+    "observable_symptoms",
+    "environment_assumptions",
+    "limitations"
+  ],
+  "score_rule": "sum((1 + ln(tf_page)) * (1 + ln((N + 1) / (df + 1)))) over unique query terms; ties by page_id"
+}

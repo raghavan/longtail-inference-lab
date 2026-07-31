@@ -80,3 +80,10 @@ python3 areas/lab_operations/safety_scan.py
 5. Record exact model, quantization, runtime, hardware, prompt, retrieval, and memory checkpoint for every run.
 6. Treat executable verification as authoritative when it is available.
 7. Keep learned judges blind to model identity, memory condition, and artifact count.
+
+## Maintaining this file
+
+Keep this file for knowledge useful to almost every future agent session in this project.
+Do not repeat what the codebase already shows; point to the authoritative file or command instead.
+Prefer rewriting or pruning existing entries over appending new ones.
+When updating this file, preserve this bar for all agents and keep entries concise.

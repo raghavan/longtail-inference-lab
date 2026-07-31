@@ -1,0 +1,90 @@
+{
+  "schema_version": "paired-run-manifest-v1",
+  "data_classification": "measured",
+  "pair_id": "REQUIRED_SAFE_PAIR_ID",
+  "memory_checkpoint": 1,
+  "memory_contributions": 1,
+  "task": {
+    "task_id": "REQUIRED_PUBLIC_TASK_ID",
+    "task_name": "REQUIRED_HARBOR_TASK_NAME",
+    "task_family": "environment_setup",
+    "question_type": "structural",
+    "retrieval_query": "REQUIRED_PUBLIC_TASK_DESCRIPTION_FOR_RETRIEVAL",
+    "expected_relevant_pages": [
+      "REQUIRED_PREREGISTERED_PAGE_ID"
+    ]
+  },
+  "run_environment": {
+    "code_revision": "REQUIRED_FULL_GIT_REVISION",
+    "harbor_version": "REQUIRED_PINNED_HARBOR_VERSION",
+    "terminal_bench_version": "REQUIRED_PINNED_TERMINAL_BENCH_VERSION",
+    "task_container_digest": "sha256:REQUIRED_IMMUTABLE_CONTAINER_DIGEST",
+    "terminus_version": "REQUIRED_PINNED_TERMINUS_VERSION",
+    "atif_schema_version": "1.7",
+    "llama_cpp_revision": "REQUIRED_FULL_LLAMA_CPP_REVISION",
+    "model_sha256": "REQUIRED_MODEL_SHA256",
+    "quantization": "GGUF-Q4_K_M",
+    "prompt_revision": "system-v1+memory-v1",
+    "retrieval_revision": "direct-markdown-lexical-v1",
+    "sanitizer_revision": "lily-sanitizer-v1",
+    "python_lock_hash": "c3366e15a5706a4e497eebe344a9be45e7947ae8ababe8408dae239d2888f8ac",
+    "operating_system": "REQUIRED_OS_AND_VERSION_WITHOUT_MACHINE_ID",
+    "hardware_description": "REQUIRED_HARDWARE_CLASS_WITHOUT_MACHINE_ID",
+    "gitleaks_version": "REQUIRED_PINNED_GITLEAKS_VERSION"
+  },
+  "controls": {
+    "model": {
+      "family": "Qwen",
+      "parameters": "7B",
+      "id": "REQUIRED_EXACT_MODEL_ID",
+      "sha256": "REQUIRED_MODEL_SHA256",
+      "quantization": "GGUF-Q4_K_M",
+      "context_size": 16384
+    },
+    "runtime": {
+      "name": "llama.cpp",
+      "revision": "REQUIRED_FULL_LLAMA_CPP_REVISION",
+      "harbor_model": "openai/fixed-qwen-7b-q4"
+    },
+    "prompt": {
+      "revision": "system-v1+memory-v1",
+      "system_sha256": "7c21baeb6445e013972bdd6bbb941d2b367cb6b5d2e9a9b0e4c8bbef1bb5b015",
+      "memory_sha256": "a274f71dc6aae550995c6ce801fc15d9420bce50e82ccd66ead93631697abd6d"
+    },
+    "decoding": {
+      "temperature": 0,
+      "seed": 42
+    },
+    "tool_permissions": [
+      "terminal",
+      "task-container-filesystem"
+    ],
+    "execution_budget": {
+      "max_turns": 40,
+      "timeout_multiplier": 1.0,
+      "n_attempts": 1
+    },
+    "retrieval": {
+      "revision": "direct-markdown-lexical-v1",
+      "top_k": 3,
+      "token_budget": 1800
+    },
+    "enable_summarize": false
+  },
+  "harbor": {
+    "dataset": "terminal-bench/terminal-bench-2@REQUIRED_PINNED_VERSION",
+    "agent": "terminus-2",
+    "environment": "docker",
+    "n_concurrent": 1
+  },
+  "llama_cpp": {
+    "executable": "llama-server",
+    "host": "localhost",
+    "port": 8080
+  },
+  "external": {
+    "llama_api_base_env": "LILY_LLAMA_API_BASE",
+    "llama_api_key_env": "LILY_LLAMA_API_KEY",
+    "model_path_env": "LILY_MODEL_PATH"
+  }
+}

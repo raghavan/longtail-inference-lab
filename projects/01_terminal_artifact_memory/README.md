@@ -1,9 +1,9 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Specified  
+**Status:** Runnable pilot implementation; measured baseline pending
 **Track:** Artifact memory and local inference  
 **Difficulty:** Intermediate  
-**Last updated:** July 14 2026
+**Last updated:** July 31 2026
 
 ## Primary result we want to produce
 
@@ -30,6 +30,18 @@ The model remains fixed. Only the number of verified memory contributions grows.
 **Success boundary:** Structural recurrence improves materially over the no memory baseline, negative transfer remains acceptably low, unsafe confident errors remain rare, and the benefit survives held out task family evaluation.
 
 **Stop boundary:** Stop or simplify if memory only helps exact repeats, if stale or irrelevant memory creates meaningful regressions, if simple file search performs nearly as well, or if the benefit disappears on held out task families.
+
+## Implementation status
+
+The first standard-library pilot is runnable from this directory:
+
+1. `lily.experiment` validates complete provenance, checks pinned external boundaries, performs deterministic retrieval, and runs controlled Harbor M0/M2 pairs through Terminus-2, Docker, llama.cpp, ATIF, and the executable verifier.
+2. `lily.sanitize` applies experiment-specific redaction and contamination blocking and requires a clean Gitleaks scan, canary removal, and an explicit allowlist.
+3. `lily.memory` admits only verifier-passing, provenance-complete, sanitized, human-approved contributions and retrieves Markdown pages with a frozen lexical rule.
+4. `lily.analyze` emits CSV and Markdown verifier-authoritative paired summaries and refuses non-measured data by default.
+5. Synthetic fixture tests cover the safety, control, retrieval, admission, and analysis boundaries without creating measured data.
+
+See [`OPERATOR.md`](OPERATOR.md) for prerequisites and commands. A genuine run still requires locally selected and pinned Harbor/Terminal Bench environment-setup tasks, separate held-out probes, license-compatible Qwen-family 7B GGUF Q4 weights, and installed pinned Harbor, llama.cpp, and Gitleaks versions. No measured baseline or memory checkpoint exists yet.
 
 ## Exact condition being tested
 
@@ -605,15 +617,13 @@ This experiment does not claim that a wiki changes model weights, that exact rec
 
 It asks a narrower question: whether verified work can become useful local evidence, how efficiently that evidence extends capability, where it helps, and where it causes regressions.
 
-## Next smallest implementation
+## Next measured steps
 
-1. Select three memory build tasks from one recurring family.
-2. Select separate structural recurrence probes from the same family.
-3. Freeze the model, runtime, prompt, retriever, and evaluation rules.
-4. Record M0 results for every probe.
-5. Run and verify the memory build tasks.
-6. Produce sanitized evidence bundles and one distilled page per task.
-7. Record M2 results for the same probes.
-8. Report positive transfer, negative transfer, retrieval coverage, and verified knowledge yield.
-9. Inspect every retrieval and answer manually.
-10. Continue only if the pilot reveals measurable signal and no ruin boundary breach.
+1. Select and preregister three environment-setup memory-build tasks and separate structural probes.
+2. Pin the Harbor, Terminal Bench, Terminus-2, ATIF, Docker task image, llama.cpp, Gitleaks, model, hardware, prompt, retrieval, sanitizer, and budget controls in complete local manifests.
+3. Run one oracle development task to validate the environment and verifier without treating it as a result.
+4. Record the M0 baseline for every held-out probe.
+5. Run and verify the memory-build tasks, sanitize their trajectories, and manually approve one provenance-linked page per admitted task.
+6. Record M2 for the same probes and generate the paired summaries.
+7. Inspect every retrieval, positive transfer, negative transfer, and unresolved task manually.
+8. Continue only if genuine measured signal appears without a safety or contamination breach.

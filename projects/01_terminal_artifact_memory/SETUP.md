@@ -1,8 +1,8 @@
 # Minimal Pilot Setup
 
 **Experiment:** Terminal Artifact Memory  
-**Status:** Pilot setup  
-**Last updated:** July 14 2026
+**Status:** Runnable implementation; pinned external inputs pending
+**Last updated:** July 31 2026
 
 ## Principle
 
@@ -176,17 +176,22 @@ This is the simplest retrieval baseline. More advanced retrieval is considered o
     analyze.py
 
   prompts/
-    system.md
-    memory.md
+    system.v1.md
+    memory.v1.md
 
+  config/
+  manifests/
   memory/
     wiki/
+    manifests/
 
   runs/
-  results/
+  results/generated/
+  tests/
+  OPERATOR.md
 ```
 
-Add a directory only when the pilot actually needs it.
+Runtime directories are created on demand and retained with `.gitkeep` files. Raw `runs/` contents and `config/local/` are ignored. Add another directory only when the pilot actually needs it.
 
 ### experiment.py
 
@@ -306,28 +311,31 @@ A trial missing a required control is a development trial and cannot enter the p
 Prepare the Python environment:
 
 ```bash
-uv sync
+uv sync --frozen
 ```
 
 Run tests and safety checks:
 
 ```bash
-uv run python -m unittest
-gitleaks detect
-uv run python lily/sanitize.py --self-test
+uv run python -m unittest discover -v
+uv run python -m lily.sanitize --self-test
+gitleaks dir .
 ```
 
-Run paired trials:
+Validate prerequisites and run paired trials with a complete local manifest:
 
 ```bash
-uv run python lily/experiment.py
+uv run python -m lily.experiment check-prereqs --manifest config/local/pilot.json
+uv run python -m lily.experiment run --manifest config/local/pilot.json --wiki-dir memory/wiki --runs-dir runs
 ```
 
 Produce result files:
 
 ```bash
-uv run python lily/analyze.py
+uv run python -m lily.analyze --runs-dir runs --output-dir results/generated
 ```
+
+The analyzer refuses fixtures and development records by default. See [`OPERATOR.md`](OPERATOR.md) for the complete workflow and source-backed external setup links.
 
 No Makefile, pre commit framework, hosted workflow, database, tracking server, or visualization package is required.
 
@@ -410,6 +418,10 @@ Add statsmodels only when the evaluation set is large enough for a preregistered
 Add MLflow only when self contained run directories become difficult to compare across several models, machines, or researchers.
 
 Add GitHub Actions only when several contributors need automatic clean environment checks.
+
+## Current readiness
+
+The standard-library implementation and synthetic fixture smoke are runnable. Measured experimentation is not yet ready because Harbor, llama.cpp, Gitleaks, the model, the benchmark task revision, and the task/probe split have not been locally pinned and validated.
 
 ## Definition of pilot ready
 

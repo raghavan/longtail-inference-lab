@@ -2,7 +2,7 @@
 
 **Status:** No measured runs recorded
 
-This workspace will contain measured outputs for Experiment 01. The primary chart currently uses illustrative planning data and must never be presented as an experiment result.
+The paired analyzer is runnable and writes reviewed candidates under `generated/`, but this workspace contains no genuine measured output yet. It refuses development and fixture records by default. The primary chart currently uses illustrative planning data and must never be presented as an experiment result.
 
 ## Primary result
 
