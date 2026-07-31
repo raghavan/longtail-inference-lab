@@ -1,39 +1,61 @@
 id: experiment_01
 name: Terminal Artifact Memory
 status: specified
-implementation_status: runnable_pilot_awaiting_pinned_inputs
-results_status: no_measured_runs
+implementation_status: teacher_student_transfer_machinery_ready_for_development
+results_status: no_teacher_student_measured_runs
 track: artifact_memory
-question: Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
+question: Can verifier-passing public terminal work from a fixed cloud teacher become approved Markdown memory that improves a fixed local Qwen student on disjoint held-out tasks?
 difficulty: intermediate
 created_at: 2026_07_12
-updated_at: 2026_07_31
-workload: terminal_benchmark_subset
-results: projects/01_terminal_artifact_memory/results/README.md
-core_control:
-  model_weights: fixed
-  model_configuration: fixed
-  prompt_template: fixed
+updated_at: 2026_08_01
+protocol_revision: teacher-student-transfer-v1
+roles:
+  teacher:
+    model_id: gpt-5.6-sol
+    task_role: memory_build_only
+  distiller:
+    model_id: gpt-5.6-sol
+    input_scope: sanitized_evidence_only
+  student:
+    model_id: Qwen/Qwen2.5-Coder-7B-Instruct-GGUF
+    hugging_face_revision: 13fb94bfda8c8cf22497dc57b78f391a9acb426a
+    quantization: GGUF-Q4_K_M
+    sha256: 509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c
+    sole_evaluation_model: true
+verifier:
+  individual_run_authority: terminal_bench_executable
+  qualification_required: true
+  qualification_data_classification: development_only_not_measured
+comparison:
+  baseline: M0_no_memory
+  intervention: M2_approved_teacher_derived_markdown
+  only_student_context_difference: retrieved_memory_block
+controls:
+  task_split: disjoint_and_preregistered
+  student_model_weights: fixed
+  student_model_configuration: fixed
+  student_prompt_template: fixed
   inference_runtime: fixed
   hardware: fixed
   memory_size: variable
-memory_conditions:
-  - no_memory
-  - sanitized_evidence
-  - distilled_wiki
-  - evidence_plus_wiki
+cloud_boundary:
+  sdk_in_repository: false
+  execution: operator_supplied_or_harbor_compatible
+  distillation_packet: cloud_distillation_request_v1
+  raw_private_trajectories_allowed: false
+  hidden_tests_or_verifier_internals_allowed: false
+results: projects/01_terminal_artifact_memory/results/README.md
+historical_result: projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md
 learning_outcomes:
-  - Build privacy safe artifact memory from verified terminal work
-  - Measure memory lift while local model capability remains fixed
-  - Compare raw evidence with distilled human readable knowledge
-  - Evaluate exact recurrence structural recurrence and novel controls
-  - Train and validate an interpretable local success predictor
+  - Build privacy-safe teacher-derived artifact memory from executable-verifier-passing public work
+  - Audit exact cloud disclosure and local retention boundaries
+  - Measure held-out Qwen transfer with verifier-authoritative M0/M2 pairs
+  - Separate verifier integrity qualification and remaining adequacy limits
 completion_requires:
-  - Published benchmark subset and task family split
-  - Frozen local model baseline
-  - Privacy safe artifact collector
-  - At least three memory checkpoints
-  - Objective verifier results
-  - Learned judge validation
+  - New preregistration with qualified disjoint task split and context policy
+  - Frozen local Qwen baseline
+  - At least three approved teacher-derived memory checkpoints
+  - Complete held-out executable-verifier M0/M2 pairs
+  - Positive and negative transfer analysis
   - Stress and removal tests
   - Operational conclusion and limitations

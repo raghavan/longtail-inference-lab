@@ -87,7 +87,7 @@ class AnalysisTests(unittest.TestCase):
                 skipped=discovery.skipped,
             )
             summary = outputs["summary"].read_text()
-            self.assertIn("were not paired-result-v1 records: 1", summary)
+            self.assertIn("were not student-paired-result-v2 records: 1", summary)
             self.assertIn("future-pair/M0/result.json", summary)
 
             (runs / "future-pair" / "M0" / "result.json").write_text('{"schema_version": ')
@@ -101,6 +101,17 @@ class AnalysisTests(unittest.TestCase):
         with self.assertRaisesRegex(AnalysisError, "observed admitted memory index"):
             pair_results([m0, m2], allow_non_measured=True)
 
+    def test_missing_or_mismatched_memory_provenance_is_rejected(self) -> None:
+        m0, m2 = result_fixture("fixture-memory-provenance", False, True)
+        del m2["memory_provenance"][0]["approval_record_sha256"]
+        with self.assertRaisesRegex(AnalysisError, "incomplete memory provenance"):
+            pair_results([m0, m2], allow_non_measured=True)
+
+        m0, m2 = result_fixture("fixture-role-provenance", False, True)
+        m2["memory_provenance"][0]["teacher_model_id"] = "wrong-model"
+        with self.assertRaisesRegex(AnalysisError, "conflates"):
+            pair_results([m0, m2], allow_non_measured=True)
+
     def test_missing_pair_is_rejected(self) -> None:
         m0, _ = result_fixture("fixture-incomplete", False, True)
         with self.assertRaisesRegex(AnalysisError, "missing M0 or M2"):
@@ -110,6 +121,17 @@ class AnalysisTests(unittest.TestCase):
         m0, m2 = result_fixture("fixture-authority", False, True)
         m2["verifier_authority"] = "learned-judge"
         with self.assertRaisesRegex(AnalysisError, "executable verifier"):
+            pair_results([m0, m2], allow_non_measured=True)
+
+    def test_teacher_scores_and_non_student_evaluation_are_rejected(self) -> None:
+        m0, m2 = result_fixture("fixture-teacher-score", False, True)
+        m2["teacher_score"] = 1.0
+        with self.assertRaisesRegex(AnalysisError, "never student efficacy outcomes"):
+            pair_results([m0, m2], allow_non_measured=True)
+
+        m0, m2 = result_fixture("fixture-wrong-actor", False, True)
+        m2["evaluation_actor_role"] = "cloud_teacher"
+        with self.assertRaisesRegex(AnalysisError, "exact local student"):
             pair_results([m0, m2], allow_non_measured=True)
 
 

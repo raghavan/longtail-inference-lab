@@ -16,8 +16,30 @@ from typing import Iterable, Mapping, Sequence
 
 try:
     from .sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
+    from .transfer import (
+        DISTILLER_TRANSMISSION_CLASSIFICATION,
+        STUDENT_HF_REVISION,
+        STUDENT_MODEL_ID,
+        STUDENT_MODEL_SHA256,
+        TEACHER_MODEL_ID,
+        TransferError,
+        validate_approval_record,
+        validate_build_evidence,
+        validate_distillation_draft,
+    )
 except ImportError:  # Allow `python artifact_memory/memory.py` from the project directory.
     from sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
+    from transfer import (
+        DISTILLER_TRANSMISSION_CLASSIFICATION,
+        STUDENT_HF_REVISION,
+        STUDENT_MODEL_ID,
+        STUDENT_MODEL_SHA256,
+        TEACHER_MODEL_ID,
+        TransferError,
+        validate_approval_record,
+        validate_build_evidence,
+        validate_distillation_draft,
+    )
 
 RETRIEVAL_REVISION = "direct-markdown-lexical-v1"
 SEARCHABLE_FIELDS = (
@@ -48,35 +70,9 @@ PAGE_SECTIONS = (
     "provenance",
 )
 
-REQUIRED_PROVENANCE = (
-    "artifact_id",
-    "run_id",
-    "task_id",
-    "task_family",
-    "code_revision",
-    "harbor_version",
-    "docker_version",
-    "terminal_bench_version",
-    "terminal_bench_revision",
-    "registry_snapshot_sha256",
-    "task_instruction_sha256",
-    "task_container_digest",
-    "terminus_version",
-    "atif_schema_version",
-    "llama_cpp_revision",
-    "model_sha256",
-    "quantization",
-    "prompt_revision",
-    "retrieval_revision",
-    "sanitizer_revision",
-    "python_lock_hash",
-    "operating_system",
-    "hardware_description",
-    "trajectory_sha256",
-    "verifier_artifact_sha256",
-    "sanitized_artifact_sha256",
-    "gitleaks_version",
-)
+ADMISSION_SCHEMA_VERSION = "teacher-memory-admission-v2"
+DISTILLED_BODY_SECTIONS = PAGE_SECTIONS[:-1]
+CITATION_RE = re.compile(r"\[evidence:([a-z0-9][a-z0-9._-]{2,127})\]")
 
 
 class MemoryAdmissionError(ValueError):
@@ -201,6 +197,137 @@ def _index_records(index_path: Path) -> list[Mapping[str, object]]:
     return records
 
 
+def active_memory_records(index_path: Path) -> dict[str, Mapping[str, object]]:
+    """Return the latest active record for each page without exposing local evidence."""
+
+    latest: dict[str, Mapping[str, object]] = {}
+    for record in _index_records(index_path):
+        page_id = str(record.get("page_id", ""))
+        if not SAFE_ID_RE.fullmatch(page_id):
+            raise MemoryStateError("admitted memory index contains an unsafe page identifier")
+        latest[page_id] = record
+    return {
+        page_id: record
+        for page_id, record in latest.items()
+        if record.get("superseded") is not True
+    }
+
+
+MEMORY_PROVENANCE_FIELDS = (
+    "page_id",
+    "page_sha256",
+    "task_id",
+    "task_role",
+    "split_revision",
+    "teacher_model_id",
+    "teacher_execution_adapter",
+    "teacher_prompt_revision",
+    "teacher_prompt_sha256",
+    "distiller_model_id",
+    "distiller_adapter",
+    "distiller_prompt_revision",
+    "distiller_prompt_sha256",
+    "student_model_id",
+    "student_hugging_face_revision",
+    "student_model_sha256",
+    "data_transmission_classification",
+    "source_evidence_sha256",
+    "sanitizer_revision",
+    "verifier_artifact_sha256",
+    "verifier_bundle_sha256",
+    "verifier_qualification_record_sha256",
+    "distillation_request_sha256",
+    "distillation_draft_sha256",
+    "approval_record_sha256",
+)
+
+
+def memory_provenance_snapshot(index_path: Path) -> list[dict[str, object]]:
+    """Return safe, path-free admitted-page provenance for a condition result."""
+
+    snapshot: list[dict[str, object]] = []
+    for page_id, record in sorted(active_memory_records(index_path).items()):
+        missing = [field for field in MEMORY_PROVENANCE_FIELDS if field not in record]
+        if missing:
+            raise MemoryStateError(
+                f"memory provenance snapshot is incomplete for {page_id}: " + ", ".join(missing)
+            )
+        snapshot.append({field: record[field] for field in MEMORY_PROVENANCE_FIELDS})
+    return snapshot
+
+
+def validate_memory_split(index_path: Path, split: Mapping[str, object]) -> None:
+    """Reject held-out contamination and legacy records lacking teacher provenance."""
+
+    revision = split.get("revision")
+    build_ids = split.get("memory_build_task_ids")
+    evaluation_ids = split.get("held_out_evaluation_task_ids")
+    if not isinstance(build_ids, list) or not isinstance(evaluation_ids, list):
+        raise MemoryStateError("evaluation split must contain explicit task lists")
+    records = active_memory_records(index_path)
+    seen_tasks: set[str] = set()
+    required = (
+        "task_id",
+        "task_role",
+        "split_revision",
+        "teacher_model_id",
+        "distiller_model_id",
+        "student_model_id",
+        "student_hugging_face_revision",
+        "student_model_sha256",
+        "source_evidence_sha256",
+        "approval_record_sha256",
+        "verifier_bundle_sha256",
+        "verifier_qualification_record_sha256",
+        "distillation_request_sha256",
+        "distillation_draft_sha256",
+        "data_transmission_classification",
+    )
+    for page_id, record in records.items():
+        missing = [field for field in required if not record.get(field)]
+        if missing:
+            raise MemoryStateError(
+                f"legacy or incomplete memory provenance for {page_id}: " + ", ".join(missing)
+            )
+        task_id = str(record["task_id"])
+        if (
+            record["task_role"] != "memory_build"
+            or task_id not in build_ids
+            or task_id in evaluation_ids
+            or record["split_revision"] != revision
+        ):
+            raise MemoryStateError(f"memory page contaminates the held-out task split: {page_id}")
+        if task_id in seen_tasks:
+            raise MemoryStateError(f"multiple active pages come from one memory-build task: {task_id}")
+        seen_tasks.add(task_id)
+        if record["teacher_model_id"] != TEACHER_MODEL_ID or record[
+            "distiller_model_id"
+        ] != TEACHER_MODEL_ID:
+            raise MemoryStateError(f"memory page lacks exact teacher/distiller provenance: {page_id}")
+        if (
+            record["student_model_id"] != STUDENT_MODEL_ID
+            or record["student_hugging_face_revision"] != STUDENT_HF_REVISION
+            or record["student_model_sha256"] != STUDENT_MODEL_SHA256
+        ):
+            raise MemoryStateError(f"memory page lacks exact student provenance: {page_id}")
+        if record["data_transmission_classification"] != DISTILLER_TRANSMISSION_CLASSIFICATION:
+            raise MemoryStateError(f"memory page lacks the pinned disclosure provenance: {page_id}")
+        for field in (
+            "approval_record_sha256",
+            "distillation_request_sha256",
+            "distillation_draft_sha256",
+            "verifier_bundle_sha256",
+            "verifier_qualification_record_sha256",
+        ):
+            if not isinstance(record[field], str) or not SHA256_RE.fullmatch(record[field]):
+                raise MemoryStateError(f"memory page provenance hash is invalid: {page_id}.{field}")
+        hashes = record["source_evidence_sha256"]
+        if not isinstance(hashes, list) or not hashes or not all(
+            isinstance(value, str) and SHA256_RE.fullmatch(value) for value in hashes
+        ):
+            raise MemoryStateError(f"memory page source evidence hashes are invalid: {page_id}")
+
+
 def observed_memory_state(wiki_dir: Path, index_path: Path) -> MemoryState:
     """Return the machine-observed memory state, refusing any wiki/index disagreement."""
 
@@ -210,11 +337,7 @@ def observed_memory_state(wiki_dir: Path, index_path: Path) -> MemoryState:
         if not SAFE_ID_RE.fullmatch(page_id):
             raise MemoryStateError("admitted memory index contains an unsafe page identifier")
         latest[page_id] = record
-    active = {
-        page_id: record
-        for page_id, record in latest.items()
-        if record.get("superseded") is not True
-    }
+    active = active_memory_records(index_path)
 
     pages = {page.page_id: page for page in load_pages(wiki_dir)}
     files = sorted(wiki_dir.glob("*.md")) if wiki_dir.exists() else []
@@ -317,66 +440,8 @@ def _require_mapping(value: object, name: str) -> Mapping[str, object]:
     return value
 
 
-def _validate_provenance(provenance: Mapping[str, object]) -> None:
-    missing = [field for field in REQUIRED_PROVENANCE if not provenance.get(field)]
-    if missing:
-        raise MemoryAdmissionError("incomplete provenance: " + ", ".join(missing))
-    placeholders = [
-        field
-        for field in REQUIRED_PROVENANCE
-        if isinstance(provenance.get(field), str) and PLACEHOLDER_RE.search(str(provenance[field]))
-    ]
-    if placeholders:
-        raise MemoryAdmissionError("unresolved provenance placeholders: " + ", ".join(placeholders))
-    for field in ("artifact_id", "run_id", "task_id"):
-        if not isinstance(provenance[field], str) or not SAFE_ID_RE.fullmatch(str(provenance[field])):
-            raise MemoryAdmissionError(f"invalid safe provenance identifier: {field}")
-    if provenance["task_family"] != "environment_setup":
-        raise MemoryAdmissionError("pilot memory task_family must be environment_setup")
-    if not REVISION_RE.fullmatch(str(provenance["code_revision"])):
-        raise MemoryAdmissionError("code_revision must be a full Git revision")
-    if not REVISION_RE.fullmatch(str(provenance["terminal_bench_revision"])):
-        raise MemoryAdmissionError("terminal_bench_revision must be a full Git revision")
-    if not CONTAINER_DIGEST_RE.fullmatch(str(provenance["task_container_digest"])):
-        raise MemoryAdmissionError("task_container_digest must be an immutable SHA-256 digest")
-    for field in (
-        "model_sha256",
-        "python_lock_hash",
-        "registry_snapshot_sha256",
-        "task_instruction_sha256",
-        "trajectory_sha256",
-        "verifier_artifact_sha256",
-        "sanitized_artifact_sha256",
-    ):
-        if not isinstance(provenance[field], str) or not SHA256_RE.fullmatch(str(provenance[field])):
-            raise MemoryAdmissionError(f"invalid SHA-256 provenance field: {field}")
-    if provenance["retrieval_revision"] != RETRIEVAL_REVISION:
-        raise MemoryAdmissionError("retrieval revision does not match this implementation")
-
-
-def _validate_sanitizer_report(report: Mapping[str, object]) -> None:
-    canary = _require_mapping(report.get("canary"), "sanitizer canary")
-    allowlist = _require_mapping(report.get("allowlist"), "sanitizer allowlist")
-    residual = _require_mapping(report.get("residual_scan"), "sanitizer residual scan")
-    gitleaks = _require_mapping(report.get("gitleaks"), "Gitleaks result")
-    required = {
-        "sanitizer accepted artifact": report.get("accepted_for_human_review") is True,
-        "no blocking classes": report.get("blocking_classes") == [],
-        "all canaries detected": canary.get("all_detected") is True,
-        "all canaries removed": canary.get("removal_verified") is True,
-        "allowlist passed": allowlist.get("passed") is True,
-        "residual scan passed": residual.get("passed") is True,
-        "Gitleaks source scan completed": gitleaks.get("source_scan_completed") is True,
-        "Gitleaks clean": gitleaks.get("clean") is True,
-        "Gitleaks no unresolved findings": gitleaks.get("findings_count") == 0,
-    }
-    failed = [name for name, passed in required.items() if not passed]
-    if failed:
-        raise MemoryAdmissionError("memory safety gate failed: " + ", ".join(failed))
-
-
-def _single_line(value: object, name: str) -> str:
-    if not isinstance(value, str) or not value.strip() or "\n" in value or "\r" in value:
+def _single_line(value: str, name: str) -> str:
+    if not value.strip() or "\n" in value or "\r" in value:
         raise MemoryAdmissionError(f"{name} must be a non-empty single-line string")
     stripped = value.strip()
     if stripped.startswith(MARKDOWN_STRUCTURE_PREFIXES):
@@ -384,107 +449,85 @@ def _single_line(value: object, name: str) -> str:
     return stripped
 
 
-def _safe_list(value: object, name: str) -> list[str]:
-    if not isinstance(value, list) or not value:
-        raise MemoryAdmissionError(f"{name} must be a non-empty list of strings")
-    return [_single_line(item, name) for item in value]
-
-
-def _assert_page_structure(page: str, *, page_id: str, title: str, problem: str) -> None:
-    metadata, body = _frontmatter_and_body(page)
-    if metadata.get("page_id") != page_id:
-        raise MemoryAdmissionError("rendered page frontmatter does not round-trip")
+def _validate_markdown_body(body: str, evidence_ids: Sequence[str]) -> tuple[str, str]:
+    metadata, parsed_body = _frontmatter_and_body(body)
+    if metadata or parsed_body != body:
+        raise MemoryAdmissionError("distiller Markdown body must not contain frontmatter")
     sections = _sections(body)
-    if tuple(sections) != PAGE_SECTIONS:
-        raise MemoryAdmissionError("rendered page does not match the fixed memory page structure")
-    if sections["title"] != title or sections["problem_pattern"] != problem:
-        raise MemoryAdmissionError("rendered page sections do not round-trip to the reviewed distillation")
+    if tuple(sections) != DISTILLED_BODY_SECTIONS:
+        raise MemoryAdmissionError("distiller Markdown body does not match the fixed structure")
+    title = _single_line(sections["title"], "distilled title")
+    problem = _single_line(sections["problem_pattern"], "distilled problem pattern")
+    for name in DISTILLED_BODY_SECTIONS[2:]:
+        lines = sections[name].splitlines()
+        if not lines or not all(line.startswith("- ") and len(line) > 2 for line in lines):
+            raise MemoryAdmissionError(f"distilled {name} must contain single-line bullets")
+    allowed = set(evidence_ids)
+    supporting = sections["supporting_evidence"].splitlines()
+    if supporting != [f"- [evidence:{identifier}]" for identifier in evidence_ids]:
+        raise MemoryAdmissionError("supporting evidence must list each supplied evidence identifier")
+    for line in sections["verified_resolution"].splitlines():
+        citations = CITATION_RE.findall(line)
+        if not citations or not set(citations) <= allowed:
+            raise MemoryAdmissionError("every resolution claim must cite supplied sanitized evidence")
+    unknown = set(CITATION_RE.findall(body)) - allowed
+    if unknown:
+        raise MemoryAdmissionError("distillation references unknown evidence identifiers")
+    unsafe = inspect_unsafe(body)
+    if unsafe:
+        raise MemoryAdmissionError("distilled page contains unsafe classes: " + ", ".join(unsafe))
+    return title, problem
 
 
-def _render_page(request: Mapping[str, object], provenance: Mapping[str, object]) -> str:
-    page_id = str(request.get("page_id", ""))
-    if not SAFE_ID_RE.fullmatch(page_id):
-        raise MemoryAdmissionError("page_id must be a lowercase safe identifier")
-    summary = _require_mapping(request.get("summary"), "summary")
-    title = _single_line(summary.get("title"), "summary title")
-    problem = _single_line(summary.get("problem_pattern"), "problem_pattern")
-    symptoms = _safe_list(summary.get("observable_symptoms"), "observable_symptoms")
-    assumptions = _safe_list(summary.get("environment_assumptions"), "environment_assumptions")
-    diagnostics = _safe_list(summary.get("diagnostic_sequence"), "diagnostic_sequence")
-    limitations = _safe_list(summary.get("limitations"), "limitations")
-    evidence_ids = _safe_list(request.get("evidence_ids"), "evidence_ids")
-    if not all(SAFE_ID_RE.fullmatch(identifier) for identifier in evidence_ids):
-        raise MemoryAdmissionError("evidence identifiers must be safe identifiers")
-    resolutions = summary.get("verified_resolution")
-    if not isinstance(resolutions, list) or not resolutions:
-        raise MemoryAdmissionError("verified_resolution must be a non-empty list")
-    resolution_lines: list[str] = []
-    for item in resolutions:
-        mapping = _require_mapping(item, "verified resolution item")
-        claim = _single_line(mapping.get("claim"), "resolution claim")
-        links = mapping.get("evidence_ids")
-        if not isinstance(links, list) or not links:
-            raise MemoryAdmissionError("each resolution claim needs evidence_ids")
-        if not all(isinstance(link, str) and link in evidence_ids for link in links):
-            raise MemoryAdmissionError("resolution claim references unknown evidence")
-        citations = ", ".join(f"[evidence:{link}]" for link in links)
-        resolution_lines.append(f"- {claim} ({citations})")
-
-    def bullets(values: Iterable[str]) -> str:
-        return "\n".join(f"- {value}" for value in values)
-
+def _render_page(
+    *,
+    page_id: str,
+    markdown_body: str,
+    build: Mapping[str, object],
+    request_path: Path,
+    draft_path: Path,
+    approval_path: Path,
+    sanitized_sha256: str,
+) -> str:
+    task = _require_mapping(build["task"], "task")
+    execution = _require_mapping(build["execution"], "execution")
+    roles = _require_mapping(build["roles"], "roles")
+    teacher = _require_mapping(roles["teacher"], "teacher")
+    distiller = _require_mapping(roles["distiller"], "distiller")
     page = f"""---
 page_id: {page_id}
-task_family: {provenance['task_family']}
-artifact_id: {provenance['artifact_id']}
-run_id: {provenance['run_id']}
+task_family: {task['task_family']}
+artifact_id: {build['build_id']}
+run_id: {execution['operator_record_id']}
 status: current
 ---
-# {title}
-
-## Problem pattern
-
-{problem}
-
-## Observable symptoms
-
-{bullets(symptoms)}
-
-## Environment assumptions
-
-{bullets(assumptions)}
-
-## Diagnostic sequence
-
-{bullets(diagnostics)}
-
-## Verified resolution
-
-{chr(10).join(resolution_lines)}
-
-## Supporting evidence
-
-{bullets(f'[evidence:{identifier}]' for identifier in evidence_ids)}
-
-## Limitations
-
-{bullets(limitations)}
+{markdown_body.strip()}
 
 ## Provenance
 
-- Artifact: {provenance['artifact_id']}
-- Run: {provenance['run_id']}
-- Task: {provenance['task_id']}
-- Model SHA-256: {provenance['model_sha256']}
-- Trajectory SHA-256: {provenance['trajectory_sha256']}
-- Sanitized artifact SHA-256: {provenance['sanitized_artifact_sha256']}
-- Verifier artifact SHA-256: {provenance['verifier_artifact_sha256']}
-- Sanitizer revision: {provenance['sanitizer_revision']}
+- Task role: memory_build
+- Task: {task['task_id']}
+- Cloud teacher model: {TEACHER_MODEL_ID}
+- Cloud distiller model: {TEACHER_MODEL_ID}
+- Local student model: {STUDENT_MODEL_ID}
+- Local student revision: {STUDENT_HF_REVISION}
+- Local student SHA-256: {STUDENT_MODEL_SHA256}
+- Teacher trajectory SHA-256: {execution['trajectory_sha256']}
+- Executable verifier artifact SHA-256: {execution['verifier_artifact_sha256']}
+- Verifier bundle SHA-256: {task['verifier_bundle_sha256']}
+- Private verifier qualification record SHA-256: {task['verifier_qualification_record_sha256']}
+- Sanitized evidence SHA-256: {sanitized_sha256}
+- Distillation request SHA-256: {sha256_file(request_path)}
+- Distillation draft SHA-256: {sha256_file(draft_path)}
+- External approval record SHA-256: {sha256_file(approval_path)}
+- Sanitizer revision: {SANITIZER_REVISION}
 """
     unsafe = inspect_unsafe(page)
     if unsafe:
-        raise MemoryAdmissionError("distilled page contains unsafe classes: " + ", ".join(unsafe))
-    _assert_page_structure(page, page_id=page_id, title=title, problem=problem)
+        raise MemoryAdmissionError("admitted Markdown contains unsafe classes: " + ", ".join(unsafe))
+    metadata, body = _frontmatter_and_body(page)
+    if metadata.get("page_id") != page_id or tuple(_sections(body)) != PAGE_SECTIONS:
+        raise MemoryAdmissionError("rendered page does not match the fixed admitted structure")
     return page
 
 
@@ -494,52 +537,44 @@ def admit_memory(request_path: Path, wiki_dir: Path, index_path: Path) -> Path:
     except (OSError, json.JSONDecodeError) as exc:
         raise MemoryAdmissionError("admission request is not readable JSON") from exc
     request = _require_mapping(request, "admission request")
-    provenance = _require_mapping(request.get("provenance"), "provenance")
-    _validate_provenance(provenance)
-
-    sanitized_path = Path(str(request.get("sanitized_artifact_path", "")))
-    report_path = Path(str(request.get("sanitizer_report_path", "")))
-    verifier_path = Path(str(request.get("verifier_artifact_path", "")))
-    if not sanitized_path.is_file() or not report_path.is_file() or not verifier_path.is_file():
-        raise MemoryAdmissionError("sanitized, sanitizer, and verifier artifact paths must exist")
+    if request.get("schema_version") != ADMISSION_SCHEMA_VERSION:
+        raise MemoryAdmissionError(f"admission schema must be {ADMISSION_SCHEMA_VERSION}")
+    page_id = str(request.get("page_id", ""))
+    if not SAFE_ID_RE.fullmatch(page_id):
+        raise MemoryAdmissionError("page_id must be a lowercase safe identifier")
+    build_manifest_path = Path(str(request.get("build_manifest_path", "")))
+    distillation_request_path = Path(str(request.get("distillation_request_path", "")))
+    distillation_draft_path = Path(str(request.get("distillation_draft_path", "")))
+    approval_path = Path(str(request.get("approval_record_path", "")))
     try:
-        report = json.loads(report_path.read_text())
-    except (OSError, json.JSONDecodeError) as exc:
-        raise MemoryAdmissionError("sanitizer report is not readable JSON") from exc
-    report = _require_mapping(report, "sanitizer report")
-    _validate_sanitizer_report(report)
+        evidence = validate_build_evidence(build_manifest_path)
+        draft = validate_distillation_draft(
+            build_manifest_path, distillation_request_path, distillation_draft_path
+        )
+        sanitized_sha256 = sha256_file(evidence.sanitized_path)
+        approval = validate_approval_record(
+            approval_path,
+            manifest=evidence.manifest,
+            request_path=distillation_request_path,
+            draft_path=distillation_draft_path,
+            sanitized_sha256=sanitized_sha256,
+            page_id=page_id,
+        )
+    except TransferError as exc:
+        raise MemoryAdmissionError(str(exc)) from exc
 
-    if report.get("sanitizer_revision") != provenance["sanitizer_revision"]:
-        raise MemoryAdmissionError("sanitizer revision provenance mismatch")
-    if report.get("sanitizer_revision") != SANITIZER_REVISION:
-        raise MemoryAdmissionError("sanitizer revision does not match this implementation")
-    if report.get("artifact_id") != provenance["artifact_id"]:
-        raise MemoryAdmissionError("artifact identifier provenance mismatch")
-    if sha256_file(sanitized_path) != provenance["sanitized_artifact_sha256"]:
-        raise MemoryAdmissionError("sanitized artifact hash mismatch")
-    if report.get("input_sha256") != provenance["trajectory_sha256"]:
-        raise MemoryAdmissionError("sanitizer input is not the provenance-linked trajectory")
-    if report.get("output_sha256") != provenance["sanitized_artifact_sha256"]:
-        raise MemoryAdmissionError("sanitizer report output hash mismatch")
-    if sha256_file(verifier_path) != provenance["verifier_artifact_sha256"]:
-        raise MemoryAdmissionError("verifier artifact hash mismatch")
-
-    verifier = _require_mapping(request.get("verifier"), "verifier")
-    if verifier.get("passed") is not True or verifier.get("authoritative") != "terminal-bench-executable":
-        raise MemoryAdmissionError("authoritative Terminal Bench verifier did not pass")
-
-    review = _require_mapping(request.get("human_review"), "human_review")
-    if review.get("approved") is not True:
-        raise MemoryAdmissionError("explicit human review approval is required")
-    reviewer = str(review.get("reviewer_id", ""))
-    reviewed_at = str(review.get("reviewed_at", ""))
-    if not SAFE_ID_RE.fullmatch(reviewer) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z", reviewed_at):
-        raise MemoryAdmissionError("human review identity or timestamp is incomplete")
-    if review.get("approval_scope_sha256") != provenance["sanitized_artifact_sha256"]:
-        raise MemoryAdmissionError("human approval does not cover the sanitized artifact")
-
-    page = _render_page(request, provenance)
-    page_id = str(request["page_id"])
+    evidence_ids = draft["evidence_ids"]
+    markdown_body = str(draft["markdown_body"])
+    _validate_markdown_body(markdown_body, evidence_ids)  # type: ignore[arg-type]
+    page = _render_page(
+        page_id=page_id,
+        markdown_body=markdown_body,
+        build=evidence.manifest,
+        request_path=distillation_request_path,
+        draft_path=distillation_draft_path,
+        approval_path=approval_path,
+        sanitized_sha256=sanitized_sha256,
+    )
     wiki_dir.mkdir(parents=True, exist_ok=True)
     destination = wiki_dir / f"{page_id}.md"
     if destination.exists():
@@ -555,14 +590,45 @@ def admit_memory(request_path: Path, wiki_dir: Path, index_path: Path) -> Path:
         handle.write(page)
         temporary = Path(handle.name)
     temporary.replace(destination)
+    task = _require_mapping(evidence.manifest["task"], "task")
+    split = _require_mapping(evidence.manifest["split"], "split")
+    execution = _require_mapping(evidence.manifest["execution"], "execution")
+    roles = _require_mapping(evidence.manifest["roles"], "roles")
+    teacher = _require_mapping(roles["teacher"], "teacher")
+    distiller = _require_mapping(roles["distiller"], "distiller")
     record = {
         "page_id": page_id,
-        "artifact_id": provenance["artifact_id"],
-        "run_id": provenance["run_id"],
+        "artifact_id": evidence.manifest["build_id"],
+        "run_id": execution["operator_record_id"],
+        "task_id": task["task_id"],
+        "task_role": "memory_build",
+        "split_revision": split["revision"],
         "page_sha256": sha256_file(destination),
-        "sanitizer_report_sha256": sha256_file(report_path),
-        "reviewed_at": reviewed_at,
-        "reviewer_id": reviewer,
+        "sanitizer_report_sha256": sha256_file(evidence.sanitizer_report_path),
+        "sanitizer_revision": SANITIZER_REVISION,
+        "teacher_model_id": TEACHER_MODEL_ID,
+        "teacher_execution_adapter": teacher["provider_runtime_or_operator_adapter"],
+        "teacher_prompt_revision": teacher["prompt"]["revision"],  # type: ignore[index]
+        "teacher_prompt_sha256": teacher["prompt"]["sha256"],  # type: ignore[index]
+        "distiller_model_id": TEACHER_MODEL_ID,
+        "distiller_adapter": distiller["provider_runtime_or_operator_adapter"],
+        "distiller_prompt_revision": distiller["prompt"]["revision"],  # type: ignore[index]
+        "distiller_prompt_sha256": distiller["prompt"]["sha256"],  # type: ignore[index]
+        "student_model_id": STUDENT_MODEL_ID,
+        "student_hugging_face_revision": STUDENT_HF_REVISION,
+        "student_model_sha256": STUDENT_MODEL_SHA256,
+        "data_transmission_classification": DISTILLER_TRANSMISSION_CLASSIFICATION,
+        "source_evidence_sha256": [sanitized_sha256],
+        "verifier_artifact_sha256": execution["verifier_artifact_sha256"],
+        "verifier_bundle_sha256": task["verifier_bundle_sha256"],
+        "verifier_qualification_record_sha256": task[
+            "verifier_qualification_record_sha256"
+        ],
+        "distillation_request_sha256": sha256_file(distillation_request_path),
+        "distillation_draft_sha256": sha256_file(distillation_draft_path),
+        "approval_record_sha256": sha256_file(approval_path),
+        "reviewed_at": approval["reviewed_at"],
+        "reviewer_id": approval["reviewer_id"],
         "superseded": False,
     }
     index_path.parent.mkdir(parents=True, exist_ok=True)

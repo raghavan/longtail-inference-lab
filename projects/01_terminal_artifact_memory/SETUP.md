@@ -1,398 +1,153 @@
-# Minimal Pilot Setup
+# Teacher/student transfer setup
 
-**Experiment:** Terminal Artifact Memory  
-**Status:** Runnable implementation; stack pinned, context protocol revision needed
-**Last updated:** July 31 2026
+**Experiment:** Terminal Artifact Memory
+**Status:** Planned next experiment; no teacher/student measured result
+**Last updated:** August 1 2026
 
 ## Principle
 
-Use the smallest credible setup that preserves four things:
+Use the smallest auditable boundary that preserves:
 
-1. Isolated terminal execution.
-2. Authoritative task verification.
-3. Safe verified memory.
-4. Reproducible paired results.
+1. an exact cloud teacher and distiller;
+2. task-specific executable-verifier authority and qualification;
+3. local privacy and contamination gates;
+4. hash-scoped external approval;
+5. an exact local student and disjoint paired evaluation; and
+6. complete disclosure and provenance records.
 
-The research contribution is the verified memory layer and the measurement of whether that memory improves one fixed local model on structurally recurring terminal tasks.
+> **Do not claim success; the executable verifier alone determines whether the run is eligible for local sanitization and later distillation.**
 
-Terminal Artifact Memory does not need to become a benchmark platform, agent framework, model serving platform, database, experiment tracker, workflow system, or visualization system.
+Model confidence, narrative, apparent tool exits, and distillation quality are never eligibility signals.
 
-## Pilot question
+## Fixed roles and tools
 
-Can verified artifacts from completed terminal tasks make one fixed lightweight local model increasingly useful on held out structurally recurring engineering problems?
+- **Cloud teacher/distiller:** `gpt-5.6-sol`, invoked only through an operator-supplied or Harbor-compatible boundary. No provider SDK is added and no unsupported API claim is made.
+- **Local student:** Apache-2.0 `Qwen/Qwen2.5-Coder-7B-Instruct-GGUF` at Hugging Face revision `13fb94bfda8c8cf22497dc57b78f391a9acb426a`, Q4_K_M, SHA-256 `509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c`.
+- **Harbor/Terminal Bench:** isolated tasks, Terminus-2 student agent, ATIF transport, Docker environment, and task executable verifier.
+- **llama.cpp:** serves the one fixed local Qwen through a loopback endpoint.
+- **Gitleaks plus `artifact_memory.sanitize`:** local secret, privacy, canary, contamination, blocked-term, allowlist, and residual gates.
+- **uv/Python standard library:** reproducible local implementation and tests.
 
-The primary comparison is:
+The next preregistration must select a context policy that can reach verification. The old 16,384-token policy remains part of the immutable halted report, not an implicit choice for the next run.
 
-```text
-M0: fixed local model with no memory
-M2: the same fixed local model with retrieved Markdown memory
-```
-
-The model, prompt, runtime, hardware, context limit, tool permissions, task set, and execution budget remain fixed. Only the verified memory grows.
-
-## Final pilot stack
-
-The pilot uses four tools:
-
-1. Harbor ecosystem
-2. llama.cpp
-3. uv
-4. Gitleaks
-
-Python and Git are assumed foundations rather than experiment tools.
-
-Everything else must earn inclusion by solving an observed problem in the pilot.
-
-## Lean architecture
+## Architecture
 
 ```mermaid
 flowchart TD
-    A[Terminal Bench task] --> B[Harbor ecosystem]
-    B --> C[Terminus 2 agent]
-    C --> D[llama.cpp fixed local model]
-    C --> E[Docker task environment]
-    E --> F[Terminal Bench verifier]
-    C --> G[ATIF trajectory]
-    F --> H[Verifier result]
-    G --> I[Artifact memory sanitizer]
-    H --> I
-    I --> J[Verified Markdown memory]
-    J --> K[Direct Markdown retrieval]
-    K --> C
-    F --> L[JSON CSV and Markdown results]
+    A[Public memory-build split] --> B[Operator-supplied gpt-5.6-sol teacher]
+    B --> C[Pinned task executable verifier]
+    C -->|pass| D[Ignored local trajectory export]
+    D --> E[Local sanitizer and scanners]
+    E --> F[cloud-distillation-request-v1]
+    F --> G[Operator-supplied gpt-5.6-sol distiller]
+    G --> H[Structured Markdown draft]
+    H --> I[External hash-scoped approval]
+    I --> J[Admitted local wiki]
+    J --> K[Deterministic M2 retrieval]
+    K --> L[llama.cpp fixed Qwen student]
+    L --> M[Held-out task executable verifier]
 ```
 
-## 1. Harbor ecosystem
+The repository owns validation and packet construction, not cloud provider infrastructure or verifier semantics.
 
-Treat Terminal Bench, Harbor, Terminus 2, ATIF, Docker isolation, and the executable verifier as one platform decision.
-
-Harbor provides:
-
-1. Terminal Bench task execution.
-2. Docker task environment creation.
-3. Terminus 2 agent invocation.
-4. Execution limits.
-5. ATIF trajectory capture.
-6. Terminal Bench verifier execution.
-7. Standard trial artifacts.
-
-The pilot must not create another benchmark scheduler, terminal agent loop, verifier, trajectory format, or container orchestration layer.
-
-Docker remains necessary for isolation, but Terminal Artifact Memory interacts with it through Harbor rather than maintaining separate Docker infrastructure.
-
-## 2. llama.cpp
-
-llama.cpp serves one fixed local model through an OpenAI compatible endpoint.
-
-No additional model gateway is required.
-
-The pilot manifest records the model family, parameter size, exact identifier, SHA-256, quantization, context size, runtime revision, and decoding settings. `manifests/measured-run-template.v1.json` is the authoritative field list. The local GGUF path is supplied through the `ARTIFACT_MEMORY_MODEL_PATH` environment variable rather than the manifest, so no machine path enters a committed control record.
-
-Download the model once, record its hash, and freeze it before measured runs begin.
-
-Do not compare models until the memory effect has been measured.
-
-## 3. uv
-
-uv manages the Python version, environment, lock file, and script execution.
-
-The pilot uses only the Python standard library, so the project has no required Python package dependencies.
-
-```toml
-[project]
-name = "terminal-artifact-memory"
-version = "0.1.0"
-requires-python = ">=3.12"
-dependencies = []
-```
-
-Use Python standard library modules for JSON, CSV, Markdown generation, hashing, file traversal, lexical scoring, regular expressions, subprocess execution, statistics, and tests.
-
-Testing uses `unittest`.
-
-Do not add pip requirement files, task runners, hook frameworks, dataframe libraries, statistics packages, or plotting packages for the pilot.
-
-## 4. Gitleaks
-
-Gitleaks scans every exported artifact before it can enter searchable memory.
-
-Terminal Artifact Memory adds a small transparent sanitizer for experiment specific content:
-
-1. Home directory paths.
-2. Workspace paths.
-3. Repository names.
-4. Git remote addresses, `user@host` account forms, and remote-command targets, excluding package and image pins such as `python@3.12`, `node@18.x`, and `ubuntu@sha256:<digest>`.
-5. Hostnames.
-6. Private network addresses.
-7. Docker mount paths.
-8. Hidden test paths.
-9. Reference solution paths.
-10. Canary strings.
-
-Every accepted artifact also receives manual review during the pilot.
-
-The pilot does not need a general personal information platform.
-
-## Direct Markdown retrieval
-
-The pilot does not need SQLite, embeddings, or a vector database.
-
-The retriever performs a deterministic file scan:
-
-1. Read every page in `memory/wiki/`.
-2. Extract the fixed searchable fields.
-3. Normalize and tokenize the current task description.
-4. Score each page with one documented lexical rule.
-5. Return the top K pages within a fixed token budget counted in the retriever's own lexical tokens, not model tokens; `config/retrieval.v1.json` states the unit.
-6. Record every retrieved page identifier and score.
-
-This is the simplest retrieval baseline. More advanced retrieval is considered only after the baseline produces measured results.
-
-## Minimal pilot code
+## Authoritative files
 
 ```text
-01_terminal_artifact_memory/
-  README.md
-  SETUP.md
-  pyproject.toml
-  uv.lock
+artifact_memory/
+  experiment.py                 # local-student M0/M2 runner
+  transfer.py                   # cloud boundary and provenance checks
+  verifier_qualification.py     # private compact qualification validation
+  sanitize.py                   # local sanitizer and scanners
+  memory.py                     # approval and admission
+  analyze.py                    # student-only paired analysis
 
-  artifact_memory/
-    experiment.py
-    sanitize.py
-    memory.py
-    analyze.py
+prompts/
+  teacher.v1.md
+  distillation.v1.md
+  system.v1.md
+  memory.v1.md
 
-  prompts/
-    system.v1.md
-    memory.v1.md
-
-  config/
-  manifests/
-  memory/
-    wiki/
-    manifests/
-
-  runs/
-  results/generated/
-  tests/
-  OPERATOR.md
+manifests/
+  measured-run-template.v2.json
+  teacher-memory-build-template.v1.json
+  verifier-qualification-template.v1.json
+  distillation-draft-template.v1.json
+  external-human-approval-template.v1.json
+  memory-admission-template.v2.json
 ```
 
-Runtime directories are created on demand and retained with `.gitkeep` files. Raw `runs/` contents and `config/local/` are ignored. Add another directory only when the pilot actually needs it.
+The v2 measured manifest records teacher, distiller, and student model identities, provider/runtime or operator adapters, role-specific prompt revisions and hashes, task role, disjoint split, transmission classification, verifier qualification, student hash, sanitizer revision, and fixed controls. Legacy `paired-run-manifest-v1` records receive a controlled rejection; the halted pilot report remains readable and unchanged.
 
-### experiment.py
+## Verifier qualification
 
-Runs controlled Harbor jobs for M0 and M2.
+Terminal Bench/Harbor supplies each task's verifier. Before a task enters either measured split, run private development-only qualification and retain a compact `verifier-qualification-v1` record under ignored local storage.
 
-It verifies that every non memory control remains identical and creates one self contained run directory for each trial.
+The record is tied to task source revision, public instruction hash, immutable container digest, and verifier bundle hash. It records only safe requirement-class identifiers and counts/outcomes for:
 
-### sanitize.py
+1. known-good positive controls;
+2. plausible-negative/mutation controls covering every public requirement class;
+3. at least two clean-container determinism runs; and
+4. reward/test isolation or tamper-resistance checks.
 
-Reads exported trial artifacts, invokes Gitleaks, applies Terminal Artifact Memory redaction rules, validates the allowlist, tests canaries, and writes a sanitizer report.
+The validator rejects unknown detail fields so hidden tests, verifier source, reference solutions, mutation patches, commands, paths, and detailed output cannot enter the compact record. Qualification is never measured, never searchable memory, and never a competing score. It improves confidence in verifier adequacy but cannot prove perfect alignment with task intent.
 
-### memory.py
+Existing exactly-one reward, exact `1.0` pass, task/container pins, hashes, and admission links establish result integrity. Qualification addresses adequacy. Both are required.
 
-Converts one sanitized successful trajectory and verifier result into a provenance linked Markdown page.
+## Local storage and cloud disclosure
 
-It also performs deterministic direct retrieval over the Markdown wiki.
+`runs/` and `config/local/` are ignored. They hold raw trajectories, verifier files, manifests, canaries, scanner reports, generated requests, drafts, approvals, and compact condition records.
 
-### analyze.py
+The cloud teacher receives public task data and task-environment interaction required for a designated memory-build task. The cloud distiller receives only the generated request's exact field allowlist. Local Qwen evaluation sends nothing to a cloud role.
 
-Reads paired JSON results and writes:
+Raw private trajectories, credentials, private paths/hosts/repositories, hidden tests, verifier internals, reference solutions, canaries, detailed scanner output, blocked terms, and unrelated sessions are denied. A local file may have originated from a cloud teacher interaction; calling it “stored locally” does not erase that prior transmission. Conversely, retaining a raw local trajectory does not authorize uploading it to the distiller.
 
-1. `results.csv`
-2. `summary.md`
-3. `paired_transfer_table.md`
+Canary metadata is appended locally to the evidence export after teacher execution, then must be detected and removed by the sanitizer. It is not placed in the cloud teacher prompt or distillation request.
 
-The summary reports:
+## Reproducibility boundaries
 
-1. Structural recurrence pass rates.
-2. Positive transfer count.
-3. Negative transfer count.
-4. Stable success count.
-5. Unresolved task count.
-6. Retrieval coverage.
-7. Verified knowledge yield.
+Every measured record must pin:
 
-Terminal Bench remains the authority on whether a task passed.
+1. code, Harbor, Terminal Bench, task source, task container, Terminus/ATIF, Docker, Gitleaks, and uv lock revisions;
+2. task instruction, verifier bundle, and private qualification-record hashes;
+3. teacher/distiller identities, adapters, prompts, and execution artifacts;
+4. exact local Qwen identity, revision, hash, quantization, llama.cpp revision, decoding, context, hardware, and student prompts;
+5. split revision, retrieval revision, memory count, page hashes, and sanitizer revision; and
+6. distillation request, source evidence, draft, approval, and admitted page hashes.
 
-Charts are presentation artifacts and are not part of the pilot runtime. They may be created later from `results.csv` using any suitable tool.
-
-## Where the system runs
-
-### Laptop
-
-Start on the laptop.
-
-Use it for:
-
-1. Writing and reviewing code.
-2. Running standard library tests.
-3. Running sanitizer self tests.
-4. Running small development trials.
-5. Reviewing every artifact before it enters memory.
-6. Inspecting JSON, CSV, and Markdown results.
-
-### VPS
-
-The VPS is optional capacity rather than part of the architecture.
-
-Use it only when local trials become too long or resource intensive.
-
-The VPS must use the same Git revision, uv lock file, model hash, prompt revision, and pinned system tool versions as the laptop.
-
-### GitHub
-
-GitHub stores code, documentation, prompts, manifests, and reviewed result summaries.
-
-GitHub Actions is not required.
-
-Large raw artifacts may remain on the laptop or VPS. Commit only reviewed summaries and compact measured results.
-
-## Run storage
-
-Do not introduce an experiment tracking service.
-
-Each paired trial is a self contained directory under `runs/<pair-id>/{M0,M2}/`. [`runs/README.md`](runs/README.md) owns that layout and its handling rules.
-
-A measured trial must be reconstructable from its directory and referenced Git revision.
-
-## Reproducibility manifest
-
-Every measured trial records a complete `run_environment` block covering the code revision, Harbor, Terminal Bench, task container digest, Terminus, ATIF schema, llama.cpp revision, model hash, quantization, prompt revision, retrieval revision, sanitizer revision, Gitleaks version, Python lock hash, operating system, and hardware description.
-
-`manifests/measured-run-template.v1.json` is the authoritative field list, and `artifact_memory.experiment validate` rejects a measured manifest that leaves any of it unresolved. A trial missing a required control is a development trial and cannot enter the primary result.
+Secrets remain environment-only. They must never appear in argv, manifests, fixtures, examples, or logs. Model paths and endpoint credentials are resolved from environment variable names stored in the local student manifest.
 
 ## Commands
 
-Prepare the Python environment:
-
 ```bash
 uv sync --frozen
-```
-
-Run tests and safety checks:
-
-```bash
 uv run python -m unittest discover -v
 uv run python -m artifact_memory.sanitize --self-test
-gitleaks dir .
+uv lock --check
 ```
 
-Validate prerequisites and run paired trials with a complete local manifest:
+Validate a local student manifest and prerequisites:
 
 ```bash
-uv run python -m artifact_memory.experiment check-prereqs --manifest config/local/pilot.json
-uv run python -m artifact_memory.experiment run --manifest config/local/pilot.json --wiki-dir memory/wiki --memory-index memory/manifests/artifact_index.jsonl --runs-dir runs
+uv run python -m artifact_memory.experiment validate --manifest config/local/student-pair.json
+uv run python -m artifact_memory.experiment check-prereqs --manifest config/local/student-pair.json
 ```
 
-Produce result files:
+Validate a teacher build and prepare the sole uploadable distillation request:
 
 ```bash
-uv run python -m artifact_memory.analyze --runs-dir runs --output-dir results/generated
+uv run python -m artifact_memory.transfer validate-build \
+  --manifest runs/BUILD_ID/teacher-build.json
+uv run python -m artifact_memory.transfer prepare-distillation \
+  --manifest runs/BUILD_ID/teacher-build.json \
+  --output runs/BUILD_ID/distillation-request.json
 ```
 
-The analyzer refuses fixtures and development records by default. See [`OPERATOR.md`](OPERATOR.md) for the complete workflow and source-backed external setup links.
+See [`OPERATOR.md`](OPERATOR.md) for ordering, review, admission, student evaluation, and analysis.
 
-No Makefile, pre commit framework, hosted workflow, database, tracking server, or visualization package is required.
+## What is not included
 
-## Pilot sequence
+The bounded workflow does not add a cloud SDK, provider gateway, general benchmark platform, verifier authoring framework, database, vector store, tracking service, learned judge, or plotting package. New infrastructure begins only after measured evidence shows it can change a decision.
 
-1. Install Harbor, llama.cpp, uv, and Gitleaks.
-2. Pin the Terminal Bench task revision and Harbor ecosystem versions.
-3. Download, hash, and freeze one local model.
-4. Run one oracle task to validate the task environment and verifier.
-5. Run one Terminus 2 task under M0.
-6. Confirm that the ATIF trajectory and verifier result are preserved.
-7. Run Gitleaks, Terminal Artifact Memory redaction rules, allowlist validation, and canary tests.
-8. Manually review the exported artifact.
-9. Distill one verified run into a Markdown memory page.
-10. Retrieve relevant pages using the frozen direct file scan.
-11. Run the same held out probes under M0 and M2.
-12. Store each trial in a self contained run directory.
-13. Generate the paired CSV and Markdown results.
-14. Decide whether the measured signal justifies scaling the experiment.
+## Readiness
 
-## Safety gate
-
-Before an artifact enters searchable memory, all conditions must pass:
-
-1. The Terminal Bench verifier passed.
-2. Artifact provenance is complete.
-3. Gitleaks reports no unresolved finding.
-4. Terminal Artifact Memory sanitizer rules complete successfully.
-5. Canary values are detected and removed.
-6. Hidden test and reference solution paths are absent.
-7. The sanitized artifact matches the explicit allowlist.
-8. Operational claims in the Markdown page link to verified evidence.
-9. A human reviewed the artifact.
-
-A failed gate blocks the artifact from memory.
-
-## Excluded from the pilot
-
-The first credible experiment does not require:
-
-1. matplotlib or another plotting package.
-2. GitHub Actions.
-3. MLflow.
-4. Presidio.
-5. pandas.
-6. statsmodels.
-7. pytest.
-8. Pyright.
-9. pre commit.
-10. SQLite FTS5.
-11. Vector databases.
-12. Embedding models.
-13. Neural rerankers.
-14. Knowledge graphs.
-15. Fine tuning frameworks.
-16. Multiple model serving systems.
-17. LiteLLM.
-18. DVC.
-19. Kubernetes.
-20. Distributed workflow schedulers.
-21. Custom dashboards.
-22. OpenTelemetry infrastructure.
-
-A new tool must solve an observed problem or improve a measured decision before it is added.
-
-## When to add infrastructure
-
-Add a plotting tool only when the measured CSV result needs a publication quality figure.
-
-Add SQLite only when direct Markdown scanning becomes operationally inconvenient.
-
-Add semantic retrieval only after the direct lexical baseline is frozen and the same probes demonstrate measurable improvement.
-
-Add pytest only when the standard library tests become awkward to maintain.
-
-Add pandas only when result manipulation becomes difficult with JSON, CSV, and the standard library.
-
-Add statsmodels only when the evaluation set is large enough for a preregistered statistical test to be meaningful.
-
-Add MLflow only when self contained run directories become difficult to compare across several models, machines, or researchers.
-
-Add GitHub Actions only when several contributors need automatic clean environment checks.
-
-## Current readiness
-
-The standard-library implementation, synthetic fixture smoke, pinned Harbor/Terminal Bench stack, fixed local model endpoint, Docker isolation, Terminus-2, ATIF capture, and executable verifier were validated in the 2026-07-31 pilot. That pilot halted before scoring because the first M0 trajectory exceeded the frozen 16,384-token context with summarization disabled. A new measured run is not ready until a revised context-management control is explicitly preregistered.
-
-## Definition of pilot ready
-
-The setup is ready for measured experimentation when:
-
-1. Harbor runs the pinned Terminal Bench subset in Docker.
-2. Terminus 2 uses the pinned local model through llama.cpp.
-3. ATIF trajectories and verifier results are preserved.
-4. Successful artifacts pass Gitleaks, the Terminal Artifact Memory sanitizer, canary tests, allowlist validation, and manual review.
-5. The memory script produces provenance linked Markdown.
-6. Direct Markdown retrieval returns the expected pages under a frozen configuration.
-7. The experiment script runs paired M0 and M2 probes with identical controls.
-8. Every measured trial is reconstructable from its run directory.
-9. The analysis script reproduces the paired CSV and Markdown result files.
-
-The 2026-07-31 run met the platform checks but exposed a protocol-level context limit. Future readiness therefore also requires demonstrating, in development only, that the newly preregistered context policy can reach executable verification without changing controls mid-run.
+The machinery is ready for development validation. A measured teacher/student run is not ready until a new preregistration freezes the qualified disjoint task split, context policy, all external pins, adapters, thresholds, and attempt budget. No new measured experiment has been run and no transfer efficacy is claimed.

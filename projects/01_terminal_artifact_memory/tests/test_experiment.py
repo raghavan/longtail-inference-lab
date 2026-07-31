@@ -26,6 +26,14 @@ from artifact_memory.experiment import (
     verified_memory_state,
 )
 from artifact_memory.sanitize import sha256_file
+from artifact_memory.transfer import (
+    DISTILLER_PROMPT_PATH,
+    STUDENT_HF_REVISION,
+    STUDENT_MODEL_ID,
+    STUDENT_MODEL_SHA256,
+    TEACHER_MODEL_ID,
+    TEACHER_PROMPT_PATH,
+)
 from tests.helpers import FIXTURE_SHA, result_fixture, synthetic_manifest
 
 
@@ -34,16 +42,56 @@ class ManifestTests(unittest.TestCase):
         validate_manifest(synthetic_manifest())
 
     def test_committed_template_hashes_match_versioned_files(self) -> None:
-        template = load_manifest(PROJECT_ROOT / "manifests" / "measured-run-template.v1.json")
+        template = load_manifest(PROJECT_ROOT / "manifests" / "measured-run-template.v2.json")
         prompt = template["controls"]["prompt"]
         self.assertEqual(prompt["system_sha256"], sha256_file(PROJECT_ROOT / "prompts" / "system.v1.md"))
         self.assertEqual(prompt["memory_sha256"], sha256_file(PROJECT_ROOT / "prompts" / "memory.v1.md"))
+        self.assertEqual(
+            template["roles"]["teacher"]["prompt"]["sha256"],
+            sha256_file(TEACHER_PROMPT_PATH),
+        )
+        self.assertEqual(
+            template["roles"]["distiller"]["prompt"]["sha256"],
+            sha256_file(DISTILLER_PROMPT_PATH),
+        )
         self.assertEqual(template["run_environment"]["python_lock_hash"], sha256_file(LOCK_PATH))
+        self.assertEqual(template["roles"]["teacher"]["model_id"], TEACHER_MODEL_ID)
+        self.assertEqual(template["roles"]["distiller"]["model_id"], TEACHER_MODEL_ID)
+        self.assertEqual(template["roles"]["student"]["model_id"], STUDENT_MODEL_ID)
+        self.assertEqual(
+            template["roles"]["student"]["hugging_face_revision"], STUDENT_HF_REVISION
+        )
+        self.assertEqual(template["roles"]["student"]["sha256"], STUDENT_MODEL_SHA256)
 
     def test_complete_measured_manifest_is_structurally_valid(self) -> None:
         manifest = synthetic_manifest()
         manifest["data_classification"] = "measured"
         validate_manifest(manifest)
+
+    def test_exact_role_identity_pins_and_student_only_task_are_required(self) -> None:
+        manifest = synthetic_manifest()
+        self.assertEqual(manifest["roles"]["teacher"]["model_id"], TEACHER_MODEL_ID)
+        self.assertEqual(manifest["roles"]["distiller"]["model_id"], TEACHER_MODEL_ID)
+        self.assertEqual(manifest["roles"]["student"]["model_id"], STUDENT_MODEL_ID)
+        self.assertEqual(
+            manifest["roles"]["student"]["hugging_face_revision"], STUDENT_HF_REVISION
+        )
+        self.assertEqual(manifest["roles"]["student"]["sha256"], STUDENT_MODEL_SHA256)
+        manifest["task"]["executed_by_role"] = "cloud_teacher"
+        with self.assertRaisesRegex(ManifestError, "local_student"):
+            validate_manifest(manifest)
+
+    def test_implementation_worker_cannot_be_added_as_a_measured_role(self) -> None:
+        manifest = synthetic_manifest()
+        manifest["implementation_worker_model"] = "gpt-5.6-sol"
+        with self.assertRaisesRegex(ManifestError, "auditable role contract"):
+            validate_manifest(manifest)
+
+    def test_legacy_manifest_has_a_controlled_rejection(self) -> None:
+        manifest = synthetic_manifest()
+        manifest["schema_version"] = "paired-run-manifest-v1"
+        with self.assertRaisesRegex(ManifestError, "legacy paired-run-manifest-v1"):
+            validate_manifest(manifest)
 
     def test_incomplete_measured_provenance_is_rejected(self) -> None:
         manifest = synthetic_manifest()

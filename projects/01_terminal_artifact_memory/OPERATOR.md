@@ -1,37 +1,22 @@
-# Pilot operator guide
+# Teacher/student transfer operator guide
 
-The pilot software is runnable and the first external stack was pinned in the 2026-07-31 preregistration. That run halted without a scored baseline when the first M0 trajectory exceeded the fixed context before verification. Reuse the workflow below only with a newly preregistered protocol revision; never rerun or relabel the consumed attempt.
+This guide prepares the **next planned** Terminal Artifact Memory experiment. It does not authorize a measured run without a new preregistration and complete local pins. No teacher/student measured result exists.
 
-## Upstream interfaces used
+The [2026-07-31 halted 16K pilot](results/2026-07-31-measured-pilot/summary.md) is immutable. Never rerun, relabel, repair, or pool its consumed attempt.
 
-The implementation delegates rather than recreates the external platforms:
+## Non-negotiable authority
 
-- [Harbor getting started](https://www.harborframework.com/docs/getting-started) documents `uv tool install harbor`, `harbor run`, registered datasets, and local datasets.
-- [Harbor evals](https://www.harborframework.com/docs/run-jobs/run-evals) documents Docker-backed jobs and the trial `agent/trajectory.json` and `verifier/reward.txt` artifacts.
-- [Terminus-2](https://www.harborframework.com/docs/agents/terminus-2) documents `--agent terminus-2`, `api_base`, temperature, and turn controls.
-- [Harbor skills](https://www.harborframework.com/docs/run-jobs/skills) documents local `SKILL.md` injection and content digests. The pilot uses the same skill mechanism in M0 and M2; only the retrieved-memory section differs.
-- [ATIF RFC 0001](https://github.com/harbor-framework/harbor/blob/main/rfcs/0001-trajectory-format.md) defines the trajectory format Harbor preserves.
-- [llama.cpp server documentation](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md) documents `llama-server`, its OpenAI-compatible routes, and the model, context, host, and port flags used here.
-- [Gitleaks usage](https://github.com/gitleaks/gitleaks#usage) documents the current `gitleaks dir` file/directory scan. The older `detect` command is deprecated.
+> **Do not claim success; the executable verifier alone determines whether the run is eligible for local sanitization and later distillation.**
 
-The command builders are isolated and covered by tests. `check-prereqs` also inspects the installed `harbor run --help` before a trial.
+Ignore model confidence, completion prose, command exit impressions, apparent files, distillation quality, and learned judges when deciding eligibility. If exactly one pinned task verifier artifact with exact reward `1.0` is not present, the build is ineligible. It is not a candidate for sanitization, distillation, approval, or memory.
 
-## Local prerequisites
+## Upstream responsibility
 
-Already present at pilot implementation intake: Docker and uv.
+Harbor/Terminal Bench supplies the task environment and task-specific executable-verifier semantics. This repository validates pins, result transport, hashes, eligibility, and admission links; it does not recreate or reveal verifier internals.
 
-Not present at intake: Harbor, Gitleaks, and `llama-server`. Do not install them globally from an automated run. An operator should:
+Use authoritative upstream documentation for Harbor installation, Docker-backed tasks, Terminus-2, ATIF, skills, llama.cpp server, and Gitleaks. Pin the chosen versions in the new preregistration. Do not assume that `gpt-5.6-sol` is available through an API. Select an operator-supplied or Harbor-compatible execution boundary only when current authoritative tooling establishes it, and record that adapter exactly.
 
-1. Install a chosen stable Harbor release with the upstream `uv tool install harbor` method, then record `harbor --version`.
-2. Install a pinned llama.cpp build by following its official build/install documentation, then record `llama-server --version` and the exact source revision.
-3. Install Gitleaks using an upstream-supported method (the project documents Homebrew and release binaries), then record `gitleaks version`.
-4. Confirm the Docker daemon is available with `docker info`.
-5. Select license-compatible Qwen-family 7B GGUF Q4 weights. Keep the file under the ignored local model storage, compute its SHA-256, and do not commit it.
-6. Select and preregister the public environment-setup memory-build tasks and separate held-out probes. Pin the Harbor/Terminal Bench version and task container digest.
-
-Do not use hidden tests, reference solutions, or verifier details as model or retrieval input.
-
-## Development checks
+## 1. Development checks
 
 Run from this experiment directory:
 
@@ -42,115 +27,247 @@ uv run python -m artifact_memory.sanitize --self-test
 uv lock --check
 ```
 
-The self-test and end-to-end unittest smoke use synthetic fixtures and are not measured experiment data.
+Synthetic fixtures are deterministic controls, not experiment data.
 
-## Prepare a local manifest
+## 2. Preregister roles, split, context, and thresholds
 
-Copy `manifests/measured-run-template.v1.json` to a local, uncommitted path under `config/local/`. Fill every `REQUIRED_...` value explicitly. The loader never infers measured provenance. It rejects an incomplete measured manifest.
+Before any measured action, publish a new protocol revision that freezes:
 
-Unresolved values are detected by the uppercase template convention only: `REQUIRED_...`, `TBD...`, `CHANGEME`, and `PLACEHOLDER`. Ordinary prose such as a task description containing "required" is accepted, so never leave a real value in that uppercase marker form.
+1. exact disjoint public memory-build and held-out task lists;
+2. public task instructions and immutable task/container/verifier bundle pins;
+3. teacher and distiller identity `gpt-5.6-sol`, operator adapters, and prompt hashes;
+4. exact local Qwen identity/revision/Q4_K_M/hash and pinned llama.cpp;
+5. a context policy demonstrated in development to reach executable verification;
+6. hardware, decoding, tools, attempt/turn budgets, retrieval controls, and memory checkpoints;
+7. success, negative-transfer, unsafe-error, and stop thresholds; and
+8. the role-specific cloud transmission inventory.
 
-Set the environment variables named by the manifest:
+Do not reuse the halted 16,384-token setting by implication. Choose and document the next context control explicitly.
 
-- `ARTIFACT_MEMORY_MODEL_PATH`: local GGUF path.
-- `ARTIFACT_MEMORY_LLAMA_API_BASE`: loopback OpenAI-compatible `/v1` endpoint.
-- `ARTIFACT_MEMORY_LLAMA_API_KEY`: local endpoint credential or a non-secret local sentinel when the endpoint requires none.
-- `ARTIFACT_MEMORY_PINNED_TASKS_PATH`: private task directory whose selected `task.toml` files use immutable image digests. Measured preflight also verifies the public instruction hash.
+Copy these templates only into ignored `config/local/` or `runs/` paths:
 
-A memory-build manifest may additionally name a private `extra_instruction_path_env` containing only its non-solution sanitizer canary metadata. Never commit that file or its value.
+```text
+manifests/measured-run-template.v2.json
+manifests/teacher-memory-build-template.v1.json
+manifests/verifier-qualification-template.v1.json
+manifests/distillation-draft-template.v1.json
+manifests/external-human-approval-template.v1.json
+manifests/memory-admission-template.v2.json
+```
 
-Values are read at runtime and are not copied into the fixed-control manifest. The endpoint credential is forwarded to each Harbor trial only through the child process environment, under the variable named by `external.agent_api_key_env` (`OPENAI_API_KEY` by default, which is what the Terminus-2 OpenAI-compatible client reads). It never appears in a command argument, manifest, run record, or log.
+`paired-run-manifest-v1` receives a controlled rejection for new measurement.
 
-Validate without executing:
+## 3. Qualify each task verifier privately
+
+Qualification is required for every memory-build and held-out task before it is eligible for a measured split. Run qualification in clean containers as development-only work. Keep all jobs, verifier code, hidden tests, known-good artifacts, mutations, paths, commands, and detailed outputs private.
+
+The compact qualification record must bind:
+
+- task ID and Terminal Bench source revision;
+- public instruction SHA-256;
+- immutable task container digest; and
+- verifier bundle SHA-256.
+
+It records only public requirement-class identifiers and counts/outcomes for:
+
+1. at least one accepted known-good positive control;
+2. at least one rejected plausible-negative/mutation control for every public requirement class;
+3. at least two consistent clean-container runs with the same strict pass reward; and
+4. at least one rejected reward/test tamper attempt with isolation established.
+
+Validate through the build or student preflight. Any missing pin, hash mismatch, uncovered requirement, false accept, false reject, nondeterminism, or failed isolation makes the task ineligible. Do not score it.
+
+Qualification checks adequacy, while exactly-one reward transport and artifact hashes check integrity. Mutation controls raise confidence but cannot prove perfect coverage of task intent. Qualification remains development-only and never enters M0/M2 analysis or searchable memory.
+
+## 4. Prepare local student controls
+
+Copy `measured-run-template.v2.json` to `config/local/student-pair.json` and replace every uppercase marker. The manifest must keep:
+
+- task role `held_out_student_evaluation` and actor `local_student`;
+- exact `gpt-5.6-sol` teacher/distiller provenance roles, even though they do not execute the probe;
+- exact Qwen student identity and sole-evaluation flag;
+- a disjoint split revision;
+- private qualification-record path and hash; and
+- the exact transmission allow/deny inventory.
+
+Set only the environment variables named by the local manifest:
+
+- `ARTIFACT_MEMORY_MODEL_PATH`
+- `ARTIFACT_MEMORY_LLAMA_API_BASE`
+- `ARTIFACT_MEMORY_LLAMA_API_KEY`
+- `ARTIFACT_MEMORY_PINNED_TASKS_PATH`
+
+Credentials and model paths stay in environment values. Never put them in argv, manifests, logs, fixtures, or examples.
+
+Validate and plan without execution:
 
 ```bash
-uv run python -m artifact_memory.experiment validate --manifest config/local/pilot.json
+uv run python -m artifact_memory.experiment validate \
+  --manifest config/local/student-pair.json
 uv run python -m artifact_memory.experiment plan \
-  --manifest config/local/pilot.json \
-  --wiki-dir memory/wiki \
-  --memory-index memory/manifests/artifact_index.jsonl
+  --manifest config/local/student-pair.json \
+  --wiki-dir PRIVATE_MEMORY_WIKI \
+  --memory-index PRIVATE_MEMORY_INDEX
 ```
 
-`plan` is planning output, never a measured result. `plan`, `run`, and `run-condition` recompute memory state from the admitted-page index: every wiki page must be admitted, unsuperseded, and unchanged. For staged runs, M0 requires the observed count to equal `baseline_memory_contributions`; M2 requires both `memory_contributions` and `memory_checkpoint` to equal the observed admitted count. Checkpoints are numbered by contribution count, not run order.
+`plan` is never a measured result.
 
-## Start the local model endpoint
+## 5. Start and check the local Qwen endpoint
 
-Print the source-backed llama.cpp command:
+Print the pinned llama.cpp command:
 
 ```bash
-uv run python -m artifact_memory.experiment llama-command --manifest config/local/pilot.json
+uv run python -m artifact_memory.experiment llama-command \
+  --manifest config/local/student-pair.json
 ```
 
-Inspect and execute that command in a separate terminal. The pilot does not manage the server lifecycle. Then check all pinned boundaries:
+Inspect it and start the server separately. The experiment does not manage model lifecycle. Then run:
 
 ```bash
-uv run python -m artifact_memory.experiment check-prereqs --manifest config/local/pilot.json
+uv run python -m artifact_memory.experiment check-prereqs \
+  --manifest config/local/student-pair.json
 ```
 
-This checks tool availability and pins, Docker, Harbor 0.20.0's `--include-task-name` interface, the immutable local task instruction and image reference, the loopback `/health` and `/v1/models` routes, a clean worktree at the declared Git revision, prompt and lock hashes, and the GGUF hash.
+Measured preflight checks the clean Git revision, external versions, exact Qwen file hash, student prompt hashes, public task instruction/container pins, and the private verifier qualification record.
 
-## Run a staged paired probe
+## 6. Run all held-out Qwen M0 probes first
 
-The measured ordering records M0 before memory construction and M2 after the approved checkpoint. Both conditions use the same preregistered manifest. `baseline_memory_contributions` states the pages permitted during M0; `memory_contributions` and `memory_checkpoint` state the pages required during M2.
+Before any memory page exists:
 
 ```bash
 uv run python -m artifact_memory.experiment run-condition \
   --condition M0 \
-  --manifest config/local/pilot.json \
-  --wiki-dir PRIVATE_MEMORY_WIKI \
-  --memory-index PRIVATE_MEMORY_INDEX \
-  --runs-dir PRIVATE_RUNS
-
-# After sanitizer gates, external review, and admission:
-uv run python -m artifact_memory.experiment run-condition \
-  --condition M2 \
-  --manifest config/local/pilot.json \
+  --manifest config/local/student-pair.json \
   --wiki-dir PRIVATE_MEMORY_WIKI \
   --memory-index PRIVATE_MEMORY_INDEX \
   --runs-dir PRIVATE_RUNS
 ```
 
-Harbor owns Docker isolation, Terminus-2, ATIF capture, and the executable verifier. Each condition receives the same versioned skill template. M0 gets an empty memory marker; M2 gets deterministic retrieved pages. The runner records each condition's observed admitted-page state, latency, ATIF numeric metrics, fixed-control digest, and refuses an overwrite. It creates `pair.json` only after both conditions exist and pass control equivalence.
+M0 contains an empty retrieved-memory marker. Run every preregistered M0 probe before teacher memory construction. Do not let a held-out trajectory become memory.
 
-The `run` command remains available for non-staged fixture smoke only. It requires `baseline_memory_contributions` to equal `memory_contributions` and executes M0 and M2 consecutively against that one already-observed memory state; use `run-condition` whenever those counts differ.
+## 7. Execute one cloud-teacher memory build
 
-Raw run directories are local and ignored because trajectories can contain sensitive data. A result is measured only when its input manifest says `measured`, contains complete provenance, and passes the checks above.
+Use the selected authoritative operator boundary to send only:
 
-## Sanitize and admit one verified memory contribution
+1. the designated public memory-build task identity/instruction;
+2. `prompts/teacher.v1.md`; and
+3. task-environment observations plus teacher-selected tool inputs/outputs required for that public task.
 
-A memory-build artifact must contain at least one preregistered canary planted in task-visible, non-solution metadata before export. Put expected canary values and any known private host/repository terms in local files that are never committed.
+The exact execution model must be `gpt-5.6-sol`. The coding worker that prepared this repository is not automatically the measured teacher.
+
+Keep provider credentials environment-only. Do not place a key in an argument, manifest, shell history example, captured command, or log. Record the adapter name, timestamps, public task, model/prompt hashes, and local trajectory/verifier artifact hashes in a private copy of `teacher-memory-build-template.v1.json`.
+
+The cloud teacher must not receive held-out probes, qualification internals, hidden tests, verifier code, reference solutions, local host details, or canaries.
+
+## 8. Establish executable-verifier eligibility
+
+Capture the operator's task result into the compact verifier artifact expected by the build manifest. It must attest:
+
+```json
+{
+  "authoritative": "terminal-bench-executable",
+  "passed": true,
+  "reward": 1.0,
+  "reward_artifact_count": 1,
+  "source_sha256": "<sha256-of-the-single-pinned-reward-artifact>"
+}
+```
+
+This compact example contains no verifier internals. If there are zero or multiple reward artifacts, a non-`1.0` reward, a hash mismatch, or an unqualified task, stop. Never infer pass from the teacher's response.
+
+## 9. Sanitize locally before distillation
+
+Keep the original raw capture locally. Create the local evidence export, append a preregistered non-solution canary locally **after** cloud teacher execution, and record that export as the build trajectory artifact. The canary must never be transmitted to the teacher.
 
 ```bash
 uv run python -m artifact_memory.sanitize \
-  --input runs/LOCAL_BUILD/trajectory.json \
-  --output runs/LOCAL_BUILD/sanitized.txt \
-  --report runs/LOCAL_BUILD/sanitizer.json \
-  --artifact-id SAFE_ARTIFACT_ID \
+  --input runs/BUILD_ID/trajectory-export.txt \
+  --output runs/BUILD_ID/sanitized.txt \
+  --report runs/BUILD_ID/sanitizer.json \
+  --artifact-id BUILD_ID \
   --canary-file config/local/canaries.txt \
   --blocked-terms-file config/local/private-terms.txt
 ```
 
-The sanitizer runs Gitleaks on both the exported source and sanitized output, then deletes detailed local scan reports after recording value-free counts. It redacts private paths, workspace/mount paths, hosts, network addresses, remotes, configured private terms, and canaries. Remote redaction covers account and host forms such as `user@host`, `user@example.invalid`, `user@10.0.0.1`, `deploy@2host`, and any `name@value` argument of an explicit `ssh`, `scp`, `sftp`, `rsync`, or `mosh` command. That command match stays inside the command's own argument segment: it never crosses a shell separator, a quotation, or an earlier redaction, so a later command on the same line keeps its own pins and sanitized output is stable when rescanned. Redaction deliberately preserves environment package and image pins such as `python@3.12`, `node@18.x`, `python@3.13.0b1`, `pkg@1.0.0-alpha.beta`, and `ubuntu@sha256:<digest>` because those are the substance of an environment-setup memory page. Credentials, hidden-test paths, reference solutions, verifier details, and contamination signals block admission even after removal. No unresolved Gitleaks finding, a printable-ASCII allowlist, a clean residual scan, and detection/removal of every canary are mandatory.
+The sanitizer runs Gitleaks on input and output, removes detailed temporary scanner reports, detects/removes every canary, redacts configured privacy classes, rejects credentials and contamination even after removal, enforces printable ASCII, and runs a residual scan. Do not weaken these gates to admit an artifact.
 
-Copy `manifests/memory-admission-template.v1.json` to `config/local/`, fill its hashes and manually distilled summary, inspect the sanitized artifact, and record explicit review approval scoped to the sanitized artifact hash. Then run:
+Validate the teacher build only after the executable verifier and sanitizer pass:
+
+```bash
+uv run python -m artifact_memory.transfer validate-build \
+  --manifest runs/BUILD_ID/teacher-build.json
+```
+
+## 10. Generate the sole uploadable distillation packet
+
+```bash
+uv run python -m artifact_memory.transfer prepare-distillation \
+  --manifest runs/BUILD_ID/teacher-build.json \
+  --output runs/BUILD_ID/distillation-request.json
+```
+
+Inspect the generated request. It is the entire cloud-distiller upload. It contains public task fields, the distillation prompt, sanitized evidence text and hashes, aggregate verifier/sanitizer pass attestations, safe teacher provenance, and its own exact inventory.
+
+Do **not** add raw trajectories, verifier detail, scanner reports, findings, blocked terms, canaries, private paths, credentials, or unrelated context. “Stored locally” never means that earlier public teacher interactions were not transmitted, and it never grants permission to retransmit local raw files.
+
+Send this packet to `gpt-5.6-sol` through the selected operator adapter. Capture the response locally using `distillation-draft-template.v1.json`; do not invent a provider API.
+
+Validate the response:
+
+```bash
+uv run python -m artifact_memory.transfer validate-draft \
+  --manifest runs/BUILD_ID/teacher-build.json \
+  --request runs/BUILD_ID/distillation-request.json \
+  --draft runs/BUILD_ID/distillation-draft.json
+```
+
+The validator requires exact distiller identity, adapter, prompt hash, request hash, source evidence hashes, sanitizer revision, safe evidence IDs, and structured Markdown.
+
+## 11. Obtain external hash-scoped approval and admit
+
+A human external to the teacher/distiller execution must inspect the public task, sanitized evidence, draft, citations, assumptions, and limitations. Copy `external-human-approval-template.v1.json` locally. Set `approved: true` only after recording exact hashes for:
+
+- distillation request;
+- sanitized evidence and source evidence list;
+- distillation draft; and
+- intended page/build/task identifiers.
+
+Then create a local `memory-admission-template.v2.json` request and run:
 
 ```bash
 uv run python -m artifact_memory.memory admit \
-  --request config/local/memory-admission.json \
-  --wiki-dir memory/wiki \
-  --index memory/manifests/artifact_index.jsonl
+  --request runs/BUILD_ID/memory-admission.json \
+  --wiki-dir PRIVATE_MEMORY_WIKI \
+  --index PRIVATE_MEMORY_INDEX
 ```
 
-Admission requires the executable verifier pass, complete provenance, every sanitizer gate, and human approval. Resolution claims must cite safe evidence identifiers.
+Admission independently revalidates the qualified teacher build, exact distiller provenance, generated request, structured evidence citations, sanitizer gates, and approval scopes. Only then does it add deterministic provenance and write the page/index hashes. Approval cannot waive any earlier failure.
 
-## Generate paired summaries
+Repeat only for preregistered memory-build tasks. Stop if the approved page count does not equal the checkpoint.
+
+## 12. Run held-out Qwen M2
 
 ```bash
-uv run python -m artifact_memory.analyze --runs-dir runs --output-dir results/generated
+uv run python -m artifact_memory.experiment run-condition \
+  --condition M2 \
+  --manifest config/local/student-pair.json \
+  --wiki-dir PRIVATE_MEMORY_WIKI \
+  --memory-index PRIVATE_MEMORY_INDEX \
+  --runs-dir PRIVATE_RUNS
 ```
 
-By default analysis refuses development and fixture data. `--include-non-measured` exists only for explicit smoke work and labels every output non-measured. The CSV and Markdown report verifier pass rates, transfer classes, unresolved tasks, retrieval coverage, and verified knowledge yield. Learned-judge fields are ignored.
+Before M2, the runner recomputes page hashes and rejects unadmitted, edited, superseded, legacy, duplicate-build, wrong-split, wrong-role, or held-out-derived pages. The local Qwen model is the sole evaluation actor. The generated retrieved-memory block is the only student-context difference from M0.
 
-Analysis reads only the records this runner writes, at `runs/<pair_id>/M0/result.json` and `runs/<pair_id>/M2/result.json`; Harbor's own job tree is never scanned. Within that layout the denominator never shrinks silently: an unreadable record stops the analysis, and any record that is not `paired-result-v1` is counted and listed in the summary's data-completeness section.
+The cloud teacher and distiller do not receive the held-out task, Qwen trajectory, retrieval result, or verifier output.
 
-Review every compact measured output and run the repository safety scan before intentionally committing it.
+## 13. Analyze student pairs only
+
+```bash
+uv run python -m artifact_memory.analyze \
+  --runs-dir PRIVATE_RUNS \
+  --output-dir results/generated
+```
+
+The analyzer accepts only exact-student `student-paired-result-v2` records and executable-verifier booleans. It rejects cloud-teacher/distiller scores and non-student actors. A teacher task pass is page provenance; it is never an M0/M2 efficacy outcome.
+
+Review compact outputs and run the repository safety scan before intentionally committing any result. Never commit raw jobs, trajectories, qualification internals, manifests with local paths, credentials, scanner details, canaries, model weights, or fabricated measurements.

@@ -1,619 +1,199 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Running (first preregistered pilot halted without a paired result)
-**Track:** Artifact memory and local inference  
+**Status:** Running — teacher/student transfer machinery implemented; next measured protocol not yet preregistered
+**Track:** `artifact_memory` and local inference
 **Difficulty:** Intermediate  
-**Last updated:** July 31 2026
-
-## Primary result we want to produce
-
-![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../resources/assets/terminal_artifact_memory_learning_curve.svg)
-
-The chart above is the main result this experiment is designed to produce. The values are illustrative planning data, not measured results.
-
-The model remains fixed. Only the number of verified memory contributions grows. The experiment asks whether the structural recurrence pass rate rises with that growing memory.
+**Last updated:** August 1 2026
 
 ## One minute summary
 
-**Question:** Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
+**Question:** Can verified solutions produced by a fixed cloud teacher become compact approved memory that improves a fixed local student on disjoint held-out terminal tasks?
 
-**Exact test:** Run the same preregistered evaluation probes with the same local model under paired memory conditions. Compare the Terminal Bench verifier pass rate with no memory against the pass rate with retrieved distilled memory.
+**Teacher and distiller:** exact model identity `gpt-5.6-sol`. The teacher solves only preregistered public memory-build tasks. The distiller drafts compact structured Markdown only from evidence that passed an executable verifier and every local sanitization gate.
 
-**Core control:** The model stays fixed. The memory grows.
+**Student and sole evaluation model:** official Apache-2.0 `Qwen/Qwen2.5-Coder-7B-Instruct-GGUF`, Hugging Face revision `13fb94bfda8c8cf22497dc57b78f391a9acb426a`, Q4_K_M, SHA-256 `509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c`, served through pinned llama.cpp.
 
-**Primary comparison:** M0 no memory versus M2 distilled Markdown wiki.
+**Primary comparison:** the same held-out Qwen probe under paired M0 (no memory) and M2 (retrieved approved teacher-derived Markdown). The rendered retrieved-memory block is the only student-context difference.
 
-**Primary outcome:** Structural recurrence memory lift at each memory checkpoint.
+**Authoritative outcome:** the held-out task's executable verifier. A cloud-teacher score is build provenance, never the student efficacy result.
 
-**Ground truth:** The Terminal Bench executable verifier. A learned judge never overrides it.
+> **Do not claim success; the executable verifier alone determines whether the run is eligible for local sanitization and later distillation.**
 
-**Success boundary:** Structural recurrence improves materially over the no memory baseline, negative transfer remains acceptably low, unsafe confident errors remain rare, and the benefit survives held out task family evaluation.
+Model confidence, narrative success, apparent tool exits, distillation quality, and learned-judge output never substitute for verifier passage.
 
-**Stop boundary:** Stop or simplify if memory only helps exact repeats, if stale or irrelevant memory creates meaningful regressions, if simple file search performs nearly as well, or if the benefit disappears on held out task families.
+**Current evidence:** no teacher/student measured result exists. The earlier genuine 16,384-token pilot remains visible and halted without a pair; it is not relabeled or pooled with this planned protocol.
 
-## Implementation status
-
-The first standard-library pilot is runnable from this directory:
-
-1. `artifact_memory.experiment` validates complete provenance, checks pinned external boundaries, performs deterministic retrieval, and runs controlled Harbor M0/M2 pairs through Terminus-2, Docker, llama.cpp, ATIF, and the executable verifier.
-2. `artifact_memory.sanitize` applies experiment-specific redaction and contamination blocking and requires a clean Gitleaks scan, canary removal, and an explicit allowlist.
-3. `artifact_memory.memory` admits only verifier-passing, provenance-complete, sanitized, human-approved contributions and retrieves Markdown pages with a frozen lexical rule.
-4. `artifact_memory.analyze` emits CSV and Markdown verifier-authoritative paired summaries and refuses non-measured data by default.
-5. Synthetic fixture tests cover the safety, control, retrieval, admission, and analysis boundaries without creating measured data.
-
-See [`OPERATOR.md`](OPERATOR.md) for prerequisites and commands. The first genuine pilot pinned Harbor 0.20.0, Terminal Bench 2.0 tasks and images, llama.cpp, Gitleaks, the fixed Qwen model, prompts, retrieval, and budgets. Development validation passed. The first M0 probe then exceeded the frozen context before executable verification, so the preregistered stop boundary left no measured baseline or memory checkpoint.
-
-## Exact condition being tested
-
-For every held out structurally recurring Terminal Bench probe, run the same fixed local model under two primary conditions:
-
-1. **M0:** The task is provided without artifact memory.
-2. **M2:** The task is provided with retrieved pages from the distilled Markdown wiki.
-
-After each attempt, run the benchmark verifier.
-
-```text
-structural memory lift at checkpoint N
-=
-M2 structural verifier pass rate at checkpoint N
-minus
-M0 structural verifier pass rate
-```
-
-The experiment succeeds only if memory improves unseen structurally related tasks rather than merely helping exact repeats.
-
-## What happens after Terminal Bench runs
-
-### Memory construction runs
-
-A selected set of Terminal Bench tasks is completed by an agent or reference process. Every successful run passes the executable verifier before its artifacts may enter memory.
+## Planned transfer test
 
 ```mermaid
 flowchart TD
-    A[Terminal Bench memory build task] --> B[Agent or reference run]
-    B --> C[Executable verifier]
-    C -->|Pass| D[Privacy and contamination filter]
-    D --> E[Sanitized evidence bundle]
-    E --> F[Distilled Markdown page]
-    F --> G[Searchable local memory]
+    A[Preregistered public memory-build task] --> B[gpt-5.6-sol cloud teacher]
+    B --> C[Task executable verifier]
+    C -->|exact pass only| D[Ignored local raw run storage]
+    D --> E[Local sanitizer + Gitleaks + canary + blocked-term + residual gates]
+    E --> F[Allowlisted sanitized-evidence request]
+    F --> G[gpt-5.6-sol cloud distiller]
+    G --> H[Compact structured Markdown draft]
+    H --> I[External human approval scoped to request, evidence, and draft hashes]
+    I --> J[Admitted local Markdown page]
+    J --> K[Deterministic M2 retrieval]
+    K --> L[Fixed local Qwen student]
+    L --> M[Held-out executable verifier]
 ```
 
-One verified memory contribution contains:
-
-1. Task family and environment metadata.
-2. A sanitized command and outcome timeline.
-3. Failure signatures.
-4. Relevant environment facts.
-5. The final verified patch, configuration change, or command sequence.
-6. Verifier outcome.
-7. Artifact hashes and provenance.
-8. A distilled Markdown page.
-9. Known limitations and transfer boundaries.
-
-Failed attempts may be retained only when they are clearly labeled and linked to the final verifier outcome. They must never be represented as successful solutions.
-
-### Evaluation runs
-
-The evaluation set contains separate probes that cannot contribute artifacts to the memory used for their own evaluation.
-
-```mermaid
-flowchart LR
-    A[Held out probe] --> B[M0 fixed model without memory]
-    A --> C[M2 fixed model with retrieved wiki]
-    B --> D[Terminal Bench verifier]
-    C --> E[Terminal Bench verifier]
-    D --> F[Paired pass or fail result]
-    E --> F
-    F --> G[Memory lift and failure analysis]
-```
-
-The same probe set, model, prompt, decoding settings, runtime, hardware, context limit, and tool permissions are used across paired conditions.
-
-## Why this experiment is useful
-
-Traditional evaluation asks how capable a model is. This experiment asks how efficiently verified experience can extend the usable capability of a fixed model.
-
-A positive result would support a system where recurring engineering work stays local while unfamiliar or insufficiently supported work is escalated to stronger inference.
-
-A negative result would support avoiding a complex memory layer and using direct stronger inference or simpler search.
-
-A mixed result should identify whether the limiting factor is artifact quality, retrieval, local model capacity, environment matching, or evaluation design.
-
-## Questions the final results must answer
-
-### 1. Does verified memory improve structural recurrence?
-
-This is the central scientific question.
+A reviewer can trace every admitted page through its index record:
 
 ```text
-structural recurrence pass rate
-=
-structural probes passing the verifier
-/
-all structural probes attempted
+memory-build task and split
+→ teacher model, prompt, adapter, trajectory hash
+→ executable-verifier pass and artifact hash
+→ sanitizer revision, report hash, and sanitized evidence hash
+→ allowlisted distillation request hash
+→ gpt-5.6-sol distillation prompt and draft hash
+→ external approval record and scoped hashes
+→ admitted page hash
+→ Qwen M2 retrieval record
 ```
 
-The final report must show the paired no memory and wiki memory pass rates at every checkpoint.
+The coding agent or worker that implements this repository is not a measured teacher execution. Only an operator-captured run satisfying the teacher build manifest is measured provenance.
 
-### 2. What is the verified knowledge yield?
+## Fixed roles
 
-This asks how much tested operational value is produced by the local dataset.
+| Role | Exact identity | May do | May not do |
+| --- | --- | --- | --- |
+| Cloud teacher | `gpt-5.6-sol` | Solve designated public memory-build tasks through an operator-supplied or Harbor-compatible boundary | Run held-out probes, score Qwen efficacy, or claim verifier passage |
+| Cloud distiller | `gpt-5.6-sol` | Draft structured Markdown from the generated sanitized-evidence request | Receive raw trajectories, hidden tests, scanner details, or outside evidence |
+| Local student | pinned Qwen model above | Run every held-out M0/M2 probe through pinned llama.cpp | Build measured memory or transmit evaluation data to cloud roles |
+| External human reviewer | recorded safe reviewer identity | Approve exact request, evidence, and draft hashes | Waive verifier, sanitizer, split, or provenance failures |
+| Executable verifier | pinned task bundle | Decide individual run pass/fail | Reveal its internals to either model |
+
+No cloud SDK is included. `artifact_memory.transfer` creates and validates the bounded request, but an operator supplies the execution adapter. Repository copy does not claim that `gpt-5.6-sol` exists behind an API surface not established by authoritative tooling.
+
+## What the cloud sees
+
+“Stored locally” does not mean “never transmitted.” The role-specific inventory is explicit and machine-validated.
+
+### Cloud teacher execution
+
+The cloud teacher may receive:
+
+1. Preregistered public memory-build task identifiers and public instructions.
+2. The versioned `teacher-v1` prompt.
+3. Task-visible observations inside the isolated public benchmark environment.
+4. Teacher-selected tool inputs and outputs required to solve that public task.
+
+The teacher's public benchmark interaction necessarily crosses the selected cloud boundary. The resulting raw local trajectory file is retained for audit and sanitization; it is not uploaded again for distillation.
+
+### Cloud distillation
+
+The generated `cloud-distillation-request-v1` is the entire uploadable packet. It contains only:
+
+1. Public task identity, split revision, instruction, and instruction hash.
+2. The versioned distillation prompt and hash.
+3. Sanitized evidence identifier, SHA-256, media type, and text content.
+4. A verifier pass boolean and authority label, not detailed verifier output.
+5. Sanitizer revision and aggregate pass boolean, not scanner findings.
+6. Teacher model, operator adapter, prompt hashes, and source artifact hashes.
+7. The exact allowed-field and denied-class inventory.
+
+### Denied from every cloud upload and commit
+
+1. Raw private trajectory content or local trajectory files uploaded after execution.
+2. Credentials, secrets, authentication material, and environment-variable values.
+3. Private paths, hosts, repository names, machine identifiers, and infrastructure details.
+4. Hidden tests, verifier internals, detailed verifier output, and reference solutions.
+5. Canary values or metadata.
+6. Detailed Gitleaks/scanner output, matches, and blocked-term lists.
+7. Unrelated sessions, prompts, conversations, or terminal content.
+
+Canaries are added to the local evidence export after teacher execution. The local sanitizer must detect and remove every canary before it can generate a distillation request. Secrets remain environment-only and never appear in argv, manifests, run records, fixtures, or examples.
+
+## Verifier integrity and adequacy
+
+Task-specific executable verifiers come from the pinned Terminal Bench/Harbor task bundle. This repository validates result transport and provenance; it does not author verifier semantics.
+
+Two questions remain distinct:
+
+1. **Integrity:** Did exactly one pinned verifier reward arrive, was the strict pass value observed, and do task, container, trajectory, verifier, and admission hashes link correctly? The runner and admission code enforce these checks.
+2. **Adequacy:** Does the task verifier reject plausible broken outputs for every public requirement class while accepting a known-good output? A private `verifier-qualification-v1` record is mandatory before either a memory-build task or held-out probe is eligible.
+
+Qualification runs are development-only and never enter M0/M2 metrics or memory. The compact record contains counts and outcomes for:
+
+- a known-good positive control;
+- targeted plausible-negative or mutation controls covering every public requirement class;
+- repeated clean-container determinism checks; and
+- reward/test isolation or bounded tamper-resistance checks.
+
+A false accept, false reject, nondeterminism, missing pin, failed isolation check, or incomplete requirement coverage makes the task ineligible rather than failed. Hidden tests, verifier code, solutions, paths, mutation details, and detailed outputs remain private and absent from both model contexts and compact records. Mutation qualification raises confidence but cannot prove that a verifier perfectly captures task intent.
+
+For an eligible individual run, the executable verifier remains the sole authority. Qualification does not introduce a shadow score or LLM judge.
+
+## Disjoint build and evaluation split
+
+Every v2 manifest contains one preregistered split revision with two nonempty, disjoint lists:
+
+1. `memory_build_task_ids`: executed only by the cloud teacher; eligible pages may enter memory.
+2. `held_out_evaluation_task_ids`: executed only by local Qwen; they can never contribute to the checkpoint used to score them.
+
+Admission writes build task role and split provenance to the memory index. Before M2, the runner rejects legacy pages, split mismatches, duplicate build contributions, and any page derived from a held-out task.
+
+The exact next task list, verifier qualification records, context policy, runtime pins, and success thresholds must be frozen in a new preregistration. The halted 16K controls are not silently reused. The accepted but unfrozen design is recorded in the [teacher/student transfer plan](preregistrations/teacher-student-transfer-planning.md).
+
+## Paired student evaluation
+
+For every held-out probe:
+
+1. **M0:** local Qwen receives the versioned student prompt with an empty retrieved-memory marker.
+2. **M2:** the same local Qwen receives the same prompt with deterministically retrieved approved Markdown pages.
+3. The task, model, weights, quantization, llama.cpp revision, hardware, decoding, tools, budget, and task environment remain fixed.
+4. The executable verifier scores each condition.
+
+`artifact_memory.analyze` accepts only `student-paired-result-v2` records with the exact local student identity and executable-verifier authority. It rejects teacher/distiller outcome fields. The transfer matrix remains:
+
+| M0 | M2 | Classification |
+| --- | --- | --- |
+| Fail | Pass | Positive transfer |
+| Pass | Fail | Negative transfer |
+| Pass | Pass | Stable success |
+| Fail | Fail | Unresolved task |
+
+A result counts as transfer only when a complete held-out Qwen pair changes from executable-verifier fail under M0 to pass under M2. Teacher build passes establish memory eligibility, not transfer. Negative transfer remains visible and cannot be hidden by a net score.
+
+## Implementation
+
+The standard-library implementation is intentionally narrow:
+
+1. `artifact_memory.verifier_qualification` validates private compact verifier-qualification records.
+2. `artifact_memory.experiment` validates v2 role/split/provenance controls and runs local-student M0/M2 conditions.
+3. `artifact_memory.sanitize` preserves the strict local Gitleaks, canary, blocked-term, allowlist, and residual gates.
+4. `artifact_memory.transfer` validates teacher build evidence and emits the sole allowlisted distillation packet without calling a cloud API.
+5. `artifact_memory.memory` validates the GPT-5.6-sol draft and hash-scoped external approval before admitting Markdown.
+6. `artifact_memory.analyze` scores only held-out local-student executable-verifier pairs.
+
+Synthetic tests cover role separation, exact identity pins, disclosure policy, verifier qualification, sanitizer-before-distillation ordering, approval-before-admission, split contamination, provenance mismatch, legacy rejection, and student-only scoring. Synthetic outputs are never measured evidence.
+
+See [`SETUP.md`](SETUP.md) for the bounded architecture and [`OPERATOR.md`](OPERATOR.md) for the exact workflow.
+
+## Metrics and decision boundary
+
+The primary metric is structural held-out Qwen memory lift:
 
 ```text
-verified knowledge yield
-=
-additional structural probes passed because of memory
-/
-verified memory contributions
+M2 executable-verifier pass rate - M0 executable-verifier pass rate
 ```
 
-A storage normalized version is also reported:
+Reports must also show raw positive transfer, negative transfer, stable success, unresolved tasks, retrieval coverage, verified knowledge yield, latency, prompt/output tokens, and wiki bytes. A next preregistration must set the numeric success, negative-transfer, unsafe-error, context, and stop thresholds before execution.
 
-```text
-knowledge efficiency
-=
-additional accepted structural answers
-/
-searchable memory bytes
-```
-
-This helps determine whether the system is accumulating reusable intelligence or merely accumulating documentation.
-
-### 3. When does memory hurt?
-
-Average improvement can hide regressions. Every paired probe must be classified as one of four outcomes.
-
-<table>
-<thead>
-<tr><th>M0 result</th><th>M2 result</th><th>Interpretation</th></tr>
-</thead>
-<tbody>
-<tr><td>Fail</td><td>Pass</td><td>Positive transfer</td></tr>
-<tr><td>Pass</td><td>Fail</td><td>Negative transfer</td></tr>
-<tr><td>Pass</td><td>Pass</td><td>Stable success</td></tr>
-<tr><td>Fail</td><td>Fail</td><td>Unresolved task</td></tr>
-</tbody>
-</table>
-
-```text
-negative transfer rate
-=
-probes that pass under M0 and fail under M2
-/
-all paired probes
-```
-
-The final report must show the raw positive and negative transfer counts. A net score may be reported, but it must never hide individual harmful regressions.
-
-```text
-net memory benefit
-=
-positive transfers
-minus
-negative transfers
-```
-
-Every negative transfer should be traced to a likely cause such as stale instructions, irrelevant retrieval, contradictory memory, environment mismatch, or increased unsupported confidence.
-
-### 4. Which engineering patterns become reliably local?
-
-Overall memory lift is not enough to make a routing decision. Results must be separated by preregistered task family.
-
-Example families include dependency conflicts, build failures, environment setup, configuration errors, permissions, and networking failures.
-
-For each family, report:
-
-1. M0 structural pass rate.
-2. M2 structural pass rate.
-3. Memory lift.
-4. Positive transfer count.
-5. Negative transfer count.
-6. Retrieval coverage.
-7. Unsafe confident error rate.
-8. Median latency.
-
-The operational question is:
-
-> Which kinds of engineering work become reliably local after the system has seen and verified the underlying pattern before?
-
-This family level view determines where local inference should be attempted, where more evidence should be collected, and where escalation remains the safer default.
-
-### 5. Was the needed knowledge retrieved?
-
-For each structural probe, the evaluation plan identifies which memory pages are relevant before the run is scored.
-
-```text
-retrieval recall at K
-=
-probes where a relevant page appears in the top K results
-/
-probes where relevant knowledge exists
-```
-
-This separates retrieval failure from model usage or execution failure.
-
-1. Relevant page absent means retrieval failed.
-2. Relevant page present but verifier fails means the model or execution path failed to use the evidence.
-
-### 6. Does memory remain safe on novel controls?
-
-Novel controls intentionally lack sufficient knowledge in memory or contain weak misleading matches.
-
-Report:
-
-1. Appropriate abstention rate.
-2. Unsupported confident answer rate.
-3. Unsafe confident error rate.
-4. Verifier pass rate where execution is valid.
-
-The goal is not for memory to solve every novel problem. The goal is for irrelevant memory not to mislead the model.
-
-## Main result visualizations
-
-The final report should prioritize five visualizations.
-
-1. **Primary learning curve:** Structural recurrence pass rate as verified memory grows.
-2. **Paired transfer matrix:** Positive transfer, negative transfer, stable success, and unresolved tasks.
-3. **Task family lift:** Memory lift and regressions by engineering pattern.
-4. **Verified knowledge yield:** Additional structural successes per contribution and per searchable megabyte.
-5. **Retrieval diagnosis:** Relevant evidence retrieved versus model use and execution outcome.
-
-The first visualization is the signature figure for this experiment. The remaining figures explain why the curve moved and whether the improvement is operationally trustworthy.
-
-## Probe categories
-
-### Exact recurrence
-
-The same underlying problem returns with changed values, paths, versions, or service names.
-
-### Structural recurrence
-
-A different task contains the same failure mechanism or repair pattern. This is the primary scientific target because it measures reusable engineering knowledge rather than exact task recall.
-
-### Novel control
-
-The required knowledge is absent from memory, or retrieved evidence is weak and misleading. This measures whether the system recognizes insufficiency and abstains safely.
-
-## Workload and split
-
-The first workload uses a preregistered subset of Terminal Bench 2.0 tasks.
-
-The initial target is twelve memory build tasks across at least three recurring engineering families. The exact task list and family assignment must be published before the first memory assisted evaluation.
-
-The split has three roles:
-
-1. **Memory build tasks:** Verified tasks whose artifacts may enter memory.
-2. **Recurrence probes:** Separate exact and structural tasks used to measure transfer.
-3. **Held out families:** Task families excluded from judge training, threshold tuning, and retriever tuning.
-
-Reference solutions, hidden tests, and verifier implementation details must never enter model context or searchable memory.
-
-## Memory conditions
-
-<table>
-<thead>
-<tr><th>ID</th><th>Memory condition</th><th>Purpose</th></tr>
-</thead>
-<tbody>
-<tr><td>M0</td><td>No memory</td><td>Fixed local model baseline</td></tr>
-<tr><td>M1</td><td>Sanitized evidence</td><td>Test whether raw verified artifacts are directly useful</td></tr>
-<tr><td>M2</td><td>Distilled Markdown wiki</td><td>Primary test of compact readable knowledge</td></tr>
-<tr><td>M3</td><td>Evidence plus wiki</td><td>Test whether summaries and source evidence complement each other</td></tr>
-</tbody>
-</table>
-
-The primary claim is established with the paired M0 versus M2 comparison. M1 and M3 are representation studies.
-
-Later extensions may test structured facts, embeddings, hybrid retrieval, learned ranking, graph links, and compressed memory. They begin only after the simple paired baseline is measured.
-
-## Wiki structure
-
-```text
-memory/
-  wiki/
-    <page_id>.md
-  manifests/
-    artifact_index.jsonl
-```
-
-`artifact_memory.memory` writes one flat Markdown page per admitted contribution and the retriever scans `memory/wiki/*.md` only. Every file in that directory must be an admitted, unsuperseded page whose content still hashes to its admission record, so no index page, subdirectory, or draft may be placed there. See [`memory/README.md`](memory/README.md) for the workspace rules. Sanitized evidence bundles stay in the local run directories until the M1 and M3 representation conditions are implemented.
-
-Each distilled page records:
-
-1. Stable title.
-2. Problem pattern.
-3. Observable symptoms.
-4. Environment assumptions.
-5. Diagnostic sequence.
-6. Verified resolution.
-7. Supporting evidence identifiers.
-8. Failure cases and limitations.
-9. Provenance.
-10. Freshness and supersession status.
-11. Related pages.
-
-Markdown keeps memory readable, reviewable, portable, and easy to compare across revisions. Evidence links prevent summaries from becoming unsupported claims.
-
-## Fixed controls
-
-Keep these fixed during the core learning curve:
-
-1. Local model weights.
-2. Quantization.
-3. Prompt template.
-4. Decoding parameters.
-5. Inference runtime and version.
-6. Hardware.
-7. Context limit.
-8. Benchmark split.
-9. Tool permissions.
-10. Maximum retrieved context.
-
-The pilot target is one pinned Qwen-family 7B GGUF Q4 model. `artifact_memory.experiment` rejects a manifest declaring any other family, parameter size, or quantization. Model comparisons begin only after the memory effect has been measured with that fixed model.
-
-## Retrieval plan
-
-Start with BM25 or an equivalent lexical method. It is fast, interpretable, and establishes whether semantic infrastructure is necessary.
-
-Add embeddings only after the lexical baseline is recorded.
-
-A later ranker may use lexical score, embedding score, task family similarity, environment similarity, failure signature overlap, evidence recency, prior verifier success, and contradiction indicators.
-
-Prefer logistic regression, a linear ranker, or a small gradient boosted tree before a neural reranker because the initial dataset is small and interpretability matters.
-
-## Evaluation hierarchy
-
-### Authoritative signals
-
-1. Benchmark verifier pass or fail.
-2. Required files or state produced.
-3. Expected facts present.
-4. Prohibited actions absent.
-5. Claims supported by retrieved evidence.
-6. Appropriate abstention when evidence is insufficient.
-
-A learned judge never overrides a failed verifier.
-
-### Learned local sufficiency judge
-
-The learned judge is a later routing extension. It is not the source of the primary experiment score.
-
-It estimates:
-
-```text
-P local answer succeeds without stronger inference
-```
-
-The initial model should be an interpretable logistic regression trained from completed runs whose target is the authoritative verifier result.
-
-Candidate features include retrieval coverage, independent support count, evidence agreement, environment similarity, contradiction count, answer completeness, calibrated confidence, abstention signal, latency, and context size.
-
-Training, threshold selection, and evaluation must be split by task family. A random question split is not sufficient because related tasks can leak across the boundary.
-
-## Metrics
-
-### Verifier pass rate
-
-```text
-passed executable probes
-/
-executable probes attempted
-```
-
-### Structural recurrence pass rate
-
-Verifier pass rate on tasks that share a failure mechanism but are not exact repeats.
-
-### Memory lift at checkpoint N
-
-```text
-pass rate with N verified memory contributions
-minus
-no memory pass rate
-```
-
-### Generalization ratio
-
-```text
-structural recurrence lift
-/
-exact recurrence lift
-```
-
-A ratio near zero suggests memorization without meaningful transfer.
-
-### Verified knowledge yield
-
-```text
-additional structural passes
-/
-verified memory contributions
-```
-
-### Negative transfer rate
-
-```text
-M0 passes that become M2 failures
-/
-all paired probes
-```
-
-### Unsafe confident error rate
-
-The fraction of probes where high confidence accompanies an incorrect, unsupported, destructive, or policy violating response.
-
-### Routing regret
-
-Measure false local routing and unnecessary escalation separately because their costs are not symmetric.
-
-### Break even point
-
-The earliest memory checkpoint where every preregistered condition holds.
-
-Initial candidate conditions:
-
-1. Structural recurrence pass rate of at least 70 percent.
-2. Memory lift of at least 15 percentage points.
-3. Negative transfer rate below the preregistered limit.
-4. Unsafe confident error rate no greater than 5 percent.
-5. The lower confidence bound remains above the no memory baseline.
-6. Latency and peak memory remain within the local device budget.
-
-These thresholds are provisional and must be finalized before the first run.
-
-Also record median and p95 latency, prompt and output tokens, peak memory, retrieval time, index size, wiki size, artifact processing time, duplicate pages, stale pages, unsupported claims, contradictions, and retrieval contribution.
-
-## Experiment sequence
-
-### Phase 0: Lock the protocol
-
-1. Select the benchmark subset and task families.
-2. Publish memory build, recurrence, and held out splits.
-3. Freeze the local model, runtime, prompts, and decoding.
-4. Finalize success, regression, safety, and stop thresholds.
-5. Confirm benchmark license and artifact handling rules.
-
-### Phase 1: Record the no memory baseline
-
-Run every probe with the fixed local model under M0.
-
-### Phase 2: Build verified memory
-
-Complete the first memory build tasks and emit sanitized evidence bundles. Begin with three tasks before scaling.
-
-### Phase 3: Produce memory representations
-
-Produce M1, M2, and M3 from the same verified runs so representation is the primary difference.
-
-### Phase 4: Measure the learning curve
-
-Evaluate the same preregistered probes at:
-
-```text
-0 → 3 → 6 → 9 → 12 verified tasks
-```
-
-Run paired M0 and M2 evaluation, followed by M1 and M3 representation comparisons.
-
-### Phase 5: Explain the curve
-
-Measure retrieval coverage, verified knowledge yield, negative transfer, task family lift, latency, and storage efficiency.
-
-### Phase 6: Compare retrieval methods
-
-Compare lexical, semantic, and hybrid retrieval only after the core curve is visible.
-
-### Phase 7: Train the local sufficiency judge
-
-Train on earlier task families and evaluate on held out families. Report calibration, ROC AUC, precision at the local threshold, false local rate, and uncertainty.
-
-### Phase 8: Run stress and removal tests
-
-Introduce stale pages, near duplicates, contradictions, irrelevant high similarity artifacts, missing evidence, noisy logs, novel controls, environment changes, and corrupted metadata.
-
-Then remove one component at a time. Keep a component only when its contribution changes the operational decision.
-
-## Safety and contamination boundary
-
-Committed artifacts must not contain:
-
-1. Credentials or tokens.
-2. Private hostnames or IP addresses.
-3. Private repository names.
-4. Local file system paths.
-5. Unrelated conversation text.
-6. Machine identifiers.
-7. Hidden tests.
-8. Reference solutions not intended for model access.
-9. Verifier details that reveal the answer.
-10. Benchmark data prohibited by its license.
-
-The sanitizer must produce a report for every evidence bundle. Canary values should test whether sensitive spans can pass silently.
-
-Unacceptable outcomes include:
-
-1. Secret or private path exposure.
-2. Hidden test or reference answer leakage.
-3. Execution outside the isolated benchmark.
-4. High confidence destructive instructions.
-5. A judge approving an answer that contradicts the verifier.
-6. Stale memory silently overriding newer verified evidence.
-7. Evaluation leakage between task families.
-8. Synthetic data presented as measured evidence.
-
-Any breach stops the affected run and triggers artifact removal, root cause analysis, and renewed safety validation.
-
-## Data schema
-
-The pilot writes one compact `result.json` per condition under `runs/<pair-id>/{M0,M2}/`, and `artifact_memory.analyze` emits `results/generated/results.csv` from those records. The columns below are the target schema for the complete experiment; the pilot emits the verifier, retrieval, transfer, control, and provenance subset of them.
-
-<table>
-<thead>
-<tr><th>Column</th><th>Meaning</th></tr>
-</thead>
-<tbody>
-<tr><td>run_id</td><td>Stable run identifier</td></tr>
-<tr><td>task_id</td><td>Public benchmark task identifier</td></tr>
-<tr><td>task_family</td><td>Preregistered recurring pattern</td></tr>
-<tr><td>memory_checkpoint</td><td>Verified contributions available</td></tr>
-<tr><td>memory_condition</td><td>M0 M1 M2 or M3</td></tr>
-<tr><td>retriever</td><td>Retrieval configuration</td></tr>
-<tr><td>model_id</td><td>Exact local model identifier</td></tr>
-<tr><td>quantization</td><td>Model quantization</td></tr>
-<tr><td>runtime</td><td>Runtime and version</td></tr>
-<tr><td>question_type</td><td>Exact structural or novel</td></tr>
-<tr><td>verifier_passed</td><td>Authoritative executable outcome</td></tr>
-<tr><td>deterministic_score</td><td>Expected fact score when applicable</td></tr>
-<tr><td>abstained</td><td>Whether the model declined</td></tr>
-<tr><td>unsafe_error</td><td>Whether a ruin relevant response occurred</td></tr>
-<tr><td>judge_probability</td><td>Predicted local sufficiency</td></tr>
-<tr><td>latency_seconds</td><td>End to end latency</td></tr>
-<tr><td>peak_memory_mb</td><td>Peak memory</td></tr>
-<tr><td>prompt_tokens</td><td>Input token count</td></tr>
-<tr><td>output_tokens</td><td>Output token count</td></tr>
-<tr><td>wiki_bytes</td><td>Searchable wiki size</td></tr>
-<tr><td>artifact_bytes</td><td>Searchable evidence size</td></tr>
-<tr><td>seed</td><td>Random seed</td></tr>
-</tbody>
-</table>
-
-The pilot records this detail across two files: the per-trial `retrieval.json` holds the frozen retrieval revision, query hash, and every retrieved page identifier, lexical score, rank, and token count, and `memory/manifests/artifact_index.jsonl` holds the page, artifact, run, and sanitizer report hashes, the reviewer identity and timestamp, and the supersession state. Publish only reviewed compact summaries derived from them.
-
-## Completion condition
-
-The experiment is complete when:
-
-1. The benchmark subset and family split are published.
-2. A frozen local model baseline is recorded.
-3. The collector produces privacy safe verified evidence bundles.
-4. M0 through M3 are evaluated.
-5. At least three memory checkpoints are measured.
-6. Exact, structural, and novel results are separated.
-7. Verified knowledge yield is reported.
-8. Positive and negative transfer are reported separately.
-9. Results are separated by task family.
-10. The judge is evaluated on held out task families.
-11. Stress and removal tests are complete.
-12. Tail behavior and ruin boundaries are analyzed.
-13. Results, limitations, and an operational conclusion are published.
-14. The conclusion states what should be built next and what should not.
+A positive result could justify continuing the compact teacher-to-local memory design for the qualified workload. A negative result could justify direct cloud inference or simpler search. Mixed evidence should identify whether qualification, memory quality, retrieval, local capacity, or context controls are limiting. This experiment cannot justify deployment outside isolated benchmark tasks.
 
 ## Results
 
-The [2026-07-31 measured pilot](results/2026-07-31-measured-pilot/summary.md) halted on its first M0 attempt when the fixed 16,384-token context was exceeded before verification. It produced no scored pair and supports no memory-effect claim. The chart at the top remains illustrative only.
+The [2026-07-31 measured pilot](results/2026-07-31-measured-pilot/summary.md) remains intact. Its first Qwen M0 probe exceeded the frozen 16,384-token context before executable verification. It produced zero complete pairs and zero memory pages, so it supports no memory-effect claim.
 
-[Open the results workspace](results/README.md)
+No teacher/student measured run has been executed. No efficacy claim, baseline, checkpoint, or learning-curve point exists for the planned transfer protocol. The planning figure below remains illustrative only.
 
-## What this experiment does not claim
+![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../resources/assets/terminal_artifact_memory_learning_curve.svg)
 
-This experiment does not claim that a wiki changes model weights, that exact recall is general reasoning, that one benchmark represents all terminal work, that a learned judge establishes correctness, that local inference should replace stronger models, or that generated commands are safe outside an isolated benchmark.
+## Completion condition
 
-It asks a narrower question: whether verified work can become useful local evidence, how efficiently that evidence extends capability, where it helps, and where it causes regressions.
-
-## Next measured steps
-
-1. Treat the halted pilot and its one consumed attempt as immutable run accounting.
-2. Preregister a new protocol revision; do not relabel or pool it with the halted controls.
-3. Choose one explicit context-management change, such as a larger fixed context, bounded compaction, or a lower turn budget.
-4. Revalidate the complete pinned stack and begin the new baseline from attempt one.
-5. Continue to memory construction only after every preregistered M0 probe produces an executable-verifier record.
+The experiment is complete only after a new preregistration, qualified disjoint tasks, a frozen student baseline, at least three approved teacher-derived memory checkpoints, complete held-out M0/M2 pairs, positive and negative transfer analysis, stress/removal tests, tail and ruin analysis, limitations, and an operational conclusion are published.

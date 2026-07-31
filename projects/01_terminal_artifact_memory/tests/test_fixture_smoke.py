@@ -86,6 +86,12 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
             pair_dir = m0_dir.parent
             self.assertEqual(m2_dir.parent, pair_dir)
             self.assertTrue((pair_dir / "pair.json").is_file())
+            m2_result = json.loads((pair_dir / "M2" / "result.json").read_text())
+            contribution = m2_result["memory_provenance"][0]
+            self.assertEqual(contribution["teacher_model_id"], "gpt-5.6-sol")
+            self.assertEqual(contribution["distiller_model_id"], "gpt-5.6-sol")
+            self.assertTrue(contribution["source_evidence_sha256"])
+            self.assertTrue(contribution["approval_record_sha256"])
 
             m0_skill = (pair_dir / "M0" / "retrieved-memory-skill" / "SKILL.md").read_text()
             m2_skill = (pair_dir / "M2" / "retrieved-memory-skill" / "SKILL.md").read_text()
@@ -93,6 +99,11 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
             self.assertIn("description: Required pilot instructions", m0_skill)
             self.assertIn("<no-retrieved-memory />", m0_skill)
             self.assertIn("fixture-environment-page", m2_skill)
+            memory_heading = "## Retrieved verified memory"
+            self.assertEqual(m0_skill.split(memory_heading)[0], m2_skill.split(memory_heading)[0])
+            m0_result = json.loads((pair_dir / "M0" / "result.json").read_text())
+            self.assertEqual(m0_result["control_snapshot"], m2_result["control_snapshot"])
+            self.assertEqual(m0_result["control_digest"], m2_result["control_digest"])
 
             discovery = discover_results(root / "runs")
             outputs = analyze_results(

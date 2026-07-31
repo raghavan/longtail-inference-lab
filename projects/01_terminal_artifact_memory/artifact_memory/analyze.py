@@ -12,9 +12,23 @@ from statistics import median
 from typing import Iterable, Mapping, Sequence
 
 try:
-    from .experiment import CONDITIONS, MEASURED, ManifestError, assert_control_equivalence
+    from .experiment import (
+        CONDITIONS,
+        MEASURED,
+        RESULT_SCHEMA_VERSION,
+        ManifestError,
+        assert_control_equivalence,
+    )
+    from .transfer import STUDENT_MODEL_ID, STUDENT_MODEL_SHA256
 except ImportError:  # Allow `python artifact_memory/analyze.py` from the project directory.
-    from experiment import CONDITIONS, MEASURED, ManifestError, assert_control_equivalence
+    from experiment import (
+        CONDITIONS,
+        MEASURED,
+        RESULT_SCHEMA_VERSION,
+        ManifestError,
+        assert_control_equivalence,
+    )
+    from transfer import STUDENT_MODEL_ID, STUDENT_MODEL_SHA256
 
 
 class AnalysisError(ValueError):
@@ -59,7 +73,7 @@ def discover_results(runs_dir: Path) -> Discovery:
             value = json.loads(path.read_text())
         except (OSError, json.JSONDecodeError) as exc:
             raise AnalysisError(f"unreadable result record under the run tree: {location}") from exc
-        if isinstance(value, dict) and value.get("schema_version") == "paired-result-v1":
+        if isinstance(value, dict) and value.get("schema_version") == RESULT_SCHEMA_VERSION:
             results.append(value)
             continue
         skipped.append(location)
@@ -69,6 +83,11 @@ def discover_results(runs_dir: Path) -> Discovery:
 def _validate_result(result: Mapping[str, object]) -> None:
     required = (
         "data_classification",
+        "protocol_revision",
+        "task_role",
+        "evaluation_actor_role",
+        "student_model_id",
+        "student_model_sha256",
         "pair_id",
         "task_id",
         "task_family",
@@ -77,6 +96,8 @@ def _validate_result(result: Mapping[str, object]) -> None:
         "memory_contributions",
         "baseline_memory_contributions",
         "observed_memory_pages",
+        "observed_memory_page_ids",
+        "memory_provenance",
         "memory_condition",
         "verifier_passed",
         "verifier_authority",
@@ -89,6 +110,26 @@ def _validate_result(result: Mapping[str, object]) -> None:
     missing = [field for field in required if field not in result]
     if missing:
         raise AnalysisError("incomplete result: " + ", ".join(missing))
+    prohibited_teacher_outcomes = (
+        "teacher_score",
+        "teacher_outcome",
+        "teacher_verifier_passed",
+        "distiller_score",
+        "model_confidence_score",
+    )
+    present = [field for field in prohibited_teacher_outcomes if field in result]
+    if present:
+        raise AnalysisError(
+            "teacher/distiller/model scores are provenance, never student efficacy outcomes: "
+            + ", ".join(present)
+        )
+    if (
+        result["task_role"] != "held_out_student_evaluation"
+        or result["evaluation_actor_role"] != "local_student"
+        or result["student_model_id"] != STUDENT_MODEL_ID
+        or result["student_model_sha256"] != STUDENT_MODEL_SHA256
+    ):
+        raise AnalysisError("paired efficacy scoring is restricted to the exact local student")
     if not isinstance(result["verifier_passed"], bool):
         raise AnalysisError("verifier_passed must be an authoritative boolean")
     if result["verifier_authority"] != "terminal-bench-executable":
@@ -108,6 +149,40 @@ def _validate_result(result: Mapping[str, object]) -> None:
         result["expected_relevant_pages"], list
     ):
         raise AnalysisError("retrieval records must contain explicit page lists")
+    provenance = result["memory_provenance"]
+    if not isinstance(provenance, list) or len(provenance) != result["observed_memory_pages"]:
+        raise AnalysisError("memory provenance must account for every observed admitted page")
+    page_ids: list[object] = []
+    for entry in provenance:
+        if not isinstance(entry, Mapping):
+            raise AnalysisError("memory provenance entries must be objects")
+        required_provenance = (
+            "page_id",
+            "task_role",
+            "teacher_model_id",
+            "distiller_model_id",
+            "student_model_id",
+            "student_model_sha256",
+            "source_evidence_sha256",
+            "sanitizer_revision",
+            "approval_record_sha256",
+        )
+        missing_provenance = [field for field in required_provenance if not entry.get(field)]
+        if missing_provenance:
+            raise AnalysisError("incomplete memory provenance: " + ", ".join(missing_provenance))
+        if (
+            entry["task_role"] != "memory_build"
+            or entry["teacher_model_id"] != "gpt-5.6-sol"
+            or entry["distiller_model_id"] != "gpt-5.6-sol"
+            or entry["student_model_id"] != STUDENT_MODEL_ID
+            or entry["student_model_sha256"] != STUDENT_MODEL_SHA256
+        ):
+            raise AnalysisError("memory provenance conflates teacher, distiller, or student roles")
+        page_ids.append(entry["page_id"])
+    if sorted(str(value) for value in page_ids) != sorted(
+        str(value) for value in result.get("observed_memory_page_ids", [])
+    ):
+        raise AnalysisError("memory provenance page IDs disagree with observed memory")
 
 
 def pair_results(
@@ -368,12 +443,12 @@ def analyze_results(
 
 **Data classification: {classification_label}.**
 
-Terminal Bench executable verifier outcomes are authoritative. Learned-judge fields, if present in source records, were not read and cannot override verifier failures.
+Terminal Bench executable verifier outcomes from the exact local Qwen student are authoritative. Cloud-teacher outcomes, model confidence, narrative success claims, tool-exit impressions, distillation quality, and learned-judge fields are not efficacy outcomes and cannot override verifier failures.
 
 ## Data completeness
 
 - Paired result records analyzed: {len(pairs) * 2}
-- Result files under the run tree that were not paired-result-v1 records: {len(skipped)}
+- Result files under the run tree that were not student-paired-result-v2 records: {len(skipped)}
 
 {skipped_lines}
 

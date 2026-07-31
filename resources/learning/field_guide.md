@@ -42,28 +42,26 @@ Important questions include:
 5. Which tasks represent recurring engineering patterns?
 6. Which actions would be unsafe outside the sandbox?
 
-Executable verification is stronger than stylistic answer grading, but it still requires contamination checks and careful interpretation.
+Executable verification is stronger than stylistic answer grading, but result integrity and verifier adequacy are different. Learn to pin transport and artifacts, then privately qualify known-good acceptance, targeted broken controls, clean-container determinism, and reward/test isolation. Mutation qualification raises confidence but cannot prove perfect task coverage. Hidden tests and verifier internals must remain outside every model context.
 
 ### 4. Artifact memory
 
 Follow [Experiment 01: Terminal Artifact Memory](../../projects/01_terminal_artifact_memory/README.md).
 
-Study how completed work becomes:
+Study how a fixed `gpt-5.6-sol` cloud teacher's public memory-build work becomes:
 
-1. Sanitized terminal evidence.
-2. Command and outcome pairs.
-3. Failure signatures.
-4. Environment facts.
-5. Verified resolutions.
-6. Distilled Markdown pages.
-7. Searchable indexes.
-8. Provenance and freshness metadata.
+1. An executable-verifier-eligible local artifact.
+2. Strictly sanitized evidence with an explicit cloud disclosure inventory.
+3. A `gpt-5.6-sol` structured Markdown draft based only on sanitized evidence.
+4. An external human approval scoped to exact hashes.
+5. An admitted searchable page with teacher, distiller, split, and student provenance.
+6. Retrieved evidence for the exact fixed local Qwen student.
 
 The central experimental control is simple:
 
-> The model stays fixed. The memory grows.
+> The local student stays fixed. Approved teacher-derived memory grows.
 
-This makes it possible to measure whether accumulated verified work creates capability lift without changing model weights.
+M0 and M2 use disjoint held-out tasks, and the retrieved-memory block is the only student-context difference. A teacher build pass is provenance; only held-out Qwen executable-verifier pairs measure transfer.
 
 ### 5. Retrieval and ranking
 
@@ -148,9 +146,9 @@ For the active project:
 2. Predict the no memory baseline.
 3. Explain every metric in your own words.
 4. Inspect the artifact schema.
-5. Reproduce the first three task pilot.
-6. Compare raw evidence with distilled memory.
-7. Examine every false local answer.
+5. Reproduce the deterministic synthetic lifecycle without calling it measured.
+6. Audit what the teacher sees, what stays local, and exactly what the distiller receives.
+7. Examine every false local answer and every negative-transfer pair.
 8. Remove one component and measure what changes.
 9. Record one limitation.
 10. Propose the smallest next question justified by evidence.
