@@ -6,6 +6,7 @@ import os
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from artifact_memory.experiment import (
@@ -16,6 +17,7 @@ from artifact_memory.experiment import (
     build_harbor_command,
     build_llama_command,
     canonical_sha256,
+    check_prerequisites,
     control_snapshot,
     harbor_environment,
     load_manifest,
@@ -148,6 +150,36 @@ class ExternalCommandTests(unittest.TestCase):
 
         self.assertNotIn(source, environment)
         self.assertEqual(environment[destination], "synthetic-fixture-key")
+
+    def test_preflight_subprocesses_receive_no_api_key_names(self) -> None:
+        source = "ARTIFACT_MEMORY_FIXTURE_API_KEY"
+        destination = "ARTIFACT_MEMORY_FIXTURE_AGENT_API_KEY"
+        observed_environments: list[dict[str, str]] = []
+
+        def runner(command: list[str], **kwargs: object) -> SimpleNamespace:
+            environment = kwargs["env"]
+            self.assertIsInstance(environment, dict)
+            observed_environments.append(environment)
+            stdout = ""
+            if command == ["harbor", "run", "--help"]:
+                stdout = "--dataset --path --task-name --agent-kwarg --skill --jobs-dir --job-name"
+            return SimpleNamespace(returncode=0, stdout=stdout, stderr="")
+
+        parent = dict(self.environment)
+        parent[destination] = "stale-agent-key"
+        with (
+            patch.dict(os.environ, parent, clear=True),
+            patch("artifact_memory.experiment._require_executable"),
+            patch("artifact_memory.experiment._check_local_endpoint"),
+        ):
+            check_prerequisites(self.manifest, runner)
+            self.assertEqual(os.environ[source], "synthetic-fixture-key")
+            self.assertEqual(os.environ[destination], "stale-agent-key")
+
+        self.assertTrue(observed_environments)
+        for environment in observed_environments:
+            self.assertNotIn(source, environment)
+            self.assertNotIn(destination, environment)
 
     def test_harbor_conditions_only_change_output_and_memory_paths(self) -> None:
         with patch.dict(os.environ, self.environment, clear=False):

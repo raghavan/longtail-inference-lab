@@ -345,6 +345,14 @@ def harbor_environment(manifest: Mapping[str, object]) -> dict[str, str]:
     return environment
 
 
+def non_harbor_environment(manifest: Mapping[str, object]) -> dict[str, str]:
+    external = _mapping(manifest["external"], "external")
+    environment = dict(os.environ)
+    environment.pop(str(external["llama_api_key_env"]), None)
+    environment.pop(str(external.get("agent_api_key_env", DEFAULT_AGENT_API_KEY_ENV)), None)
+    return environment
+
+
 def build_harbor_command(
     manifest: Mapping[str, object],
     *,
@@ -407,8 +415,8 @@ def build_harbor_command(
     return command
 
 
-def _run_version(command: list[str], runner: Runner) -> str:
-    completed = runner(command, capture_output=True, text=True, check=False)
+def _run_version(command: list[str], runner: Runner, environment: Mapping[str, str]) -> str:
+    completed = runner(command, capture_output=True, text=True, check=False, env=environment)
     if completed.returncode != 0:
         raise PrerequisiteError(f"command failed: {command[0]} {' '.join(command[1:])}")
     return (completed.stdout + "\n" + completed.stderr).strip()
@@ -439,21 +447,24 @@ def _check_local_endpoint(api_base: str, api_key: str) -> None:
 
 def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subprocess.run) -> dict[str, str]:
     validate_manifest(manifest)
+    environment = non_harbor_environment(manifest)
     llama = _mapping(manifest.get("llama_cpp"), "llama_cpp")
     llama_executable = str(llama.get("executable", "llama-server"))
     for executable in ("git", "docker", "harbor", "gitleaks", llama_executable):
         _require_executable(executable)
 
     versions = {
-        "docker": _run_version(["docker", "--version"], runner),
-        "harbor": _run_version(["harbor", "--version"], runner),
-        "gitleaks": _run_version(["gitleaks", "version"], runner),
-        "llama_cpp": _run_version([llama_executable, "--version"], runner),
+        "docker": _run_version(["docker", "--version"], runner, environment),
+        "harbor": _run_version(["harbor", "--version"], runner, environment),
+        "gitleaks": _run_version(["gitleaks", "version"], runner, environment),
+        "llama_cpp": _run_version([llama_executable, "--version"], runner, environment),
     }
-    docker_info = runner(["docker", "info"], capture_output=True, text=True, check=False)
+    docker_info = runner(
+        ["docker", "info"], capture_output=True, text=True, check=False, env=environment
+    )
     if docker_info.returncode != 0:
         raise PrerequisiteError("Docker daemon is not available")
-    harbor_help = _run_version(["harbor", "run", "--help"], runner)
+    harbor_help = _run_version(["harbor", "run", "--help"], runner, environment)
     for flag in (
         "--dataset",
         "--path",
@@ -477,7 +488,7 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
             if pin not in versions[tool]:
                 raise PrerequisiteError(f"installed {tool} does not match measured-run pin")
         git_revision = _run_version(
-            ["git", "-C", str(PROJECT_ROOT), "rev-parse", "HEAD"], runner
+            ["git", "-C", str(PROJECT_ROOT), "rev-parse", "HEAD"], runner, environment
         ).splitlines()[-1]
         if git_revision != run_environment["code_revision"]:
             raise PrerequisiteError("checked-out Git revision does not match measured-run provenance")
@@ -486,6 +497,7 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
             capture_output=True,
             text=True,
             check=False,
+            env=environment,
         )
         if git_status.returncode != 0 or git_status.stdout.strip():
             raise PrerequisiteError("measured runs require a clean tracked and untracked worktree")
