@@ -49,11 +49,20 @@ class Rule:
     name: str
     pattern: re.Pattern[str]
     blocking: bool = False
+    template: str | None = None
 
 
-_VERSION_TOKEN = (
-    r"(?i:v?\d[A-Za-z0-9._+-]*|version|latest|stable|lts|head|main|master|next|nightly"
-    r"|beta|alpha|rc\d*)"
+_REMOTE_COMMANDS = r"ssh-copy-id|ssh-keyscan|ssh|scp|sftp|rsync|mosh"
+_VERSION_QUALIFIER = r"(?:rc|alpha|beta|dev|post|pre|final|lts|snapshot|nightly)\d*"
+_VERSION_SEGMENT = r"\.(?:\d+|[x*])"
+_PACKAGE_PIN = (
+    r"(?i:"
+    r"v?\d+(?:" + _VERSION_SEGMENT + r")+(?:" + _VERSION_QUALIFIER + r")?"
+    r"(?:[-+][A-Za-z0-9]+(?:\.[A-Za-z0-9]+)*)?"
+    r"|v?\d+(?:" + _VERSION_QUALIFIER + r")?"
+    r"|version|latest|stable|lts|head|main|master|next|nightly|beta|alpha|rc\d*"
+    r"|(?:sha\d{1,3}|md5):[0-9a-f]{7,}"
+    r")"
 )
 
 
@@ -124,12 +133,18 @@ RULES: tuple[Rule, ...] = (
     Rule(
         "remote",
         re.compile(
+            r"(?i)\b((?:" + _REMOTE_COMMANDS + r")[ \t]+(?:[^\s@]+[ \t]+)*)"
+            r"[A-Za-z0-9._-]+@[A-Za-z0-9._-]+(?::(?:[A-Za-z0-9._~/-]+))?"
+        ),
+        template=r"\1" + REDACTION["remote"],
+    ),
+    Rule(
+        "remote",
+        re.compile(
             r"\b[A-Za-z0-9._-]+@"
-            r"(?=[A-Za-z0-9._-]*\.[A-Za-z]"
-            r"|(?:\d{1,3}\.){3}\d{1,3}(?![A-Za-z0-9._-])"
-            r"|(?!" + _VERSION_TOKEN + r"(?![A-Za-z0-9._-]))"
-            r")"
-            r"[A-Za-z0-9._-]+(?::(?:[A-Za-z0-9._~/-]+))?"
+            r"(?:(?:\d{1,3}\.){3}\d{1,3}(?![A-Za-z0-9._-])"
+            r"|(?!" + _PACKAGE_PIN + r"(?![A-Za-z0-9._-]))[A-Za-z0-9._-]+)"
+            r"(?::(?:[A-Za-z0-9._~/-]+))?"
         ),
     ),
     Rule(
@@ -201,7 +216,7 @@ def run_gitleaks(target: Path, report_path: Path, executable: str = "gitleaks") 
 
 
 def _replace_rule(text: str, rule: Rule) -> tuple[str, int]:
-    return rule.pattern.subn(REDACTION[rule.name], text)
+    return rule.pattern.subn(rule.template or REDACTION[rule.name], text)
 
 
 def _safe_ascii(text: str) -> bool:

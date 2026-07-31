@@ -37,13 +37,19 @@ class SanitizerTests(unittest.TestCase):
         self.assertTrue(report["residual_scan"]["passed"])
 
     def test_account_forms_are_redacted_and_version_pins_are_kept(self) -> None:
+        digest = "sha256:" + "a1b2c3d4" * 8
         preserved_pins = (
-            "python@3.12",
-            "openssl@3",
-            "left-pad@1.3.0",
-            "node@lts",
+            "brew install python@3.12 openssl@3",
+            "npm install left-pad@1.3.0 node@lts",
+            "nvm install node@18.x",
+            "asdf ruby@3.2.x",
+            "asdf fixture-tool@2.x.x",
+            "npm install pkg@1.0.0-alpha.beta",
+            "asdf golang@1.22.4",
+            "python -m pip install fixture-pkg@3.12.0rc1",
             "fixture-tool@v2.1",
             "fixture-formula@version",
+            f"docker pull ubuntu@{digest}",
         )
         redacted_accounts = (
             "fixture-user@private-host",
@@ -53,16 +59,29 @@ class SanitizerTests(unittest.TestCase):
             "fixture-bot@v1-prod.example.invalid",
             "fixture-user@3rdparty.example.invalid",
             "fixture-ops@2host.example.invalid",
+            "fixture-deploy@2host",
+            "fixture-user@10box",
+            "fixture-ops@buildbox",
         )
-        text = "\n".join((*preserved_pins, *redacted_accounts, "SYNTHETIC-CANARY"))
+        remote_commands = (
+            "ssh fixture-admin@v2",
+            "ssh fixture-root@10",
+            "scp fixture-local.txt fixture-user@2box:/tmp/fixture",
+        )
+        text = "\n".join((*preserved_pins, *redacted_accounts, *remote_commands, "SYNTHETIC-CANARY"))
         output, report = sanitize_text(text, canaries=["SYNTHETIC-CANARY"])
         for preserved in preserved_pins:
             self.assertIn(preserved, output)
-        for unsafe in redacted_accounts:
+        for unsafe in (*redacted_accounts, "fixture-admin@v2", "fixture-root@10", "fixture-user@2box"):
             self.assertNotIn(unsafe, output)
-        for fragment in ("example.invalid", "3rdparty", "2host", "v1-prod"):
+        for fragment in ("example.invalid", "3rdparty", "2host", "v1-prod", "10box", "buildbox"):
             self.assertNotIn(fragment, output)
-        self.assertEqual(report["replacement_counts"]["remote"], len(redacted_accounts))
+        for command in ("ssh ", "scp fixture-local.txt "):
+            self.assertIn(command, output)
+        self.assertEqual(
+            report["replacement_counts"]["remote"],
+            len(redacted_accounts) + len(remote_commands),
+        )
         self.assertTrue(report["residual_scan"]["passed"])
 
     def test_contamination_and_credential_classes_block(self) -> None:

@@ -121,7 +121,7 @@ Terminal Artifact Memory adds a small transparent sanitizer for experiment speci
 1. Home directory paths.
 2. Workspace paths.
 3. Repository names.
-4. Git remote addresses and `user@host` account forms, excluding package version pins such as `python@3.12`.
+4. Git remote addresses, `user@host` account forms, and remote-command targets, excluding package and image pins such as `python@3.12`, `node@18.x`, and `ubuntu@sha256:<digest>`.
 5. Hostnames.
 6. Private network addresses.
 7. Docker mount paths.
