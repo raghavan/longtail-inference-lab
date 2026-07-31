@@ -53,7 +53,9 @@ class Rule:
 
 
 _REMOTE_COMMANDS = r"ssh-copy-id|ssh-keyscan|ssh|scp|sftp|rsync|mosh"
-_VERSION_QUALIFIER = r"(?:rc|alpha|beta|dev|post|pre|final|lts|snapshot|nightly)\d*"
+_REDACTION_PLACEHOLDER = r"\[[A-Z][A-Z-]*\]"
+_COMMAND_ARGUMENT = r"(?:(?!" + _REDACTION_PLACEHOLDER + r")[^\s@;&|<>()`'\"]+[ \t]+)*"
+_VERSION_QUALIFIER = r"(?:rc|alpha|beta|dev|post|pre|final|lts|snapshot|nightly|a|b|c)\d*"
 _VERSION_SEGMENT = r"\.(?:\d+|[x*])"
 _PACKAGE_PIN = (
     r"(?i:"
@@ -133,7 +135,7 @@ RULES: tuple[Rule, ...] = (
     Rule(
         "remote",
         re.compile(
-            r"(?i)\b((?:" + _REMOTE_COMMANDS + r")[ \t]+(?:[^\s@]+[ \t]+)*)"
+            r"(?i)\b((?:" + _REMOTE_COMMANDS + r")[ \t]+" + _COMMAND_ARGUMENT + r")"
             r"[A-Za-z0-9._-]+@[A-Za-z0-9._-]+(?::(?:[A-Za-z0-9._~/-]+))?"
         ),
         template=r"\1" + REDACTION["remote"],

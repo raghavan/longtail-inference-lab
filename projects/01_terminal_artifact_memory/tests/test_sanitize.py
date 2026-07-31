@@ -47,9 +47,14 @@ class SanitizerTests(unittest.TestCase):
             "npm install pkg@1.0.0-alpha.beta",
             "asdf golang@1.22.4",
             "python -m pip install fixture-pkg@3.12.0rc1",
+            "pyenv install python@3.13.0b1",
+            "python -m pip install fixture-pkg@3.12.0a7",
+            "asdf fixture-lib@1.0c2",
             "fixture-tool@v2.1",
             "fixture-formula@version",
             f"docker pull ubuntu@{digest}",
+            "rsync -avz src/ dst/ && npm install pkg@1.2.3",
+            "ssh fixture-host 'brew install python@3.11'",
         )
         redacted_accounts = (
             "fixture-user@private-host",
@@ -67,6 +72,9 @@ class SanitizerTests(unittest.TestCase):
             "ssh fixture-admin@v2",
             "ssh fixture-root@10",
             "scp fixture-local.txt fixture-user@2box:/tmp/fixture",
+            "ssh -i /fixture/key fixture-user@host.invalid",
+            "sftp fixture-user@3box",
+            "mosh fixture-user@11",
         )
         text = "\n".join((*preserved_pins, *redacted_accounts, *remote_commands, "SYNTHETIC-CANARY"))
         output, report = sanitize_text(text, canaries=["SYNTHETIC-CANARY"])
@@ -83,6 +91,28 @@ class SanitizerTests(unittest.TestCase):
             len(redacted_accounts) + len(remote_commands),
         )
         self.assertTrue(report["residual_scan"]["passed"])
+
+    def test_remote_command_redaction_stays_inside_its_own_segment(self) -> None:
+        text = "\n".join(
+            [
+                "ssh fixture-user@host.invalid && brew install python@3.12",
+                "scp fixture-user@2box:/tmp/fixture . && npm install pkg@1.2.3",
+                "rsync -avz src/ dst/ | tee fixture.log && asdf ruby@3.2.x",
+                "SYNTHETIC-CANARY",
+            ]
+        )
+        first, first_report = sanitize_text(text, canaries=["SYNTHETIC-CANARY"])
+        for preserved in ("brew install python@3.12", "npm install pkg@1.2.3", "asdf ruby@3.2.x"):
+            self.assertIn(preserved, first)
+        for unsafe in ("fixture-user@host.invalid", "fixture-user@2box"):
+            self.assertNotIn(unsafe, first)
+        self.assertEqual(first_report["replacement_counts"]["remote"], 2)
+        self.assertTrue(first_report["residual_scan"]["passed"])
+
+        second, second_report = sanitize_text(first, canaries=["SYNTHETIC-CANARY"])
+        self.assertEqual(second, first)
+        self.assertNotIn("remote", second_report["replacement_counts"])
+        self.assertTrue(second_report["residual_scan"]["passed"])
 
     def test_contamination_and_credential_classes_block(self) -> None:
         credential = "api" + "_key=" + "x" * 20
