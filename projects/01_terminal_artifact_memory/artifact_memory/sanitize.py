@@ -51,6 +51,12 @@ class Rule:
     blocking: bool = False
 
 
+_VERSION_TOKEN = (
+    r"(?i:v?\d[A-Za-z0-9._+-]*|version|latest|stable|lts|head|main|master|next|nightly"
+    r"|beta|alpha|rc\d*)"
+)
+
+
 RULES: tuple[Rule, ...] = (
     Rule(
         "credential",
@@ -119,12 +125,11 @@ RULES: tuple[Rule, ...] = (
         "remote",
         re.compile(
             r"\b[A-Za-z0-9._-]+@"
-            r"(?:(?:\d{1,3}\.){3}\d{1,3}"
-            r"|(?!\d)"
-            r"(?!(?i:v\d[A-Za-z0-9._+-]*|version|latest|stable|lts|head|main|master|next|nightly"
-            r"|beta|alpha|rc\d*)(?![A-Za-z0-9._-]))"
-            r"[A-Za-z0-9._-]*[A-Za-z][A-Za-z0-9._-]*)"
-            r"(?::(?:[A-Za-z0-9._~/-]+))?"
+            r"(?=[A-Za-z0-9._-]*\.[A-Za-z]"
+            r"|(?:\d{1,3}\.){3}\d{1,3}(?![A-Za-z0-9._-])"
+            r"|(?!" + _VERSION_TOKEN + r"(?![A-Za-z0-9._-]))"
+            r")"
+            r"[A-Za-z0-9._-]+(?::(?:[A-Za-z0-9._~/-]+))?"
         ),
     ),
     Rule(

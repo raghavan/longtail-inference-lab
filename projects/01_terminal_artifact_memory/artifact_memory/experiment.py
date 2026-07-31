@@ -581,6 +581,7 @@ def run_pair(
     memory_state = verified_memory_state(manifest, wiki_dir, index_path)
     if preflight:
         check_prerequisites(manifest, runner)
+    trial_environment = harbor_environment(manifest)
     pair_dir = runs_dir / str(manifest["pair_id"])
     if pair_dir.exists():
         raise FileExistsError(f"refusing to overwrite existing paired run: {pair_dir}")
@@ -635,7 +636,7 @@ def run_pair(
             capture_output=True,
             text=True,
             check=False,
-            env=harbor_environment(manifest),
+            env=trial_environment,
         )
         (trial_dir / "harbor-command.json").write_text(
             json.dumps(

@@ -37,27 +37,32 @@ class SanitizerTests(unittest.TestCase):
         self.assertTrue(report["residual_scan"]["passed"])
 
     def test_account_forms_are_redacted_and_version_pins_are_kept(self) -> None:
-        text = "\n".join(
-            [
-                "brew install python@3.12 openssl@3",
-                "npm install left-pad@1.3.0 node@lts",
-                "image pinned at fixture-tool@v2.1",
-                "fixture-user@private-host",
-                "fixture-person@example.invalid",
-                "fixture-user@10.0.0.1",
-                "SYNTHETIC-CANARY",
-            ]
+        preserved_pins = (
+            "python@3.12",
+            "openssl@3",
+            "left-pad@1.3.0",
+            "node@lts",
+            "fixture-tool@v2.1",
+            "fixture-formula@version",
         )
-        output, report = sanitize_text(text, canaries=["SYNTHETIC-CANARY"])
-        for preserved in ("python@3.12", "openssl@3", "left-pad@1.3.0", "node@lts", "fixture-tool@v2.1"):
-            self.assertIn(preserved, output)
-        for unsafe in (
+        redacted_accounts = (
             "fixture-user@private-host",
             "fixture-person@example.invalid",
             "fixture-user@10.0.0.1",
-        ):
+            "fixture-admin@v2.example.invalid",
+            "fixture-bot@v1-prod.example.invalid",
+            "fixture-user@3rdparty.example.invalid",
+            "fixture-ops@2host.example.invalid",
+        )
+        text = "\n".join((*preserved_pins, *redacted_accounts, "SYNTHETIC-CANARY"))
+        output, report = sanitize_text(text, canaries=["SYNTHETIC-CANARY"])
+        for preserved in preserved_pins:
+            self.assertIn(preserved, output)
+        for unsafe in redacted_accounts:
             self.assertNotIn(unsafe, output)
-        self.assertEqual(report["replacement_counts"]["remote"], 3)
+        for fragment in ("example.invalid", "3rdparty", "2host", "v1-prod"):
+            self.assertNotIn(fragment, output)
+        self.assertEqual(report["replacement_counts"]["remote"], len(redacted_accounts))
         self.assertTrue(report["residual_scan"]["passed"])
 
     def test_contamination_and_credential_classes_block(self) -> None:
