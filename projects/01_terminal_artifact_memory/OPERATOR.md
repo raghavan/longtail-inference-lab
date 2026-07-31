@@ -68,7 +68,7 @@ uv run python -m lily.experiment plan \
   --memory-index memory/manifests/artifact_index.jsonl
 ```
 
-`plan` is planning output, never a measured result. Both `plan` and `run` recompute the memory state from the admitted-page index: every wiki page must be an admitted, unsuperseded page whose content still hashes to its admission record, and the manifest's `memory_contributions` must equal that observed page count. `memory_checkpoint` must be 0 exactly when memory is empty and can never exceed the observed contributions.
+`plan` is planning output, never a measured result. Both `plan` and `run` recompute the memory state from the admitted-page index: every wiki page must be an admitted, unsuperseded page whose content still hashes to its admission record. `memory_contributions` and `memory_checkpoint` are both the verified contributions available, so each must equal that observed page count exactly; checkpoints are numbered by contribution count, not by run order.
 
 ## Start the local model endpoint
 
@@ -135,6 +135,6 @@ uv run python -m lily.analyze --runs-dir runs --output-dir results/generated
 
 By default analysis refuses development and fixture data. `--include-non-measured` exists only for explicit smoke work and labels every output non-measured. The CSV and Markdown report verifier pass rates, transfer classes, unresolved tasks, retrieval coverage, and verified knowledge yield. Learned-judge fields are ignored.
 
-Analysis never shrinks its denominator silently: an unreadable `result.json` under the run tree stops the analysis, and any other `result.json` that is not a `paired-result-v1` record is counted and listed in the summary's data-completeness section.
+Analysis reads only the records this runner writes, at `runs/<pair_id>/M0/result.json` and `runs/<pair_id>/M2/result.json`; Harbor's own job tree is never scanned. Within that layout the denominator never shrinks silently: an unreadable record stops the analysis, and any record that is not `paired-result-v1` is counted and listed in the summary's data-completeness section.
 
 Review every compact measured output and run the repository safety scan before intentionally committing it.

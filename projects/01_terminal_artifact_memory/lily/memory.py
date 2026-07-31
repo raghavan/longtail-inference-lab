@@ -31,7 +31,10 @@ TOKEN_RE = re.compile(r"[a-z0-9]+(?:[._+-][a-z0-9]+)*")
 SAFE_ID_RE = re.compile(r"[a-z0-9][a-z0-9._-]{2,127}")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 REVISION_RE = re.compile(r"[0-9a-f]{40}")
-PLACEHOLDER_RE = re.compile(r"\b(?:REQUIRED|TBD|CHANGEME|PLACEHOLDER)(?:_[A-Z0-9_]*)?\b")
+CONTAINER_DIGEST_RE = re.compile(r"sha256:[0-9a-f]{64}")
+PLACEHOLDER_RE = re.compile(
+    r"\b(?:REQUIRED|TBD)(?:_[A-Z0-9_]*)?\b|(?i:\b(?:CHANGEME|PLACEHOLDER)(?:_[A-Za-z0-9_]*)?\b)"
+)
 MARKDOWN_STRUCTURE_PREFIXES = ("#", "---", "```", "~~~")
 PAGE_SECTIONS = (
     "title",
@@ -328,7 +331,7 @@ def _validate_provenance(provenance: Mapping[str, object]) -> None:
         raise MemoryAdmissionError("pilot memory task_family must be environment_setup")
     if not REVISION_RE.fullmatch(str(provenance["code_revision"])):
         raise MemoryAdmissionError("code_revision must be a full Git revision")
-    if not re.fullmatch(r"sha256:[0-9a-f]{64}", str(provenance["task_container_digest"])):
+    if not CONTAINER_DIGEST_RE.fullmatch(str(provenance["task_container_digest"])):
         raise MemoryAdmissionError("task_container_digest must be an immutable SHA-256 digest")
     for field in (
         "model_sha256",
@@ -533,10 +536,12 @@ def admit_memory(request_path: Path, wiki_dir: Path, index_path: Path) -> Path:
     destination = wiki_dir / f"{page_id}.md"
     if destination.exists():
         raise MemoryAdmissionError(f"memory page already exists: {page_id}")
-    if index_path.exists():
-        for line in index_path.read_text().splitlines():
-            if line.strip() and json.loads(line).get("page_id") == page_id:
-                raise MemoryAdmissionError(f"memory index already contains: {page_id}")
+    try:
+        indexed = any(record.get("page_id") == page_id for record in _index_records(index_path))
+    except MemoryStateError as exc:
+        raise MemoryAdmissionError(str(exc)) from exc
+    if indexed:
+        raise MemoryAdmissionError(f"memory index already contains: {page_id}")
 
     with tempfile.NamedTemporaryFile("w", dir=wiki_dir, delete=False, encoding="utf-8") as handle:
         handle.write(page)

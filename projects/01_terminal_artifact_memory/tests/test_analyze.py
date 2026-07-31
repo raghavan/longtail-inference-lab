@@ -74,6 +74,9 @@ class AnalysisTests(unittest.TestCase):
             (runs / "future-pair" / "M0" / "result.json").write_text(
                 '{"schema_version": "paired-result-v2"}'
             )
+            harbor_tree = runs / "future-pair" / "M0" / "harbor-jobs" / "job" / "trial"
+            harbor_tree.mkdir(parents=True)
+            (harbor_tree / "result.json").write_text('{"harbor": "owned"')
             discovery = discover_results(runs)
             self.assertEqual(discovery.results, [])
             self.assertEqual(discovery.skipped, ["future-pair/M0/result.json"])

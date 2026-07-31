@@ -72,10 +72,18 @@ class ManifestTests(unittest.TestCase):
             with self.assertRaisesRegex(ManifestError, "memory_contributions"):
                 verified_memory_state(manifest, wiki, index)
             manifest["memory_contributions"] = 0
-            with self.assertRaisesRegex(ManifestError, "memory_checkpoint 0"):
+            with self.assertRaisesRegex(ManifestError, "memory_checkpoint"):
                 verified_memory_state(manifest, wiki, index)
             manifest["memory_checkpoint"] = 0
             self.assertEqual(verified_memory_state(manifest, wiki, index).admitted_pages, 0)
+
+    def test_measured_container_digest_must_be_immutable(self) -> None:
+        for digest in ("sha256:abc123", "sha256:changeme", "sha256:" + "g" * 64):
+            manifest = synthetic_manifest()
+            manifest["data_classification"] = "measured"
+            manifest["run_environment"]["task_container_digest"] = digest
+            with self.assertRaisesRegex(ManifestError, "task_container_digest"):
+                validate_manifest(manifest)
 
     def test_measured_hashes_are_not_inferred(self) -> None:
         manifest = synthetic_manifest()

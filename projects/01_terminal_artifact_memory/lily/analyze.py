@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
 try:
-    from .experiment import MEASURED, ManifestError, assert_control_equivalence
+    from .experiment import CONDITIONS, MEASURED, ManifestError, assert_control_equivalence
 except ImportError:  # Allow `python lily/analyze.py` from the project directory.
-    from experiment import MEASURED, ManifestError, assert_control_equivalence
+    from experiment import CONDITIONS, MEASURED, ManifestError, assert_control_equivalence
 
 
 class AnalysisError(ValueError):
@@ -47,7 +47,12 @@ def discover_results(runs_dir: Path) -> Discovery:
 
     results: list[dict[str, object]] = []
     skipped: list[str] = []
-    for path in sorted(runs_dir.glob("**/result.json")):
+    owned = {
+        path
+        for condition in CONDITIONS
+        for path in runs_dir.glob(f"*/{condition}/result.json")
+    }
+    for path in sorted(owned):
         location = path.relative_to(runs_dir).as_posix()
         try:
             value = json.loads(path.read_text())

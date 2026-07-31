@@ -20,6 +20,7 @@ from typing import Callable, Mapping, Sequence
 
 try:
     from .memory import (
+        CONTAINER_DIGEST_RE,
         PLACEHOLDER_RE,
         RETRIEVAL_REVISION,
         MemoryState,
@@ -32,6 +33,7 @@ try:
     from .sanitize import SANITIZER_REVISION, sha256_file
 except ImportError:  # Allow `python lily/experiment.py` from the project directory.
     from memory import (
+        CONTAINER_DIGEST_RE,
         PLACEHOLDER_RE,
         RETRIEVAL_REVISION,
         MemoryState,
@@ -218,8 +220,10 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
             )
         if not REVISION_RE.fullmatch(str(run_environment["code_revision"])):
             raise ManifestError("measured code_revision must be a full Git revision")
-        if not str(run_environment["task_container_digest"]).startswith("sha256:"):
-            raise ManifestError("measured task_container_digest must be an immutable digest")
+        if not CONTAINER_DIGEST_RE.fullmatch(str(run_environment["task_container_digest"])):
+            raise ManifestError(
+                "measured task_container_digest must be an immutable sha256:<64 hex> digest"
+            )
         for field in ("model_sha256", "python_lock_hash"):
             if not SHA256_RE.fullmatch(str(run_environment[field])):
                 raise ManifestError(f"measured {field} must be a SHA-256 digest")
@@ -262,10 +266,11 @@ def verified_memory_state(
             f"declared memory_contributions ({contributions}) disagrees with the "
             f"admitted memory index ({state.admitted_pages} pages)"
         )
-    if (checkpoint == 0) != (state.admitted_pages == 0):
-        raise ManifestError("memory_checkpoint 0 must mean an empty admitted memory index")
-    if checkpoint > state.admitted_pages:
-        raise ManifestError("memory_checkpoint exceeds the admitted memory contributions")
+    if checkpoint != state.admitted_pages:
+        raise ManifestError(
+            f"declared memory_checkpoint ({checkpoint}) is not the verified contribution "
+            f"count available in the admitted memory index ({state.admitted_pages})"
+        )
     return state
 
 
