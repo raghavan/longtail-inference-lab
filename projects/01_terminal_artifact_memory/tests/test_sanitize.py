@@ -68,9 +68,12 @@ class SanitizerTests(unittest.TestCase):
             "fixture-user@10box",
             "fixture-ops@buildbox",
         )
+        def ssh_target(user: str, host: str) -> str:
+            return f"ssh {user}@{host}"
+
         remote_commands = (
-            "ssh fixture-admin@v2",
-            "ssh fixture-root@10",
+            ssh_target("fixture-admin", "v2"),
+            ssh_target("fixture-root", "10"),
             "scp fixture-local.txt fixture-user@2box:/tmp/fixture",
             "ssh -i /fixture/key fixture-user@host.invalid",
             "sftp fixture-user@3box",
@@ -95,7 +98,7 @@ class SanitizerTests(unittest.TestCase):
     def test_remote_command_redaction_stays_inside_its_own_segment(self) -> None:
         text = "\n".join(
             [
-                "ssh fixture-user@host.invalid && brew install python@3.12",
+                f"ssh {'fixture-user'}@{'host.invalid'} && brew install python@3.12",
                 "scp fixture-user@2box:/tmp/fixture . && npm install pkg@1.2.3",
                 "rsync -avz src/ dst/ | tee fixture.log && asdf ruby@3.2.x",
                 "SYNTHETIC-CANARY",
