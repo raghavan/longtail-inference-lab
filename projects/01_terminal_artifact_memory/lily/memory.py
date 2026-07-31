@@ -15,9 +15,9 @@ from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
 try:
-    from .sanitize import inspect_unsafe, sha256_file
+    from .sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
 except ImportError:  # Allow `python lily/memory.py` from the project directory.
-    from sanitize import inspect_unsafe, sha256_file
+    from sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
 
 RETRIEVAL_REVISION = "direct-markdown-lexical-v1"
 SEARCHABLE_FIELDS = (
@@ -31,7 +31,19 @@ TOKEN_RE = re.compile(r"[a-z0-9]+(?:[._+-][a-z0-9]+)*")
 SAFE_ID_RE = re.compile(r"[a-z0-9][a-z0-9._-]{2,127}")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 REVISION_RE = re.compile(r"[0-9a-f]{40}")
-PLACEHOLDER_RE = re.compile(r"(?i)(?:(?:REQUIRED|TBD)(?:_|\b)|CHANGEME|PLACEHOLDER)")
+PLACEHOLDER_RE = re.compile(r"\b(?:REQUIRED|TBD|CHANGEME|PLACEHOLDER)(?:_[A-Z0-9_]*)?\b")
+MARKDOWN_STRUCTURE_PREFIXES = ("#", "---", "```", "~~~")
+PAGE_SECTIONS = (
+    "title",
+    "problem_pattern",
+    "observable_symptoms",
+    "environment_assumptions",
+    "diagnostic_sequence",
+    "verified_resolution",
+    "supporting_evidence",
+    "limitations",
+    "provenance",
+)
 
 REQUIRED_PROVENANCE = (
     "artifact_id",
@@ -64,6 +76,10 @@ class MemoryAdmissionError(ValueError):
     """Raised when any mandatory memory admission gate fails."""
 
 
+class MemoryStateError(ValueError):
+    """Raised when the wiki and the admitted-page index do not agree."""
+
+
 @dataclass(frozen=True)
 class Page:
     page_id: str
@@ -71,6 +87,12 @@ class Page:
     fields: Mapping[str, str]
     content: str
     token_count: int
+
+
+@dataclass(frozen=True)
+class MemoryState:
+    admitted_pages: int
+    page_ids: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -149,6 +171,61 @@ def load_pages(wiki_dir: Path) -> list[Page]:
         fields = {field: sections.get(field, "") for field in SEARCHABLE_FIELDS}
         pages.append(Page(page_id, path, fields, content, len(tokenize(content))))
     return pages
+
+
+def _index_records(index_path: Path) -> list[Mapping[str, object]]:
+    if not index_path.exists():
+        return []
+    try:
+        lines = index_path.read_text().splitlines()
+    except OSError as exc:
+        raise MemoryStateError("admitted memory index is not readable") from exc
+    records: list[Mapping[str, object]] = []
+    for number, line in enumerate(lines, start=1):
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise MemoryStateError(f"admitted memory index line {number} is not readable JSON") from exc
+        if not isinstance(record, Mapping):
+            raise MemoryStateError(f"admitted memory index line {number} is not an object")
+        records.append(record)
+    return records
+
+
+def observed_memory_state(wiki_dir: Path, index_path: Path) -> MemoryState:
+    """Return the machine-observed memory state, refusing any wiki/index disagreement."""
+
+    latest: dict[str, Mapping[str, object]] = {}
+    for record in _index_records(index_path):
+        page_id = str(record.get("page_id", ""))
+        if not SAFE_ID_RE.fullmatch(page_id):
+            raise MemoryStateError("admitted memory index contains an unsafe page identifier")
+        latest[page_id] = record
+    active = {
+        page_id: record
+        for page_id, record in latest.items()
+        if record.get("superseded") is not True
+    }
+
+    pages = {page.page_id: page for page in load_pages(wiki_dir)}
+    files = sorted(wiki_dir.glob("*.md")) if wiki_dir.exists() else []
+    if len(files) != len(pages):
+        raise MemoryStateError("wiki contains Markdown files without a safe admitted page identifier")
+    missing = sorted(set(active) - set(pages))
+    if missing:
+        raise MemoryStateError("admitted memory pages are missing from the wiki: " + ", ".join(missing))
+    unadmitted = sorted(set(pages) - set(latest))
+    if unadmitted:
+        raise MemoryStateError("wiki pages were never admitted: " + ", ".join(unadmitted))
+    retired = sorted(set(pages) - set(active))
+    if retired:
+        raise MemoryStateError("superseded pages are still retrievable in the wiki: " + ", ".join(retired))
+    for page_id, record in active.items():
+        if sha256_file(pages[page_id].path) != record.get("page_sha256"):
+            raise MemoryStateError(f"admitted memory page changed after admission: {page_id}")
+    return MemoryState(admitted_pages=len(active), page_ids=tuple(sorted(active)))
 
 
 def _score_pages(query: str, pages: Sequence[Page]) -> list[tuple[float, Page]]:
@@ -290,13 +367,27 @@ def _validate_sanitizer_report(report: Mapping[str, object]) -> None:
 def _single_line(value: object, name: str) -> str:
     if not isinstance(value, str) or not value.strip() or "\n" in value or "\r" in value:
         raise MemoryAdmissionError(f"{name} must be a non-empty single-line string")
-    return value.strip()
+    stripped = value.strip()
+    if stripped.startswith(MARKDOWN_STRUCTURE_PREFIXES):
+        raise MemoryAdmissionError(f"{name} must not begin with a Markdown structure marker")
+    return stripped
 
 
 def _safe_list(value: object, name: str) -> list[str]:
     if not isinstance(value, list) or not value:
         raise MemoryAdmissionError(f"{name} must be a non-empty list of strings")
     return [_single_line(item, name) for item in value]
+
+
+def _assert_page_structure(page: str, *, page_id: str, title: str, problem: str) -> None:
+    metadata, body = _frontmatter_and_body(page)
+    if metadata.get("page_id") != page_id:
+        raise MemoryAdmissionError("rendered page frontmatter does not round-trip")
+    sections = _sections(body)
+    if tuple(sections) != PAGE_SECTIONS:
+        raise MemoryAdmissionError("rendered page does not match the fixed memory page structure")
+    if sections["title"] != title or sections["problem_pattern"] != problem:
+        raise MemoryAdmissionError("rendered page sections do not round-trip to the reviewed distillation")
 
 
 def _render_page(request: Mapping[str, object], provenance: Mapping[str, object]) -> str:
@@ -382,6 +473,7 @@ status: current
     unsafe = inspect_unsafe(page)
     if unsafe:
         raise MemoryAdmissionError("distilled page contains unsafe classes: " + ", ".join(unsafe))
+    _assert_page_structure(page, page_id=page_id, title=title, problem=problem)
     return page
 
 
@@ -408,6 +500,8 @@ def admit_memory(request_path: Path, wiki_dir: Path, index_path: Path) -> Path:
 
     if report.get("sanitizer_revision") != provenance["sanitizer_revision"]:
         raise MemoryAdmissionError("sanitizer revision provenance mismatch")
+    if report.get("sanitizer_revision") != SANITIZER_REVISION:
+        raise MemoryAdmissionError("sanitizer revision does not match this implementation")
     if report.get("artifact_id") != provenance["artifact_id"]:
         raise MemoryAdmissionError("artifact identifier provenance mismatch")
     if sha256_file(sanitized_path) != provenance["sanitized_artifact_sha256"]:

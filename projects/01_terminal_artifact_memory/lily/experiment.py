@@ -19,10 +19,28 @@ from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 try:
-    from .memory import RETRIEVAL_REVISION, RetrievalResult, render_retrieved_memory, retrieve
+    from .memory import (
+        PLACEHOLDER_RE,
+        RETRIEVAL_REVISION,
+        MemoryState,
+        MemoryStateError,
+        RetrievalResult,
+        observed_memory_state,
+        render_retrieved_memory,
+        retrieve,
+    )
     from .sanitize import SANITIZER_REVISION, sha256_file
 except ImportError:  # Allow `python lily/experiment.py` from the project directory.
-    from memory import RETRIEVAL_REVISION, RetrievalResult, render_retrieved_memory, retrieve
+    from memory import (
+        PLACEHOLDER_RE,
+        RETRIEVAL_REVISION,
+        MemoryState,
+        MemoryStateError,
+        RetrievalResult,
+        observed_memory_state,
+        render_retrieved_memory,
+        retrieve,
+    )
     from sanitize import SANITIZER_REVISION, sha256_file
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -34,7 +52,6 @@ LOCK_PATH = PROJECT_ROOT / "uv.lock"
 MEASURED = "measured"
 CONDITIONS = ("M0", "M2")
 SCHEMA_VERSION = "paired-run-manifest-v1"
-PLACEHOLDER_RE = re.compile(r"(?i)(?:(?:REQUIRED|TBD)(?:_|\b)|CHANGEME|PLACEHOLDER)")
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 REVISION_RE = re.compile(r"[0-9a-f]{40}")
 SAFE_NAME_RE = re.compile(r"[a-zA-Z_][a-zA-Z0-9_]{1,127}")
@@ -227,6 +244,29 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
         for field, control_value in cross_checks.items():
             if run_environment.get(field) != control_value:
                 raise ManifestError(f"run_environment.{field} disagrees with fixed controls")
+
+
+def verified_memory_state(
+    manifest: Mapping[str, object], wiki_dir: Path, index_path: Path
+) -> MemoryState:
+    """Check the declared memory state against the admitted-page index and wiki."""
+
+    try:
+        state = observed_memory_state(wiki_dir, index_path)
+    except MemoryStateError as exc:
+        raise ManifestError(f"admitted memory state is not verifiable: {exc}") from exc
+    checkpoint = int(manifest["memory_checkpoint"])
+    contributions = int(manifest["memory_contributions"])
+    if contributions != state.admitted_pages:
+        raise ManifestError(
+            f"declared memory_contributions ({contributions}) disagrees with the "
+            f"admitted memory index ({state.admitted_pages} pages)"
+        )
+    if (checkpoint == 0) != (state.admitted_pages == 0):
+        raise ManifestError("memory_checkpoint 0 must mean an empty admitted memory index")
+    if checkpoint > state.admitted_pages:
+        raise ManifestError("memory_checkpoint exceeds the admitted memory contributions")
+    return state
 
 
 def control_snapshot(manifest: Mapping[str, object]) -> dict[str, object]:
@@ -505,6 +545,7 @@ def run_pair(
     manifest: Mapping[str, object],
     *,
     wiki_dir: Path,
+    index_path: Path,
     runs_dir: Path,
     runner: Runner = subprocess.run,
     preflight: bool = True,
@@ -512,6 +553,7 @@ def run_pair(
     validate_manifest(manifest)
     if _find_placeholders(manifest):
         raise ManifestError("a runnable manifest cannot contain unresolved placeholders")
+    memory_state = verified_memory_state(manifest, wiki_dir, index_path)
     if preflight:
         check_prerequisites(manifest, runner)
     pair_dir = runs_dir / str(manifest["pair_id"])
@@ -592,6 +634,8 @@ def run_pair(
             "question_type": task["question_type"],
             "memory_checkpoint": manifest["memory_checkpoint"],
             "memory_contributions": manifest["memory_contributions"],
+            "observed_memory_pages": memory_state.admitted_pages,
+            "observed_memory_page_ids": list(memory_state.page_ids),
             "memory_condition": condition,
             "verifier_passed": passed,
             "verifier_authority": "terminal-bench-executable",
@@ -628,8 +672,9 @@ def run_pair(
     return pair_dir
 
 
-def plan_pair(manifest: Mapping[str, object], wiki_dir: Path) -> dict[str, object]:
+def plan_pair(manifest: Mapping[str, object], wiki_dir: Path, index_path: Path) -> dict[str, object]:
     validate_manifest(manifest)
+    memory_state = verified_memory_state(manifest, wiki_dir, index_path)
     task = _mapping(manifest["task"], "task")
     controls = _mapping(manifest["controls"], "controls")
     retrieval_config = _mapping(controls["retrieval"], "controls.retrieval")
@@ -643,6 +688,8 @@ def plan_pair(manifest: Mapping[str, object], wiki_dir: Path) -> dict[str, objec
         "data_classification": manifest["data_classification"],
         "pair_id": manifest["pair_id"],
         "control_digest": canonical_sha256(control_snapshot(manifest)),
+        "observed_memory_pages": memory_state.admitted_pages,
+        "observed_memory_page_ids": list(memory_state.page_ids),
         "m0_retrieved_pages": [],
         "m2_retrieved_pages": [page.page_id for page in m2.pages],
         "note": "plan only; not a measured result",
@@ -657,6 +704,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("--manifest", type=Path, required=True)
         if name in {"plan", "run"}:
             command.add_argument("--wiki-dir", type=Path, required=True)
+            command.add_argument("--memory-index", type=Path, required=True)
         if name == "run":
             command.add_argument("--runs-dir", type=Path, required=True)
     args = parser.parse_args(argv)
@@ -675,9 +723,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(shlex.join(build_llama_command(manifest)))
         return 0
     if args.command == "plan":
-        print(json.dumps(plan_pair(manifest, args.wiki_dir), indent=2, sort_keys=True))
+        print(
+            json.dumps(
+                plan_pair(manifest, args.wiki_dir, args.memory_index), indent=2, sort_keys=True
+            )
+        )
         return 0
-    pair_dir = run_pair(manifest, wiki_dir=args.wiki_dir, runs_dir=args.runs_dir)
+    pair_dir = run_pair(
+        manifest,
+        wiki_dir=args.wiki_dir,
+        index_path=args.memory_index,
+        runs_dir=args.runs_dir,
+    )
     print(pair_dir)
     return 0
 

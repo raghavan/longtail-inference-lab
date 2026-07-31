@@ -155,7 +155,7 @@ The retriever performs a deterministic file scan:
 2. Extract the fixed searchable fields.
 3. Normalize and tokenize the current task description.
 4. Score each page with one documented lexical rule.
-5. Return the top K pages within a fixed token budget.
+5. Return the top K pages within a fixed token budget counted in the retriever's own lexical tokens, not model tokens; `config/retrieval.v1.json` states the unit.
 6. Record every retrieved page identifier and score.
 
 This is the simplest retrieval baseline. More advanced retrieval is considered only after the baseline produces measured results.
@@ -326,7 +326,7 @@ Validate prerequisites and run paired trials with a complete local manifest:
 
 ```bash
 uv run python -m lily.experiment check-prereqs --manifest config/local/pilot.json
-uv run python -m lily.experiment run --manifest config/local/pilot.json --wiki-dir memory/wiki --runs-dir runs
+uv run python -m lily.experiment run --manifest config/local/pilot.json --wiki-dir memory/wiki --memory-index memory/manifests/artifact_index.jsonl --runs-dir runs
 ```
 
 Produce result files:

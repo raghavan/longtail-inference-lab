@@ -36,16 +36,28 @@ class Pair:
         }[outcomes]  # type: ignore[index]
 
 
-def discover_results(runs_dir: Path) -> list[dict[str, object]]:
+@dataclass(frozen=True)
+class Discovery:
+    results: list[dict[str, object]]
+    skipped: list[str]
+
+
+def discover_results(runs_dir: Path) -> Discovery:
+    """Collect paired result records, refusing to silently shrink the corpus."""
+
     results: list[dict[str, object]] = []
+    skipped: list[str] = []
     for path in sorted(runs_dir.glob("**/result.json")):
+        location = path.relative_to(runs_dir).as_posix()
         try:
             value = json.loads(path.read_text())
-        except (OSError, json.JSONDecodeError):
-            continue
+        except (OSError, json.JSONDecodeError) as exc:
+            raise AnalysisError(f"unreadable result record under the run tree: {location}") from exc
         if isinstance(value, dict) and value.get("schema_version") == "paired-result-v1":
             results.append(value)
-    return results
+            continue
+        skipped.append(location)
+    return Discovery(results, skipped)
 
 
 def _validate_result(result: Mapping[str, object]) -> None:
@@ -57,6 +69,7 @@ def _validate_result(result: Mapping[str, object]) -> None:
         "question_type",
         "memory_checkpoint",
         "memory_contributions",
+        "observed_memory_pages",
         "memory_condition",
         "verifier_passed",
         "verifier_authority",
@@ -75,6 +88,10 @@ def _validate_result(result: Mapping[str, object]) -> None:
         raise AnalysisError("only the Terminal Bench executable verifier may score a result")
     if result["memory_condition"] not in {"M0", "M2"}:
         raise AnalysisError("pilot analysis accepts only M0 and M2")
+    if result["memory_contributions"] != result["observed_memory_pages"]:
+        raise AnalysisError(
+            "declared memory contributions disagree with the observed admitted memory index"
+        )
     if not isinstance(result["retrieved_page_ids"], list) or not isinstance(
         result["expected_relevant_pages"], list
     ):
@@ -117,6 +134,7 @@ def pair_results(
             "question_type",
             "memory_checkpoint",
             "memory_contributions",
+            "observed_memory_pages",
             "data_classification",
         ):
             if m0[field] != m2[field]:
@@ -170,6 +188,7 @@ def _pair_rows(pairs: Sequence[Pair]) -> list[dict[str, object]]:
                 "question_type": pair.m0["question_type"],
                 "memory_checkpoint": pair.m0["memory_checkpoint"],
                 "memory_contributions": pair.m0["memory_contributions"],
+                "observed_memory_pages": pair.m0["observed_memory_pages"],
                 "m0_verifier_passed": pair.m0["verifier_passed"],
                 "m2_verifier_passed": pair.m2["verifier_passed"],
                 "transfer": pair.transfer,
@@ -271,6 +290,7 @@ def analyze_results(
     output_dir: Path,
     *,
     allow_non_measured: bool = False,
+    skipped: Sequence[str] = (),
 ) -> dict[str, Path]:
     pairs = pair_results(results, allow_non_measured=allow_non_measured)
     rows = _pair_rows(pairs)
@@ -307,11 +327,19 @@ def analyze_results(
 
     overall = _counts(pairs)
     covered, relevant = _retrieval_coverage(pairs)
+    skipped_lines = "\n".join(f"- Skipped: `{location}`" for location in skipped) or "- None."
     summary = f"""# Paired pilot summary
 
 **Data classification: {classification_label}.**
 
 Terminal Bench executable verifier outcomes are authoritative. Learned-judge fields, if present in source records, were not read and cannot override verifier failures.
+
+## Data completeness
+
+- Paired result records analyzed: {len(pairs) * 2}
+- Result files under the run tree that were not paired-result-v1 records: {len(skipped)}
+
+{skipped_lines}
 
 ## Overall transfer
 
@@ -379,10 +407,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="explicitly allow fixture/development data; outputs are prominently labeled",
     )
     args = parser.parse_args(argv)
+    discovery = discover_results(args.runs_dir)
     outputs = analyze_results(
-        discover_results(args.runs_dir),
+        discovery.results,
         args.output_dir,
         allow_non_measured=args.include_non_measured,
+        skipped=discovery.skipped,
     )
     print(json.dumps({key: str(value) for key, value in outputs.items()}, indent=2))
     return 0

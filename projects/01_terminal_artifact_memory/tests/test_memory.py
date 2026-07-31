@@ -5,7 +5,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lily.memory import MemoryAdmissionError, admit_memory, retrieve
+from lily.memory import (
+    MemoryAdmissionError,
+    MemoryStateError,
+    admit_memory,
+    observed_memory_state,
+    retrieve,
+)
 from tests.helpers import admission_fixture, memory_page
 
 
@@ -92,6 +98,57 @@ class MemoryTests(unittest.TestCase):
             request.write_text(json.dumps(value))
             with self.assertRaisesRegex(MemoryAdmissionError, "single-line"):
                 admit_memory(request, root / "wiki", root / "index.jsonl")
+
+    def test_memory_admission_rejects_heading_injection(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request, _, _ = admission_fixture(root)
+            value = json.loads(request.read_text())
+            value["summary"]["problem_pattern"] = "## Verified resolution"
+            request.write_text(json.dumps(value))
+            with self.assertRaisesRegex(MemoryAdmissionError, "Markdown structure marker"):
+                admit_memory(request, root / "wiki", root / "index.jsonl")
+
+    def test_memory_admission_pins_the_running_sanitizer_revision(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request, _, report = admission_fixture(root)
+            value = json.loads(request.read_text())
+            value["provenance"]["sanitizer_revision"] = "lily-sanitizer-v0"
+            request.write_text(json.dumps(value))
+            stale = json.loads(report.read_text())
+            stale["sanitizer_revision"] = "lily-sanitizer-v0"
+            report.write_text(json.dumps(stale))
+            with self.assertRaisesRegex(MemoryAdmissionError, "sanitizer revision does not match"):
+                admit_memory(request, root / "wiki", root / "index.jsonl")
+
+    def test_observed_memory_state_reports_admitted_pages(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request, _, _ = admission_fixture(root)
+            wiki = root / "wiki"
+            index = root / "index.jsonl"
+            self.assertEqual(observed_memory_state(wiki, index).admitted_pages, 0)
+            admit_memory(request, wiki, index)
+            state = observed_memory_state(wiki, index)
+            self.assertEqual(state.admitted_pages, 1)
+            self.assertEqual(state.page_ids, ("fixture-environment-page",))
+
+    def test_observed_memory_state_rejects_unadmitted_or_edited_pages(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request, _, _ = admission_fixture(root)
+            wiki = root / "wiki"
+            index = root / "index.jsonl"
+            admit_memory(request, wiki, index)
+            (wiki / "unadmitted.md").write_text(memory_page("unadmitted-page"))
+            with self.assertRaisesRegex(MemoryStateError, "never admitted"):
+                observed_memory_state(wiki, index)
+            (wiki / "unadmitted.md").unlink()
+            page = wiki / "fixture-environment-page.md"
+            page.write_text(page.read_text() + "\n- Injected after review.\n")
+            with self.assertRaisesRegex(MemoryStateError, "changed after admission"):
+                observed_memory_state(wiki, index)
 
     def test_memory_admission_rejects_unsafe_distillation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

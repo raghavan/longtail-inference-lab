@@ -48,6 +48,8 @@ The self-test and end-to-end unittest smoke use synthetic fixtures and are not m
 
 Copy `manifests/measured-run-template.v1.json` to a local, uncommitted path under `config/local/`. Fill every `REQUIRED_...` value explicitly. The loader never infers measured provenance. It rejects an incomplete measured manifest.
 
+Unresolved values are detected by the uppercase template convention only: `REQUIRED_...`, `TBD...`, `CHANGEME`, and `PLACEHOLDER`. Ordinary prose such as a task description containing "required" is accepted, so never leave a real value in that uppercase marker form.
+
 Set the three environment variables named by the manifest:
 
 - `LILY_MODEL_PATH`: local GGUF path.
@@ -60,10 +62,13 @@ Validate without executing:
 
 ```bash
 uv run python -m lily.experiment validate --manifest config/local/pilot.json
-uv run python -m lily.experiment plan --manifest config/local/pilot.json --wiki-dir memory/wiki
+uv run python -m lily.experiment plan \
+  --manifest config/local/pilot.json \
+  --wiki-dir memory/wiki \
+  --memory-index memory/manifests/artifact_index.jsonl
 ```
 
-`plan` is planning output, never a measured result.
+`plan` is planning output, never a measured result. Both `plan` and `run` recompute the memory state from the admitted-page index: every wiki page must be an admitted, unsuperseded page whose content still hashes to its admission record, and the manifest's `memory_contributions` must equal that observed page count. `memory_checkpoint` must be 0 exactly when memory is empty and can never exceed the observed contributions.
 
 ## Start the local model endpoint
 
@@ -87,6 +92,7 @@ This checks tool availability and pins, Docker, Harbor's required flags, the loo
 uv run python -m lily.experiment run \
   --manifest config/local/pilot.json \
   --wiki-dir memory/wiki \
+  --memory-index memory/manifests/artifact_index.jsonl \
   --runs-dir runs
 ```
 
@@ -128,5 +134,7 @@ uv run python -m lily.analyze --runs-dir runs --output-dir results/generated
 ```
 
 By default analysis refuses development and fixture data. `--include-non-measured` exists only for explicit smoke work and labels every output non-measured. The CSV and Markdown report verifier pass rates, transfer classes, unresolved tasks, retrieval coverage, and verified knowledge yield. Learned-judge fields are ignored.
+
+Analysis never shrinks its denominator silently: an unreadable `result.json` under the run tree stops the analysis, and any other `result.json` that is not a `paired-result-v1` record is counted and listed in the summary's data-completeness section.
 
 Review every compact measured output and run the repository safety scan before intentionally committing it.

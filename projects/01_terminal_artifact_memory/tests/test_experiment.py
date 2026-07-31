@@ -19,6 +19,7 @@ from lily.experiment import (
     control_snapshot,
     load_manifest,
     validate_manifest,
+    verified_memory_state,
 )
 from lily.sanitize import sha256_file
 from tests.helpers import FIXTURE_SHA, result_fixture, synthetic_manifest
@@ -53,6 +54,28 @@ class ManifestTests(unittest.TestCase):
         manifest["run_environment"]["hardware_description"] = "REQUIRED_HARDWARE"
         with self.assertRaisesRegex(ManifestError, "placeholders"):
             validate_manifest(manifest)
+
+    def test_ordinary_prose_is_not_treated_as_a_placeholder(self) -> None:
+        manifest = synthetic_manifest()
+        manifest["data_classification"] = "measured"
+        manifest["task"]["retrieval_query"] = "install the required build toolchain and configure PATH"
+        manifest["run_environment"]["hardware_description"] = "laptop, 16 GB required"
+        validate_manifest(manifest)
+
+    def test_memory_state_must_match_the_admitted_index(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            wiki = root / "wiki"
+            wiki.mkdir()
+            index = root / "index.jsonl"
+            manifest = synthetic_manifest()
+            with self.assertRaisesRegex(ManifestError, "memory_contributions"):
+                verified_memory_state(manifest, wiki, index)
+            manifest["memory_contributions"] = 0
+            with self.assertRaisesRegex(ManifestError, "memory_checkpoint 0"):
+                verified_memory_state(manifest, wiki, index)
+            manifest["memory_checkpoint"] = 0
+            self.assertEqual(verified_memory_state(manifest, wiki, index).admitted_pages, 0)
 
     def test_measured_hashes_are_not_inferred(self) -> None:
         manifest = synthetic_manifest()

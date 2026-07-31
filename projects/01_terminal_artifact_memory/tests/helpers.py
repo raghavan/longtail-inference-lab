@@ -258,6 +258,8 @@ def result_fixture(
             "question_type": "structural",
             "memory_checkpoint": 1,
             "memory_contributions": 1,
+            "observed_memory_pages": 1,
+            "observed_memory_page_ids": ["fixture-environment-page"],
             "memory_condition": condition,
             "verifier_passed": passed,
             "verifier_authority": "terminal-bench-executable",

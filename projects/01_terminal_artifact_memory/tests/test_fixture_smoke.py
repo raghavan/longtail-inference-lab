@@ -22,7 +22,8 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
             root = Path(directory)
             request, _, _ = admission_fixture(root)
             wiki = root / "wiki"
-            admit_memory(request, wiki, root / "artifact-index.jsonl")
+            index = root / "artifact-index.jsonl"
+            admit_memory(request, wiki, index)
 
             def synthetic_harbor(
                 command: list[str],
@@ -59,6 +60,7 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
                 pair_dir = run_pair(
                     synthetic_manifest(),
                     wiki_dir=wiki,
+                    index_path=index,
                     runs_dir=root / "runs",
                     runner=synthetic_harbor,
                     preflight=False,
@@ -71,12 +73,16 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
             self.assertIn("<no-retrieved-memory />", m0_skill)
             self.assertIn("fixture-environment-page", m2_skill)
 
+            discovery = discover_results(root / "runs")
             outputs = analyze_results(
-                discover_results(root / "runs"),
+                discovery.results,
                 root / "analysis",
                 allow_non_measured=True,
+                skipped=discovery.skipped,
             )
             summary = outputs["summary"].read_text()
+            self.assertEqual(discovery.skipped, [])
+            self.assertIn("Paired result records analyzed: 2", summary)
             self.assertIn("Positive transfer: 1", summary)
             self.assertIn("NON-MEASURED", summary)
             self.assertNotIn("MEASURED RESULTS.", summary)

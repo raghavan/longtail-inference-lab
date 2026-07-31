@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lily.analyze import AnalysisError, analyze_results, pair_results
+from lily.analyze import AnalysisError, analyze_results, discover_results, pair_results
 from tests.helpers import result_fixture
 
 
@@ -65,6 +65,38 @@ class AnalysisTests(unittest.TestCase):
                     "unresolved_task",
                 },
             )
+
+    def test_dropped_records_are_reported_or_refused(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runs = root / "runs"
+            (runs / "future-pair" / "M0").mkdir(parents=True)
+            (runs / "future-pair" / "M0" / "result.json").write_text(
+                '{"schema_version": "paired-result-v2"}'
+            )
+            discovery = discover_results(runs)
+            self.assertEqual(discovery.results, [])
+            self.assertEqual(discovery.skipped, ["future-pair/M0/result.json"])
+            outputs = analyze_results(
+                self.fixture_results(),
+                root / "analysis",
+                allow_non_measured=True,
+                skipped=discovery.skipped,
+            )
+            summary = outputs["summary"].read_text()
+            self.assertIn("were not paired-result-v1 records: 1", summary)
+            self.assertIn("future-pair/M0/result.json", summary)
+
+            (runs / "future-pair" / "M0" / "result.json").write_text('{"schema_version": ')
+            with self.assertRaisesRegex(AnalysisError, "unreadable result record"):
+                discover_results(runs)
+
+    def test_declared_contributions_must_match_observed_memory(self) -> None:
+        m0, m2 = result_fixture("fixture-contributions", False, True)
+        m0["memory_contributions"] = 3
+        m2["memory_contributions"] = 3
+        with self.assertRaisesRegex(AnalysisError, "observed admitted memory index"):
+            pair_results([m0, m2], allow_non_measured=True)
 
     def test_missing_pair_is_rejected(self) -> None:
         m0, _ = result_fixture("fixture-incomplete", False, True)
