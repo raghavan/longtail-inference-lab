@@ -10,9 +10,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from lily.analyze import analyze_results, discover_results
-from lily.experiment import run_pair
-from lily.memory import admit_memory
+from artifact_memory.analyze import analyze_results, discover_results
+from artifact_memory.experiment import run_pair
+from artifact_memory.memory import admit_memory
 from tests.helpers import admission_fixture, synthetic_manifest
 
 

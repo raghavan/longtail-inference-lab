@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from lily.sanitize import SANITIZER_REVISION, sanitize_artifact, sha256_file
+from artifact_memory.sanitize import SANITIZER_REVISION, sanitize_artifact, sha256_file
 
 FIXTURE_SHA = "a" * 64
 FIXTURE_REVISION = "b" * 40

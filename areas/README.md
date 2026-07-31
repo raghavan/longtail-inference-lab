@@ -21,7 +21,7 @@ The lab operations Area covers:
 
 The public website Area covers:
 
-1. Lily's public identity.
+1. The laboratory's public identity.
 2. Accurate research communication.
 3. Accessibility and responsive behavior.
 4. Current links to active work.

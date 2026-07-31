@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lily.sanitize import build_gitleaks_command, sanitize_artifact, sanitize_text
+from artifact_memory.sanitize import build_gitleaks_command, sanitize_artifact, sanitize_text
 from tests.helpers import clean_gitleaks
 
 

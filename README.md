@@ -10,7 +10,7 @@ A research lab for testing whether verified terminal work can become reusable lo
 
 A lightweight local model does not need to know everything to become useful. It may need access to the right evidence from work that has already been completed and verified.
 
-Lily studies whether terminal artifacts can be transformed into durable memory that raises local task success over time. The model stays fixed during the core experiment. The memory grows. Executable tests decide whether capability actually improves.
+Long Tail Inference Lab studies whether terminal artifacts can be transformed into durable memory that raises local task success over time. The model stays fixed during the core experiment. The memory grows. Executable tests decide whether capability actually improves.
 
 ## Active experiment
 

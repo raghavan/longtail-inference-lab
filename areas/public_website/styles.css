@@ -410,7 +410,7 @@ footer {
   }
 
   .wordmark {
-    font-size: clamp(4.8rem, 26vw, 6.5rem);
+    font-size: clamp(3.4rem, 17vw, 5rem);
   }
 
   .tail {

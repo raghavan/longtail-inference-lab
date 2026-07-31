@@ -35,10 +35,10 @@ The model remains fixed. Only the number of verified memory contributions grows.
 
 The first standard-library pilot is runnable from this directory:
 
-1. `lily.experiment` validates complete provenance, checks pinned external boundaries, performs deterministic retrieval, and runs controlled Harbor M0/M2 pairs through Terminus-2, Docker, llama.cpp, ATIF, and the executable verifier.
-2. `lily.sanitize` applies experiment-specific redaction and contamination blocking and requires a clean Gitleaks scan, canary removal, and an explicit allowlist.
-3. `lily.memory` admits only verifier-passing, provenance-complete, sanitized, human-approved contributions and retrieves Markdown pages with a frozen lexical rule.
-4. `lily.analyze` emits CSV and Markdown verifier-authoritative paired summaries and refuses non-measured data by default.
+1. `artifact_memory.experiment` validates complete provenance, checks pinned external boundaries, performs deterministic retrieval, and runs controlled Harbor M0/M2 pairs through Terminus-2, Docker, llama.cpp, ATIF, and the executable verifier.
+2. `artifact_memory.sanitize` applies experiment-specific redaction and contamination blocking and requires a clean Gitleaks scan, canary removal, and an explicit allowlist.
+3. `artifact_memory.memory` admits only verifier-passing, provenance-complete, sanitized, human-approved contributions and retrieves Markdown pages with a frozen lexical rule.
+4. `artifact_memory.analyze` emits CSV and Markdown verifier-authoritative paired summaries and refuses non-measured data by default.
 5. Synthetic fixture tests cover the safety, control, retrieval, admission, and analysis boundaries without creating measured data.
 
 See [`OPERATOR.md`](OPERATOR.md) for prerequisites and commands. A genuine run still requires locally selected and pinned Harbor/Terminal Bench environment-setup tasks, separate held-out probes, license-compatible Qwen-family 7B GGUF Q4 weights, and installed pinned Harbor, llama.cpp, and Gitleaks versions. No measured baseline or memory checkpoint exists yet.
@@ -316,7 +316,7 @@ memory/
     artifact_index.jsonl
 ```
 
-`lily.memory` writes one flat Markdown page per admitted contribution and the retriever scans `memory/wiki/*.md` only. Every file in that directory must be an admitted, unsuperseded page whose content still hashes to its admission record, so no index page, subdirectory, or draft may be placed there. See [`memory/README.md`](memory/README.md) for the workspace rules. Sanitized evidence bundles stay in the local run directories until the M1 and M3 representation conditions are implemented.
+`artifact_memory.memory` writes one flat Markdown page per admitted contribution and the retriever scans `memory/wiki/*.md` only. Every file in that directory must be an admitted, unsuperseded page whose content still hashes to its admission record, so no index page, subdirectory, or draft may be placed there. See [`memory/README.md`](memory/README.md) for the workspace rules. Sanitized evidence bundles stay in the local run directories until the M1 and M3 representation conditions are implemented.
 
 Each distilled page records:
 
@@ -349,7 +349,7 @@ Keep these fixed during the core learning curve:
 9. Tool permissions.
 10. Maximum retrieved context.
 
-The pilot target is one pinned Qwen-family 7B GGUF Q4 model. `lily.experiment` rejects a manifest declaring any other family, parameter size, or quantization. Model comparisons begin only after the memory effect has been measured with that fixed model.
+The pilot target is one pinned Qwen-family 7B GGUF Q4 model. `artifact_memory.experiment` rejects a manifest declaring any other family, parameter size, or quantization. Model comparisons begin only after the memory effect has been measured with that fixed model.
 
 ## Retrieval plan
 
@@ -545,7 +545,7 @@ Any breach stops the affected run and triggers artifact removal, root cause anal
 
 ## Data schema
 
-The pilot writes one compact `result.json` per condition under `runs/<pair-id>/{M0,M2}/`, and `lily.analyze` emits `results/generated/results.csv` from those records. The columns below are the target schema for the complete experiment; the pilot emits the verifier, retrieval, transfer, control, and provenance subset of them.
+The pilot writes one compact `result.json` per condition under `runs/<pair-id>/{M0,M2}/`, and `artifact_memory.analyze` emits `results/generated/results.csv` from those records. The columns below are the target schema for the complete experiment; the pilot emits the verifier, retrieval, transfer, control, and provenance subset of them.
 
 <table>
 <thead>

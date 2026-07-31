@@ -15,7 +15,7 @@ Use the smallest credible setup that preserves four things:
 
 The research contribution is the verified memory layer and the measurement of whether that memory improves one fixed local model on structurally recurring terminal tasks.
 
-Lily does not need to become a benchmark platform, agent framework, model serving platform, database, experiment tracker, workflow system, or visualization system.
+Terminal Artifact Memory does not need to become a benchmark platform, agent framework, model serving platform, database, experiment tracker, workflow system, or visualization system.
 
 ## Pilot question
 
@@ -54,7 +54,7 @@ flowchart TD
     E --> F[Terminal Bench verifier]
     C --> G[ATIF trajectory]
     F --> H[Verifier result]
-    G --> I[Lily sanitizer]
+    G --> I[Artifact memory sanitizer]
     H --> I
     I --> J[Verified Markdown memory]
     J --> K[Direct Markdown retrieval]
@@ -76,9 +76,9 @@ Harbor provides:
 6. Terminal Bench verifier execution.
 7. Standard trial artifacts.
 
-Lily must not create another benchmark scheduler, terminal agent loop, verifier, trajectory format, or container orchestration layer.
+The pilot must not create another benchmark scheduler, terminal agent loop, verifier, trajectory format, or container orchestration layer.
 
-Docker remains necessary for isolation, but Lily interacts with it through Harbor rather than maintaining separate Docker infrastructure.
+Docker remains necessary for isolation, but Terminal Artifact Memory interacts with it through Harbor rather than maintaining separate Docker infrastructure.
 
 ## 2. llama.cpp
 
@@ -116,7 +116,7 @@ Do not add pip requirement files, task runners, hook frameworks, dataframe libra
 
 Gitleaks scans every exported artifact before it can enter searchable memory.
 
-Lily adds a small transparent sanitizer for experiment specific content:
+Terminal Artifact Memory adds a small transparent sanitizer for experiment specific content:
 
 1. Home directory paths.
 2. Workspace paths.
@@ -148,7 +148,7 @@ The retriever performs a deterministic file scan:
 
 This is the simplest retrieval baseline. More advanced retrieval is considered only after the baseline produces measured results.
 
-## Minimal Lily code
+## Minimal pilot code
 
 ```text
 01_terminal_artifact_memory/
@@ -157,7 +157,7 @@ This is the simplest retrieval baseline. More advanced retrieval is considered o
   pyproject.toml
   uv.lock
 
-  lily/
+  artifact_memory/
     experiment.py
     sanitize.py
     memory.py
@@ -189,7 +189,7 @@ It verifies that every non memory control remains identical and creates one self
 
 ### sanitize.py
 
-Reads exported trial artifacts, invokes Gitleaks, applies Lily redaction rules, validates the allowlist, tests canaries, and writes a sanitizer report.
+Reads exported trial artifacts, invokes Gitleaks, applies Terminal Artifact Memory redaction rules, validates the allowlist, tests canaries, and writes a sanitizer report.
 
 ### memory.py
 
@@ -262,7 +262,7 @@ A measured trial must be reconstructable from its directory and referenced Git r
 
 Every measured trial records a complete `run_environment` block covering the code revision, Harbor, Terminal Bench, task container digest, Terminus, ATIF schema, llama.cpp revision, model hash, quantization, prompt revision, retrieval revision, sanitizer revision, Gitleaks version, Python lock hash, operating system, and hardware description.
 
-`manifests/measured-run-template.v1.json` is the authoritative field list, and `lily.experiment validate` rejects a measured manifest that leaves any of it unresolved. A trial missing a required control is a development trial and cannot enter the primary result.
+`manifests/measured-run-template.v1.json` is the authoritative field list, and `artifact_memory.experiment validate` rejects a measured manifest that leaves any of it unresolved. A trial missing a required control is a development trial and cannot enter the primary result.
 
 ## Commands
 
@@ -276,21 +276,21 @@ Run tests and safety checks:
 
 ```bash
 uv run python -m unittest discover -v
-uv run python -m lily.sanitize --self-test
+uv run python -m artifact_memory.sanitize --self-test
 gitleaks dir .
 ```
 
 Validate prerequisites and run paired trials with a complete local manifest:
 
 ```bash
-uv run python -m lily.experiment check-prereqs --manifest config/local/pilot.json
-uv run python -m lily.experiment run --manifest config/local/pilot.json --wiki-dir memory/wiki --memory-index memory/manifests/artifact_index.jsonl --runs-dir runs
+uv run python -m artifact_memory.experiment check-prereqs --manifest config/local/pilot.json
+uv run python -m artifact_memory.experiment run --manifest config/local/pilot.json --wiki-dir memory/wiki --memory-index memory/manifests/artifact_index.jsonl --runs-dir runs
 ```
 
 Produce result files:
 
 ```bash
-uv run python -m lily.analyze --runs-dir runs --output-dir results/generated
+uv run python -m artifact_memory.analyze --runs-dir runs --output-dir results/generated
 ```
 
 The analyzer refuses fixtures and development records by default. See [`OPERATOR.md`](OPERATOR.md) for the complete workflow and source-backed external setup links.
@@ -305,7 +305,7 @@ No Makefile, pre commit framework, hosted workflow, database, tracking server, o
 4. Run one oracle task to validate the task environment and verifier.
 5. Run one Terminus 2 task under M0.
 6. Confirm that the ATIF trajectory and verifier result are preserved.
-7. Run Gitleaks, Lily redaction rules, allowlist validation, and canary tests.
+7. Run Gitleaks, Terminal Artifact Memory redaction rules, allowlist validation, and canary tests.
 8. Manually review the exported artifact.
 9. Distill one verified run into a Markdown memory page.
 10. Retrieve relevant pages using the frozen direct file scan.
@@ -321,7 +321,7 @@ Before an artifact enters searchable memory, all conditions must pass:
 1. The Terminal Bench verifier passed.
 2. Artifact provenance is complete.
 3. Gitleaks reports no unresolved finding.
-4. Lily sanitizer rules complete successfully.
+4. Terminal Artifact Memory sanitizer rules complete successfully.
 5. Canary values are detected and removed.
 6. Hidden test and reference solution paths are absent.
 7. The sanitized artifact matches the explicit allowlist.
@@ -388,11 +388,11 @@ The setup is ready for measured experimentation when:
 1. Harbor runs the pinned Terminal Bench subset in Docker.
 2. Terminus 2 uses the pinned local model through llama.cpp.
 3. ATIF trajectories and verifier results are preserved.
-4. Successful artifacts pass Gitleaks, the Lily sanitizer, canary tests, allowlist validation, and manual review.
+4. Successful artifacts pass Gitleaks, the Terminal Artifact Memory sanitizer, canary tests, allowlist validation, and manual review.
 5. The memory script produces provenance linked Markdown.
 6. Direct Markdown retrieval returns the expected pages under a frozen configuration.
 7. The experiment script runs paired M0 and M2 probes with identical controls.
 8. Every measured trial is reconstructable from its run directory.
 9. The analysis script reproduces the paired CSV and Markdown result files.
 
-At that point, Lily can begin collecting evidence instead of building infrastructure.
+At that point, Terminal Artifact Memory can begin collecting evidence instead of building infrastructure.

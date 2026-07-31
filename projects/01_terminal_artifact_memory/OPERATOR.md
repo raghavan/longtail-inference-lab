@@ -38,7 +38,7 @@ Run from this experiment directory:
 ```bash
 uv sync --frozen
 uv run python -m unittest discover -v
-uv run python -m lily.sanitize --self-test
+uv run python -m artifact_memory.sanitize --self-test
 uv lock --check
 ```
 
@@ -61,8 +61,8 @@ Values are read at runtime and are not copied into the fixed-control manifest.
 Validate without executing:
 
 ```bash
-uv run python -m lily.experiment validate --manifest config/local/pilot.json
-uv run python -m lily.experiment plan \
+uv run python -m artifact_memory.experiment validate --manifest config/local/pilot.json
+uv run python -m artifact_memory.experiment plan \
   --manifest config/local/pilot.json \
   --wiki-dir memory/wiki \
   --memory-index memory/manifests/artifact_index.jsonl
@@ -75,13 +75,13 @@ uv run python -m lily.experiment plan \
 Print the source-backed llama.cpp command:
 
 ```bash
-uv run python -m lily.experiment llama-command --manifest config/local/pilot.json
+uv run python -m artifact_memory.experiment llama-command --manifest config/local/pilot.json
 ```
 
 Inspect and execute that command in a separate terminal. The pilot does not manage the server lifecycle. Then check all pinned boundaries:
 
 ```bash
-uv run python -m lily.experiment check-prereqs --manifest config/local/pilot.json
+uv run python -m artifact_memory.experiment check-prereqs --manifest config/local/pilot.json
 ```
 
 This checks tool availability and pins, Docker, Harbor's required flags, the loopback `/health` and `/v1/models` routes, a clean worktree at the declared Git revision, prompt and lock hashes, and the GGUF hash.
@@ -89,7 +89,7 @@ This checks tool availability and pins, Docker, Harbor's required flags, the loo
 ## Run a paired probe
 
 ```bash
-uv run python -m lily.experiment run \
+uv run python -m artifact_memory.experiment run \
   --manifest config/local/pilot.json \
   --wiki-dir memory/wiki \
   --memory-index memory/manifests/artifact_index.jsonl \
@@ -105,7 +105,7 @@ Raw run directories are local and ignored because trajectories can contain sensi
 A memory-build artifact must contain at least one preregistered canary planted in task-visible, non-solution metadata before export. Put expected canary values and any known private host/repository terms in local files that are never committed.
 
 ```bash
-uv run python -m lily.sanitize \
+uv run python -m artifact_memory.sanitize \
   --input runs/LOCAL_BUILD/trajectory.json \
   --output runs/LOCAL_BUILD/sanitized.txt \
   --report runs/LOCAL_BUILD/sanitizer.json \
@@ -119,7 +119,7 @@ The sanitizer runs Gitleaks on both the exported source and sanitized output, th
 Copy `manifests/memory-admission-template.v1.json` to `config/local/`, fill its hashes and manually distilled summary, inspect the sanitized artifact, and record explicit review approval scoped to the sanitized artifact hash. Then run:
 
 ```bash
-uv run python -m lily.memory admit \
+uv run python -m artifact_memory.memory admit \
   --request config/local/memory-admission.json \
   --wiki-dir memory/wiki \
   --index memory/manifests/artifact_index.jsonl
@@ -130,7 +130,7 @@ Admission requires the executable verifier pass, complete provenance, every sani
 ## Generate paired summaries
 
 ```bash
-uv run python -m lily.analyze --runs-dir runs --output-dir results/generated
+uv run python -m artifact_memory.analyze --runs-dir runs --output-dir results/generated
 ```
 
 By default analysis refuses development and fixture data. `--include-non-measured` exists only for explicit smoke work and labels every output non-measured. The CSV and Markdown report verifier pass rates, transfer classes, unresolved tasks, retrieval coverage, and verified knowledge yield. Learned-judge fields are ignored.

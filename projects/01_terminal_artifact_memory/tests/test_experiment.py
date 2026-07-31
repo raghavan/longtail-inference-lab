@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from lily.experiment import (
+from artifact_memory.experiment import (
     LOCK_PATH,
     PROJECT_ROOT,
     ManifestError,
@@ -21,7 +21,7 @@ from lily.experiment import (
     validate_manifest,
     verified_memory_state,
 )
-from lily.sanitize import sha256_file
+from artifact_memory.sanitize import sha256_file
 from tests.helpers import FIXTURE_SHA, result_fixture, synthetic_manifest
 
 

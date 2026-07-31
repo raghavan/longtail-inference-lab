@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Iterable, Sequence
 
-SANITIZER_REVISION = "lily-sanitizer-v1"
+SANITIZER_REVISION = "artifact_memory-sanitizer-v1"
 REDACTION = {
     "canary": "[CANARY-REMOVED]",
     "credential": "[CREDENTIAL-REMOVED]",

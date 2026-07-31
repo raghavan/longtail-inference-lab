@@ -16,7 +16,7 @@ from typing import Iterable, Mapping, Sequence
 
 try:
     from .sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
-except ImportError:  # Allow `python lily/memory.py` from the project directory.
+except ImportError:  # Allow `python artifact_memory/memory.py` from the project directory.
     from sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
 
 RETRIEVAL_REVISION = "direct-markdown-lexical-v1"

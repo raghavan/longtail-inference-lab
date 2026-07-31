@@ -1,6 +1,6 @@
 # Public Website
 
-This Area owns the public entry point for Lily, the Longtail Inference Laboratory.
+This Area owns the public entry point for Long Tail Inference Lab.
 
 The site is published at <https://raghavan.github.io/longtail-inference-lab/>.
 

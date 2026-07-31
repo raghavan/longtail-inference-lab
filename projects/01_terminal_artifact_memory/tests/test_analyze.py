@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lily.analyze import AnalysisError, analyze_results, discover_results, pair_results
+from artifact_memory.analyze import AnalysisError, analyze_results, discover_results, pair_results
 from tests.helpers import result_fixture
 
 

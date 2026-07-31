@@ -12,7 +12,7 @@ from typing import Iterable, Mapping, Sequence
 
 try:
     from .experiment import CONDITIONS, MEASURED, ManifestError, assert_control_equivalence
-except ImportError:  # Allow `python lily/analyze.py` from the project directory.
+except ImportError:  # Allow `python artifact_memory/analyze.py` from the project directory.
     from experiment import CONDITIONS, MEASURED, ManifestError, assert_control_equivalence
 
 

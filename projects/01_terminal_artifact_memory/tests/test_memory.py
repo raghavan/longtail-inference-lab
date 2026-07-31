@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from lily.memory import (
+from artifact_memory.memory import (
     MemoryAdmissionError,
     MemoryStateError,
     admit_memory,
@@ -114,10 +114,10 @@ class MemoryTests(unittest.TestCase):
             root = Path(directory)
             request, _, report = admission_fixture(root)
             value = json.loads(request.read_text())
-            value["provenance"]["sanitizer_revision"] = "lily-sanitizer-v0"
+            value["provenance"]["sanitizer_revision"] = "artifact_memory-sanitizer-v0"
             request.write_text(json.dumps(value))
             stale = json.loads(report.read_text())
-            stale["sanitizer_revision"] = "lily-sanitizer-v0"
+            stale["sanitizer_revision"] = "artifact_memory-sanitizer-v0"
             report.write_text(json.dumps(stale))
             with self.assertRaisesRegex(MemoryAdmissionError, "sanitizer revision does not match"):
                 admit_memory(request, root / "wiki", root / "index.jsonl")

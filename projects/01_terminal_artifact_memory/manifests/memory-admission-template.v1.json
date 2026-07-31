@@ -19,7 +19,7 @@
     "quantization": "GGUF-Q4_K_M",
     "prompt_revision": "system-v1+memory-v1",
     "retrieval_revision": "direct-markdown-lexical-v1",
-    "sanitizer_revision": "lily-sanitizer-v1",
+    "sanitizer_revision": "artifact_memory-sanitizer-v1",
     "python_lock_hash": "REQUIRED_UV_LOCK_SHA256",
     "operating_system": "REQUIRED_OS_WITHOUT_MACHINE_ID",
     "hardware_description": "REQUIRED_HARDWARE_CLASS_WITHOUT_MACHINE_ID",

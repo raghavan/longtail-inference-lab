@@ -31,7 +31,7 @@ try:
         retrieve,
     )
     from .sanitize import SANITIZER_REVISION, sha256_file
-except ImportError:  # Allow `python lily/experiment.py` from the project directory.
+except ImportError:  # Allow `python artifact_memory/experiment.py` from the project directory.
     from memory import (
         CONTAINER_DIGEST_RE,
         PLACEHOLDER_RE,
