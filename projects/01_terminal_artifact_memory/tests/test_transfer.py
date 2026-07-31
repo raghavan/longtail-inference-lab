@@ -111,6 +111,25 @@ class TransferLifecycleTests(unittest.TestCase):
             with self.assertRaisesRegex(TransferError, "distiller_model_id"):
                 validate_distillation_draft(build, request, draft)
 
+    def test_invented_self_consistent_evidence_id_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            admission, _, _ = admission_fixture(root)
+            paths = json.loads(admission.read_text())
+            build = Path(paths["build_manifest_path"])
+            request = Path(paths["distillation_request_path"])
+            draft = Path(paths["distillation_draft_path"])
+            value = json.loads(draft.read_text())
+            canonical_id = value["evidence_ids"][0]
+            invented_id = "invented-safe-evidence"
+            value["evidence_ids"] = [invented_id]
+            value["markdown_body"] = value["markdown_body"].replace(
+                canonical_id, invented_id
+            )
+            draft.write_text(json.dumps(value))
+            with self.assertRaisesRegex(TransferError, "exactly match request"):
+                validate_distillation_draft(build, request, draft)
+
 
 if __name__ == "__main__":
     unittest.main()

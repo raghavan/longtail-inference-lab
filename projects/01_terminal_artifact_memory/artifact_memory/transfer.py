@@ -813,6 +813,17 @@ def validate_distillation_draft(
         isinstance(item, str) and SAFE_ID_RE.fullmatch(item) for item in evidence_ids
     ):
         raise TransferError("distillation draft evidence_ids must be safe identifiers")
+    source_evidence = expected_request.get("source_evidence")
+    if not isinstance(source_evidence, list):
+        raise TransferError("distillation request source_evidence must be a list")
+    expected_evidence_ids = [
+        _mapping(item, "distillation request source_evidence item").get("evidence_id")
+        for item in source_evidence
+    ]
+    if evidence_ids != expected_evidence_ids:
+        raise TransferError(
+            "distillation draft evidence_ids must exactly match request source evidence identifiers"
+        )
     body = draft.get("markdown_body")
     if not isinstance(body, str) or not body.strip():
         raise TransferError("distillation draft must contain a compact Markdown body")

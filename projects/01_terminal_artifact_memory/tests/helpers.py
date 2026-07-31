@@ -409,7 +409,7 @@ def admission_fixture(root: Path) -> tuple[Path, Path, Path]:
         "distillation_request_sha256": sha256_file(request_packet_path),
         "source_evidence_sha256": [sha256_file(sanitized)],
         "sanitizer_revision": SANITIZER_REVISION,
-        "evidence_ids": ["fixture-evidence"],
+        "evidence_ids": ["fixture-build-sanitized-evidence"],
         "markdown_body": """# Synthetic fixture environment setup
 
 ## Problem pattern
@@ -430,11 +430,11 @@ A package environment needs a shell path configured.
 
 ## Verified resolution
 
-- Configure the fixture package path. ([evidence:fixture-evidence])
+- Configure the fixture package path. ([evidence:fixture-build-sanitized-evidence])
 
 ## Supporting evidence
 
-- [evidence:fixture-evidence]
+- [evidence:fixture-build-sanitized-evidence]
 
 ## Limitations
 

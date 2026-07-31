@@ -111,7 +111,9 @@ class MemoryTests(unittest.TestCase):
             draft_path = Path(admission["distillation_draft_path"])
             draft = json.loads(draft_path.read_text())
             draft["markdown_body"] = draft["markdown_body"].replace(
-                "[evidence:fixture-evidence]", "[evidence:unknown-evidence]", 1
+                "[evidence:fixture-build-sanitized-evidence]",
+                "[evidence:unknown-evidence]",
+                1,
             )
             draft_path.write_text(json.dumps(draft))
             approval_path = Path(admission["approval_record_path"])
