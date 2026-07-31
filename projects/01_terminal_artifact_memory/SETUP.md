@@ -1,7 +1,7 @@
 # Minimal Pilot Setup
 
 **Experiment:** Terminal Artifact Memory  
-**Status:** Runnable implementation; pinned external inputs pending
+**Status:** Runnable implementation; pinned external inputs pending  
 **Last updated:** July 31 2026
 
 ## Principle
@@ -86,19 +86,7 @@ llama.cpp serves one fixed local model through an OpenAI compatible endpoint.
 
 No additional model gateway is required.
 
-The pilot manifest records:
-
-```yaml
-model:
-  runtime: llama_cpp
-  model_path: models/fixed_model.gguf
-  model_sha256: REQUIRED
-  quantization: REQUIRED
-  runtime_revision: REQUIRED
-  context_size: REQUIRED
-  temperature: 0
-  seed: REQUIRED_WHERE_SUPPORTED
-```
+The pilot manifest records the model family, parameter size, exact identifier, SHA-256, quantization, context size, runtime revision, and decoding settings. `manifests/measured-run-template.v1.json` is the authoritative field list. The local GGUF path is supplied through the `LILY_MODEL_PATH` environment variable rather than the manifest, so no machine path enters a committed control record.
 
 Download the model once, record its hash, and freeze it before measured runs begin.
 
@@ -266,45 +254,15 @@ Large raw artifacts may remain on the laptop or VPS. Commit only reviewed summar
 
 Do not introduce an experiment tracking service.
 
-Each trial is a self contained directory:
-
-```text
-runs/
-  2026_07_14_001/
-    manifest.json
-    trajectory.json
-    verifier.json
-    retrieval.json
-    sanitizer.json
-    result.json
-```
+Each paired trial is a self contained directory under `runs/<pair-id>/{M0,M2}/`. [`runs/README.md`](runs/README.md) owns that layout and its handling rules.
 
 A measured trial must be reconstructable from its directory and referenced Git revision.
 
 ## Reproducibility manifest
 
-Every measured trial records:
+Every measured trial records a complete `run_environment` block covering the code revision, Harbor, Terminal Bench, task container digest, Terminus, ATIF schema, llama.cpp revision, model hash, quantization, prompt revision, retrieval revision, sanitizer revision, Gitleaks version, Python lock hash, operating system, and hardware description.
 
-```yaml
-run_environment:
-  code_revision: REQUIRED
-  harbor_version: REQUIRED
-  terminal_bench_version: REQUIRED
-  task_container_digest: REQUIRED
-  terminus_version: REQUIRED
-  atif_schema_version: REQUIRED
-  llama_cpp_revision: REQUIRED
-  model_sha256: REQUIRED
-  quantization: REQUIRED
-  prompt_revision: REQUIRED
-  retrieval_revision: REQUIRED
-  sanitizer_revision: REQUIRED
-  python_lock_hash: REQUIRED
-  operating_system: REQUIRED
-  hardware_description: REQUIRED
-```
-
-A trial missing a required control is a development trial and cannot enter the primary result.
+`manifests/measured-run-template.v1.json` is the authoritative field list, and `lily.experiment validate` rejects a measured manifest that leaves any of it unresolved. A trial missing a required control is a development trial and cannot enter the primary result.
 
 ## Commands
 

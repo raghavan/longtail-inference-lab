@@ -16,7 +16,7 @@ Lily studies whether terminal artifacts can be transformed into durable memory t
 
 ### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
-**Status:** Runnable pilot implementation; measured baseline pending
+**Status:** Specified (runnable pilot implementation; measured baseline pending)
 
 **Question:** Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
 

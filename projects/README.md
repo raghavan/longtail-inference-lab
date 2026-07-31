@@ -8,7 +8,7 @@ A folder enters Projects only when it has a research question, a measurement pla
 
 ### [01 Terminal Artifact Memory](01_terminal_artifact_memory/README.md)
 
-**Status:** Runnable pilot implementation; measured baseline pending
+**Status:** Specified (runnable pilot implementation; measured baseline pending)
 
 Can verified artifacts from completed terminal benchmark tasks make a fixed lightweight local model increasingly useful on recurring engineering problems?
 

@@ -1,6 +1,6 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Runnable pilot implementation; measured baseline pending
+**Status:** Specified (runnable pilot implementation; measured baseline pending)  
 **Track:** Artifact memory and local inference  
 **Difficulty:** Intermediate  
 **Last updated:** July 31 2026
@@ -309,21 +309,14 @@ Later extensions may test structured facts, embeddings, hybrid retrieval, learne
 ## Wiki structure
 
 ```text
-wiki/
-  index.md
-  task_patterns/
-  failure_modes/
-  commands/
-  solutions/
-  evidence/
-    task_001/
-      manifest.json
-      command_outcomes.jsonl
-      verifier_result.json
-      sanitized_log.txt
+memory/
+  wiki/
+    <page_id>.md
   manifests/
     artifact_index.jsonl
 ```
+
+`lily.memory` writes one flat Markdown page per admitted contribution and the retriever scans `memory/wiki/*.md` only. Every file in that directory must be an admitted, unsuperseded page whose content still hashes to its admission record, so no index page, subdirectory, or draft may be placed there. See [`memory/README.md`](memory/README.md) for the workspace rules. Sanitized evidence bundles stay in the local run directories until the M1 and M3 representation conditions are implemented.
 
 Each distilled page records:
 
@@ -356,7 +349,7 @@ Keep these fixed during the core learning curve:
 9. Tool permissions.
 10. Maximum retrieved context.
 
-Qwen and GLM are candidate model families. The first run uses one pinned lightweight model. Model comparisons begin only after the memory effect has been measured with a fixed model.
+The pilot target is one pinned Qwen-family 7B GGUF Q4 model. `lily.experiment` rejects a manifest declaring any other family, parameter size, or quantization. Model comparisons begin only after the memory effect has been measured with that fixed model.
 
 ## Retrieval plan
 
@@ -552,7 +545,7 @@ Any breach stops the affected run and triggers artifact removal, root cause anal
 
 ## Data schema
 
-The main run record is `runs.csv`.
+The pilot writes one compact `result.json` per condition under `runs/<pair-id>/{M0,M2}/`, and `lily.analyze` emits `results/generated/results.csv` from those records. The columns below are the target schema for the complete experiment; the pilot emits the verifier, retrieval, transfer, control, and provenance subset of them.
 
 <table>
 <thead>
@@ -584,7 +577,7 @@ The main run record is `runs.csv`.
 </tbody>
 </table>
 
-Also publish `retrieval.jsonl` and `artifact_manifest.jsonl` with safe identifiers, scores, ranks, hashes, sanitizer version, provenance, verifier outcome, and supersession state.
+The pilot records this detail across two files: the per-trial `retrieval.json` holds the frozen retrieval revision, query hash, and every retrieved page identifier, lexical score, rank, and token count, and `memory/manifests/artifact_index.jsonl` holds the page, artifact, run, and sanitizer report hashes, the reviewer identity and timestamp, and the supersession state. Publish only reviewed compact summaries derived from them.
 
 ## Completion condition
 
