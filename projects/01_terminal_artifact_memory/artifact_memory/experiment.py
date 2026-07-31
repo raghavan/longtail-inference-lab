@@ -336,8 +336,12 @@ def harbor_environment(manifest: Mapping[str, object]) -> dict[str, str]:
     variable = str(external.get("agent_api_key_env", DEFAULT_AGENT_API_KEY_ENV))
     if not SAFE_NAME_RE.fullmatch(variable):
         raise ManifestError("external.agent_api_key_env must name a local environment variable")
+    source_variable = str(external["llama_api_key_env"])
+    credential = _resolved_env(manifest, "llama_api_key_env")
     environment = dict(os.environ)
-    environment[variable] = _resolved_env(manifest, "llama_api_key_env")
+    if source_variable != variable:
+        environment.pop(source_variable, None)
+    environment[variable] = credential
     return environment
 
 

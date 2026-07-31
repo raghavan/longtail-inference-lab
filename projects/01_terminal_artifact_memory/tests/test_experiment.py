@@ -17,6 +17,7 @@ from artifact_memory.experiment import (
     build_llama_command,
     canonical_sha256,
     control_snapshot,
+    harbor_environment,
     load_manifest,
     validate_manifest,
     verified_memory_state,
@@ -136,6 +137,17 @@ class ExternalCommandTests(unittest.TestCase):
         self.assertIn("docker", command)
         self.assertIn("api_base=http://localhost:8080/v1", command)
         self.assertIn('llm_call_kwargs={"seed":7}', command)
+
+    def test_harbor_environment_renames_credential_without_mutating_parent(self) -> None:
+        source = "ARTIFACT_MEMORY_FIXTURE_API_KEY"
+        destination = "ARTIFACT_MEMORY_FIXTURE_AGENT_API_KEY"
+        with patch.dict(os.environ, self.environment, clear=True):
+            environment = harbor_environment(self.manifest)
+            self.assertEqual(os.environ[source], "synthetic-fixture-key")
+            self.assertNotIn(destination, os.environ)
+
+        self.assertNotIn(source, environment)
+        self.assertEqual(environment[destination], "synthetic-fixture-key")
 
     def test_harbor_conditions_only_change_output_and_memory_paths(self) -> None:
         with patch.dict(os.environ, self.environment, clear=False):
