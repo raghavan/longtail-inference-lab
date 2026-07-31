@@ -57,6 +57,7 @@ SCHEMA_VERSION = "paired-run-manifest-v1"
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 REVISION_RE = re.compile(r"[0-9a-f]{40}")
 SAFE_NAME_RE = re.compile(r"[a-zA-Z_][a-zA-Z0-9_]{1,127}")
+DEFAULT_AGENT_API_KEY_ENV = "OPENAI_API_KEY"
 
 REQUIRED_RUN_ENVIRONMENT = (
     "code_revision",
@@ -205,6 +206,9 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
     for field in ("llama_api_base_env", "llama_api_key_env", "model_path_env"):
         if not isinstance(external.get(field), str) or not SAFE_NAME_RE.fullmatch(str(external[field])):
             raise ManifestError(f"external.{field} must name a local environment variable")
+    agent_api_key_env = external.get("agent_api_key_env", DEFAULT_AGENT_API_KEY_ENV)
+    if not isinstance(agent_api_key_env, str) or not SAFE_NAME_RE.fullmatch(agent_api_key_env):
+        raise ManifestError("external.agent_api_key_env must name a local environment variable")
 
     run_environment = _mapping(manifest.get("run_environment"), "run_environment")
     if classification == MEASURED:
@@ -319,6 +323,22 @@ def build_llama_command(manifest: Mapping[str, object]) -> list[str]:
         "--port",
         str(llama.get("port", 8080)),
     ]
+
+
+def harbor_environment(manifest: Mapping[str, object]) -> dict[str, str]:
+    """Resolve the ephemeral child-process environment for one Harbor trial.
+
+    The loopback endpoint credential is forwarded only through this process
+    environment, never through argv, manifests, run records, or logs.
+    """
+
+    external = _mapping(manifest["external"], "external")
+    variable = str(external.get("agent_api_key_env", DEFAULT_AGENT_API_KEY_ENV))
+    if not SAFE_NAME_RE.fullmatch(variable):
+        raise ManifestError("external.agent_api_key_env must name a local environment variable")
+    environment = dict(os.environ)
+    environment[variable] = _resolved_env(manifest, "llama_api_key_env")
+    return environment
 
 
 def build_harbor_command(
@@ -610,7 +630,13 @@ def run_pair(
         command = build_harbor_command(
             manifest, condition=condition, jobs_dir=jobs_dir, skill_dir=skill_dir
         )
-        completed = runner(command, capture_output=True, text=True, check=False)
+        completed = runner(
+            command,
+            capture_output=True,
+            text=True,
+            check=False,
+            env=harbor_environment(manifest),
+        )
         (trial_dir / "harbor-command.json").write_text(
             json.dumps(
                 {

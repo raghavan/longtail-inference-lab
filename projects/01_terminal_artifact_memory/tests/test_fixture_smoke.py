@@ -31,8 +31,13 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
                 capture_output: bool,
                 text: bool,
                 check: bool,
+                env: dict[str, str],
             ) -> subprocess.CompletedProcess[str]:
                 self.assertEqual(command[:2], ["harbor", "run"])
+                self.assertEqual(
+                    env["ARTIFACT_MEMORY_FIXTURE_AGENT_API_KEY"], "synthetic-fixture-key"
+                )
+                self.assertTrue(all("synthetic-fixture-key" not in part for part in command))
                 jobs_dir = Path(command[command.index("--jobs-dir") + 1])
                 job_name = command[command.index("--job-name") + 1]
                 trial = jobs_dir / job_name / "synthetic-fixture-trial"
@@ -52,9 +57,9 @@ class SyntheticFixtureEndToEndSmoke(unittest.TestCase):
                 return subprocess.CompletedProcess(command, 0, "synthetic fixture", "")
 
             environment = {
-                "LILY_FIXTURE_API_BASE": "http://localhost:8080/v1",
-                "LILY_FIXTURE_API_KEY": "synthetic-fixture-key",
-                "LILY_FIXTURE_MODEL_PATH": "models/synthetic-fixture.gguf",
+                "ARTIFACT_MEMORY_FIXTURE_API_BASE": "http://localhost:8080/v1",
+                "ARTIFACT_MEMORY_FIXTURE_API_KEY": "synthetic-fixture-key",
+                "ARTIFACT_MEMORY_FIXTURE_MODEL_PATH": "models/synthetic-fixture.gguf",
             }
             with patch.dict(os.environ, environment, clear=False):
                 pair_dir = run_pair(

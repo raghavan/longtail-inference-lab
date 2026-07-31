@@ -108,9 +108,9 @@ class ExternalCommandTests(unittest.TestCase):
     def setUp(self) -> None:
         self.manifest = synthetic_manifest()
         self.environment = {
-            "LILY_FIXTURE_API_BASE": "http://localhost:8080/v1",
-            "LILY_FIXTURE_API_KEY": "synthetic-fixture-key",
-            "LILY_FIXTURE_MODEL_PATH": "models/synthetic-fixture.gguf",
+            "ARTIFACT_MEMORY_FIXTURE_API_BASE": "http://localhost:8080/v1",
+            "ARTIFACT_MEMORY_FIXTURE_API_KEY": "synthetic-fixture-key",
+            "ARTIFACT_MEMORY_FIXTURE_MODEL_PATH": "models/synthetic-fixture.gguf",
         }
 
     def test_harbor_command_is_narrow_and_explicit(self) -> None:

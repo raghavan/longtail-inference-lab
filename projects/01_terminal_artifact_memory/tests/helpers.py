@@ -92,9 +92,10 @@ def synthetic_manifest() -> dict[str, Any]:
             "port": 8080,
         },
         "external": {
-            "llama_api_base_env": "LILY_FIXTURE_API_BASE",
-            "llama_api_key_env": "LILY_FIXTURE_API_KEY",
-            "model_path_env": "LILY_FIXTURE_MODEL_PATH",
+            "llama_api_base_env": "ARTIFACT_MEMORY_FIXTURE_API_BASE",
+            "llama_api_key_env": "ARTIFACT_MEMORY_FIXTURE_API_KEY",
+            "model_path_env": "ARTIFACT_MEMORY_FIXTURE_MODEL_PATH",
+            "agent_api_key_env": "ARTIFACT_MEMORY_FIXTURE_AGENT_API_KEY",
         },
     }
 

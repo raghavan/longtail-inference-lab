@@ -168,7 +168,7 @@ def load_pages(wiki_dir: Path) -> list[Page]:
         if not SAFE_ID_RE.fullmatch(page_id):
             continue
         if page_id in seen:
-            raise ValueError(f"duplicate memory page_id: {page_id}")
+            raise MemoryStateError(f"duplicate memory page_id: {page_id}")
         seen.add(page_id)
         sections = _sections(body)
         fields = {field: sections.get(field, "") for field in SEARCHABLE_FIELDS}

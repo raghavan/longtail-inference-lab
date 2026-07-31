@@ -86,7 +86,7 @@ llama.cpp serves one fixed local model through an OpenAI compatible endpoint.
 
 No additional model gateway is required.
 
-The pilot manifest records the model family, parameter size, exact identifier, SHA-256, quantization, context size, runtime revision, and decoding settings. `manifests/measured-run-template.v1.json` is the authoritative field list. The local GGUF path is supplied through the `LILY_MODEL_PATH` environment variable rather than the manifest, so no machine path enters a committed control record.
+The pilot manifest records the model family, parameter size, exact identifier, SHA-256, quantization, context size, runtime revision, and decoding settings. `manifests/measured-run-template.v1.json` is the authoritative field list. The local GGUF path is supplied through the `ARTIFACT_MEMORY_MODEL_PATH` environment variable rather than the manifest, so no machine path enters a committed control record.
 
 Download the model once, record its hash, and freeze it before measured runs begin.
 
@@ -121,7 +121,7 @@ Terminal Artifact Memory adds a small transparent sanitizer for experiment speci
 1. Home directory paths.
 2. Workspace paths.
 3. Repository names.
-4. Git remote addresses.
+4. Git remote addresses and `user@host` account forms, excluding package version pins such as `python@3.12`.
 5. Hostnames.
 6. Private network addresses.
 7. Docker mount paths.

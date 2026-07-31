@@ -52,11 +52,11 @@ Unresolved values are detected by the uppercase template convention only: `REQUI
 
 Set the three environment variables named by the manifest:
 
-- `LILY_MODEL_PATH`: local GGUF path.
-- `LILY_LLAMA_API_BASE`: loopback OpenAI-compatible `/v1` endpoint.
-- `LILY_LLAMA_API_KEY`: local endpoint credential or a non-secret local sentinel when the endpoint requires none.
+- `ARTIFACT_MEMORY_MODEL_PATH`: local GGUF path.
+- `ARTIFACT_MEMORY_LLAMA_API_BASE`: loopback OpenAI-compatible `/v1` endpoint.
+- `ARTIFACT_MEMORY_LLAMA_API_KEY`: local endpoint credential or a non-secret local sentinel when the endpoint requires none.
 
-Values are read at runtime and are not copied into the fixed-control manifest.
+Values are read at runtime and are not copied into the fixed-control manifest. The endpoint credential is forwarded to each Harbor trial only through the child process environment, under the variable named by `external.agent_api_key_env` (`OPENAI_API_KEY` by default, which is what the Terminus-2 OpenAI-compatible client reads). It never appears in a command argument, manifest, run record, or log.
 
 Validate without executing:
 
@@ -114,7 +114,7 @@ uv run python -m artifact_memory.sanitize \
   --blocked-terms-file config/local/private-terms.txt
 ```
 
-The sanitizer runs Gitleaks on both the exported source and sanitized output, then deletes detailed local scan reports after recording value-free counts. It redacts private paths, workspace/mount paths, hosts, network addresses, remotes, configured private terms, and canaries. Credentials, hidden-test paths, reference solutions, verifier details, and contamination signals block admission even after removal. No unresolved Gitleaks finding, a printable-ASCII allowlist, a clean residual scan, and detection/removal of every canary are mandatory.
+The sanitizer runs Gitleaks on both the exported source and sanitized output, then deletes detailed local scan reports after recording value-free counts. It redacts private paths, workspace/mount paths, hosts, network addresses, remotes, configured private terms, and canaries. Remote redaction covers account and host forms such as `user@host`, `user@example.invalid`, and `user@10.0.0.1`, and deliberately preserves package version pins such as `python@3.12` because those are the substance of an environment-setup memory page. Credentials, hidden-test paths, reference solutions, verifier details, and contamination signals block admission even after removal. No unresolved Gitleaks finding, a printable-ASCII allowlist, a clean residual scan, and detection/removal of every canary are mandatory.
 
 Copy `manifests/memory-admission-template.v1.json` to `config/local/`, fill its hashes and manually distilled summary, inspect the sanitized artifact, and record explicit review approval scoped to the sanitized artifact hash. Then run:
 

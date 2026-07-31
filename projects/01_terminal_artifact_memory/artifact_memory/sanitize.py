@@ -3,6 +3,9 @@
 The sanitizer is intentionally conservative. Privacy-bearing spans are redacted;
 credentials and benchmark-contamination signals also block admission even after
 redaction. Reports contain counts and rule names, never the matched values.
+
+Remote redaction targets account and host forms and deliberately preserves
+package version pins, which carry the substance of an environment-setup page.
 """
 
 from __future__ import annotations
@@ -114,7 +117,15 @@ RULES: tuple[Rule, ...] = (
     ),
     Rule(
         "remote",
-        re.compile(r"\b[A-Za-z0-9._-]+@[A-Za-z0-9._-]+(?::(?:[A-Za-z0-9._~/-]+))?"),
+        re.compile(
+            r"\b[A-Za-z0-9._-]+@"
+            r"(?:(?:\d{1,3}\.){3}\d{1,3}"
+            r"|(?!\d)"
+            r"(?!(?i:v\d[A-Za-z0-9._+-]*|version|latest|stable|lts|head|main|master|next|nightly"
+            r"|beta|alpha|rc\d*)(?![A-Za-z0-9._-]))"
+            r"[A-Za-z0-9._-]*[A-Za-z][A-Za-z0-9._-]*)"
+            r"(?::(?:[A-Za-z0-9._~/-]+))?"
+        ),
     ),
     Rule(
         "host",
@@ -295,13 +306,15 @@ def sanitize_artifact(
 
     source_gitleaks_report = report_path.with_suffix(".source.gitleaks.json")
     sanitized_gitleaks_report = report_path.with_suffix(".sanitized.gitleaks.json")
-    source_gitleaks = gitleaks_runner(input_path, source_gitleaks_report)
-    sanitized_gitleaks = gitleaks_runner(output_path, sanitized_gitleaks_report)
     try:
-        source_gitleaks_report.unlink(missing_ok=True)
-        sanitized_gitleaks_report.unlink(missing_ok=True)
-    except OSError as exc:
-        raise SanitizationError("could not remove temporary Gitleaks detail report") from exc
+        source_gitleaks = gitleaks_runner(input_path, source_gitleaks_report)
+        sanitized_gitleaks = gitleaks_runner(output_path, sanitized_gitleaks_report)
+    finally:
+        try:
+            source_gitleaks_report.unlink(missing_ok=True)
+            sanitized_gitleaks_report.unlink(missing_ok=True)
+        except OSError as exc:
+            raise SanitizationError("could not remove temporary Gitleaks detail report") from exc
     gitleaks = {
         "clean": sanitized_gitleaks.get("clean") is True,
         "findings_count": sanitized_gitleaks.get("findings_count"),

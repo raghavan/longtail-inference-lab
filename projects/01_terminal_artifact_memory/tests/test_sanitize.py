@@ -36,6 +36,30 @@ class SanitizerTests(unittest.TestCase):
         self.assertTrue(report["canary"]["all_detected"])
         self.assertTrue(report["residual_scan"]["passed"])
 
+    def test_account_forms_are_redacted_and_version_pins_are_kept(self) -> None:
+        text = "\n".join(
+            [
+                "brew install python@3.12 openssl@3",
+                "npm install left-pad@1.3.0 node@lts",
+                "image pinned at fixture-tool@v2.1",
+                "fixture-user@private-host",
+                "fixture-person@example.invalid",
+                "fixture-user@10.0.0.1",
+                "SYNTHETIC-CANARY",
+            ]
+        )
+        output, report = sanitize_text(text, canaries=["SYNTHETIC-CANARY"])
+        for preserved in ("python@3.12", "openssl@3", "left-pad@1.3.0", "node@lts", "fixture-tool@v2.1"):
+            self.assertIn(preserved, output)
+        for unsafe in (
+            "fixture-user@private-host",
+            "fixture-person@example.invalid",
+            "fixture-user@10.0.0.1",
+        ):
+            self.assertNotIn(unsafe, output)
+        self.assertEqual(report["replacement_counts"]["remote"], 3)
+        self.assertTrue(report["residual_scan"]["passed"])
+
     def test_contamination_and_credential_classes_block(self) -> None:
         credential = "api" + "_key=" + "x" * 20
         hidden = "hidden" + "_tests/check.py"

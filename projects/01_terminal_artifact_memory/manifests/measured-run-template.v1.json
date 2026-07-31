@@ -83,8 +83,9 @@
     "port": 8080
   },
   "external": {
-    "llama_api_base_env": "LILY_LLAMA_API_BASE",
-    "llama_api_key_env": "LILY_LLAMA_API_KEY",
-    "model_path_env": "LILY_MODEL_PATH"
+    "llama_api_base_env": "ARTIFACT_MEMORY_LLAMA_API_BASE",
+    "llama_api_key_env": "ARTIFACT_MEMORY_LLAMA_API_KEY",
+    "model_path_env": "ARTIFACT_MEMORY_MODEL_PATH",
+    "agent_api_key_env": "OPENAI_API_KEY"
   }
 }
