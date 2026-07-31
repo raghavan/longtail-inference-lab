@@ -1,7 +1,7 @@
 # Minimal Pilot Setup
 
 **Experiment:** Terminal Artifact Memory  
-**Status:** Runnable implementation; pinned external inputs pending  
+**Status:** Runnable implementation; pinned external inputs pending
 **Last updated:** July 31 2026
 
 ## Principle

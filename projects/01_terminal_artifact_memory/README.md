@@ -1,6 +1,6 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Specified (runnable pilot implementation; measured baseline pending)  
+**Status:** Specified (runnable pilot implementation; measured baseline pending)
 **Track:** Artifact memory and local inference  
 **Difficulty:** Intermediate  
 **Last updated:** July 31 2026
