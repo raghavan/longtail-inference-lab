@@ -3,13 +3,13 @@
   "protocol_revision": "teacher-student-transfer-v1",
   "data_classification": "measured",
   "pair_id": "REQUIRED_SAFE_PAIR_ID",
-  "memory_checkpoint": 1,
-  "memory_contributions": 1,
+  "memory_checkpoint": 3,
+  "memory_contributions": 3,
   "baseline_memory_contributions": 0,
   "task": {
     "task_id": "REQUIRED_PUBLIC_HELD_OUT_TASK_ID",
     "task_name": "REQUIRED_HARBOR_TASK_NAME",
-    "task_family": "environment_setup",
+    "task_family": "REQUIRED_FROZEN_STRUCTURAL_FAMILY",
     "task_role": "held_out_student_evaluation",
     "executed_by_role": "local_student",
     "question_type": "structural",
@@ -22,19 +22,23 @@
     "verifier_qualification_record_sha256": "REQUIRED_QUALIFICATION_RECORD_SHA256"
   },
   "split": {
-    "revision": "REQUIRED_PREREGISTERED_SPLIT_REVISION",
+    "revision": "gpt56-qwen32k-qualified-transfer-v1",
     "memory_build_task_ids": [
-      "REQUIRED_DISTINCT_PUBLIC_MEMORY_BUILD_TASK_ID"
+      "openssl-selfsigned-cert",
+      "sqlite-with-gcov",
+      "train-fasttext"
     ],
     "held_out_evaluation_task_ids": [
-      "REQUIRED_PUBLIC_HELD_OUT_TASK_ID"
+      "configure-git-webserver",
+      "polyglot-rust-c",
+      "pytorch-model-cli"
     ]
   },
   "roles": {
     "teacher": {
       "role": "cloud_teacher",
       "model_id": "gpt-5.6-sol",
-      "provider_runtime_or_operator_adapter": "REQUIRED_OPERATOR_SUPPLIED_OR_HARBOR_COMPATIBLE_ADAPTER",
+      "provider_runtime_or_operator_adapter": "host-codex-subscription-task-mcp-v1",
       "task_role": "memory_build_solver",
       "may_score_student_evaluation": false,
       "prompt": {
@@ -45,7 +49,7 @@
     "distiller": {
       "role": "cloud_distiller",
       "model_id": "gpt-5.6-sol",
-      "provider_runtime_or_operator_adapter": "REQUIRED_OPERATOR_SUPPLIED_DISTILLATION_ADAPTER",
+      "provider_runtime_or_operator_adapter": "host-codex-subscription-no-tools-v1",
       "task_role": "sanitized_evidence_distiller",
       "input_scope": "sanitized_evidence_only",
       "prompt": {
@@ -60,7 +64,7 @@
       "sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
       "quantization": "GGUF-Q4_K_M",
       "license": "Apache-2.0",
-      "provider_runtime_or_operator_adapter": "llama.cpp@REQUIRED_PINNED_REVISION",
+      "provider_runtime_or_operator_adapter": "llama.cpp@5f55650a7",
       "task_role": "held_out_evaluation_solver",
       "sole_evaluation_model": true,
       "prompt": {
@@ -132,16 +136,16 @@
   },
   "run_environment": {
     "code_revision": "REQUIRED_FULL_GIT_REVISION",
-    "harbor_version": "REQUIRED_PINNED_HARBOR_VERSION",
-    "docker_version": "REQUIRED_PINNED_DOCKER_CLIENT_AND_DAEMON_VERSION",
-    "terminal_bench_version": "REQUIRED_PINNED_TERMINAL_BENCH_VERSION",
-    "terminal_bench_revision": "REQUIRED_FULL_TERMINAL_BENCH_GIT_REVISION",
-    "registry_snapshot_sha256": "REQUIRED_REGISTRY_SNAPSHOT_SHA256",
+    "harbor_version": "0.20.0",
+    "docker_version": "client=24.0.4 server=28.3.2 api=1.51 compose=2.39.1-desktop.1",
+    "terminal_bench_version": "2.0",
+    "terminal_bench_revision": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+    "registry_snapshot_sha256": "da1446bce05eabbd72a25eb9eef5a2f5db94645ce88c28e2497581433b3d2e60",
     "task_instruction_sha256": "REQUIRED_PUBLIC_INSTRUCTION_SHA256",
     "task_container_digest": "sha256:REQUIRED_IMMUTABLE_CONTAINER_DIGEST",
-    "terminus_version": "REQUIRED_PINNED_TERMINUS_VERSION",
+    "terminus_version": "harbor-0.20.0-built-in-terminus-2",
     "atif_schema_version": "ATIF-v1.7",
-    "llama_cpp_revision": "REQUIRED_FULL_LLAMA_CPP_REVISION",
+    "llama_cpp_revision": "5f55650a7",
     "student_model_sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
     "quantization": "GGUF-Q4_K_M",
     "student_prompt_revision": "system-v1+memory-v1",
@@ -154,9 +158,9 @@
     "retrieval_revision": "direct-markdown-lexical-v1",
     "sanitizer_revision": "artifact_memory-sanitizer-v1",
     "python_lock_hash": "c3366e15a5706a4e497eebe344a9be45e7947ae8ababe8408dae239d2888f8ac",
-    "operating_system": "REQUIRED_OS_AND_VERSION_WITHOUT_MACHINE_ID",
-    "hardware_description": "REQUIRED_HARDWARE_CLASS_WITHOUT_MACHINE_ID",
-    "gitleaks_version": "REQUIRED_PINNED_GITLEAKS_VERSION"
+    "operating_system": "macOS 26.6 arm64",
+    "hardware_description": "Apple M2 Pro MacBook Pro, 16 GB",
+    "gitleaks_version": "8.30.1"
   },
   "controls": {
     "model": {
@@ -167,11 +171,11 @@
       "sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
       "quantization": "GGUF-Q4_K_M",
       "license": "Apache-2.0",
-      "context_size": "REQUIRED_PREREGISTERED_CONTEXT_SIZE"
+      "context_size": 32768
     },
     "runtime": {
       "name": "llama.cpp",
-      "revision": "REQUIRED_FULL_LLAMA_CPP_REVISION",
+      "revision": "5f55650a7",
       "harbor_model": "openai/fixed-qwen-7b-q4"
     },
     "prompt": {
@@ -188,7 +192,7 @@
       "task-container-filesystem"
     ],
     "execution_budget": {
-      "max_turns": "REQUIRED_PREREGISTERED_MAX_TURNS",
+      "max_turns": 24,
       "timeout_multiplier": 1.0,
       "n_attempts": 1
     },
@@ -197,7 +201,7 @@
       "top_k": 3,
       "token_budget": 1800
     },
-    "enable_summarize": "REQUIRED_PREREGISTERED_CONTEXT_POLICY_BOOLEAN"
+    "enable_summarize": false
   },
   "harbor": {
     "dataset_path_env": "ARTIFACT_MEMORY_PINNED_TASKS_PATH",

@@ -1,7 +1,7 @@
 # Teacher/student transfer setup
 
 **Experiment:** Terminal Artifact Memory
-**Status:** Planned next experiment; no teacher/student measured result
+**Status:** Preregistered; qualified pilot awaiting post-merge measured execution
 **Last updated:** August 1 2026
 
 ## Principle
@@ -21,25 +21,25 @@ Model confidence, narrative, apparent tool exits, and distillation quality are n
 
 ## Fixed roles and tools
 
-- **Cloud teacher/distiller:** `gpt-5.6-sol`, invoked only through an operator-supplied or Harbor-compatible boundary. No provider SDK is added and no unsupported API claim is made.
+- **Cloud teacher/distiller:** `gpt-5.6-sol` through pinned host Codex CLI 0.146.0. The teacher uses `host-codex-subscription-task-mcp-v1`; each distiller uses a separate fresh no-tools session. OAuth remains on the host.
 - **Local student:** Apache-2.0 `Qwen/Qwen2.5-Coder-7B-Instruct-GGUF` at Hugging Face revision `13fb94bfda8c8cf22497dc57b78f391a9acb426a`, Q4_K_M, SHA-256 `509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c`.
 - **Harbor/Terminal Bench:** isolated tasks, Terminus-2 student agent, ATIF transport, Docker environment, and task executable verifier.
 - **llama.cpp:** serves the one fixed local Qwen through a loopback endpoint.
 - **Gitleaks plus `artifact_memory.sanitize`:** local secret, privacy, canary, contamination, blocked-term, allowlist, and residual gates.
 - **uv/Python standard library:** reproducible local implementation and tests.
 
-The next preregistration must select a context policy that can reach verification. The old 16,384-token policy remains part of the immutable halted report, not an implicit choice for the next run.
+The frozen student policy is 32,768 context tokens, no summarization, and a 24-turn cap. Three disjoint development tasks reached executable verification while leaving at least 17,203 tokens after reserving the 1,800-token M2 budget. The old 16,384-token policy remains only in the immutable halted report.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-    A[Public memory-build split] --> B[Operator-supplied gpt-5.6-sol teacher]
+    A[Public memory-build split] --> B[Pinned host-Codex gpt-5.6-sol teacher]
     B --> C[Pinned task executable verifier]
     C -->|pass| D[Ignored local trajectory export]
     D --> E[Local sanitizer and scanners]
     E --> F[cloud-distillation-request-v1]
-    F --> G[Operator-supplied gpt-5.6-sol distiller]
+    F --> G[Pinned no-tools host-Codex gpt-5.6-sol distiller]
     G --> H[Structured Markdown draft]
     H --> I[External hash-scoped approval]
     I --> J[Admitted local wiki]
@@ -48,7 +48,7 @@ flowchart TD
     L --> M[Held-out task executable verifier]
 ```
 
-The repository owns validation and packet construction, not cloud provider infrastructure or verifier semantics.
+The repository owns the pinned host-Codex adapters, validation, and packet construction, not cloud provider infrastructure or verifier semantics.
 
 ## Authoritative files
 
@@ -57,6 +57,11 @@ artifact_memory/
   experiment.py                 # local-student M0/M2 runner
   transfer.py                   # cloud boundary and provenance checks
   verifier_qualification.py     # private compact qualification validation
+  preregistration.py            # immutable freeze and private authorization validation
+  execution_ledger.py           # global phase/order/one-attempt lock
+  host_codex_adapter.py         # credential-free task-MCP boundary and ATIF conversion
+  host_codex_harbor.py          # mount-free snapshot boundary and Harbor entry point
+  host_codex_distiller.py       # fresh no-tools allowlisted-request distiller
   sanitize.py                   # local sanitizer and scanners
   memory.py                     # approval and admission
   analyze.py                    # student-only paired analysis
@@ -69,8 +74,12 @@ prompts/
 
 manifests/
   measured-run-template.v2.json
+  measured-teacher-authorization-template.v1.json
   teacher-memory-build-template.v1.json
   verifier-qualification-template.v1.json
+  verifier-qualification-attestations-2026-08-01.v1.json
+  host-codex-adapter-qualification-attestation-2026-08-01.v1.json
+  preregistration-freeze-2026-08-01.v1.json
   distillation-draft-template.v1.json
   external-human-approval-template.v1.json
   memory-admission-template.v2.json
@@ -150,4 +159,4 @@ The bounded workflow does not add a cloud SDK, provider gateway, general benchma
 
 ## Readiness
 
-The machinery is ready for development validation. A measured teacher/student run is not ready until a new preregistration freezes the qualified disjoint task split, context policy, all external pins, adapters, thresholds, and attempt budget. No new measured experiment has been run and no transfer efficacy is claimed.
+The machinery, task qualifications, adapter boundary, and immutable controls are preregistered. Measured execution remains blocked until the preregistration PR lands and a clean landed revision plus private task authorization validates. No new measured experiment has been run and no transfer efficacy is claimed.

@@ -1,6 +1,6 @@
 # Teacher/student transfer operator guide
 
-This guide prepares the **next planned** Terminal Artifact Memory experiment. It does not authorize a measured run without a new preregistration and complete local pins. No teacher/student measured result exists.
+This guide operates the preregistered GPT-5.6-sol/Qwen 32K Terminal Artifact Memory pilot. It does not authorize measurement before the [2026-08-01 preregistration](preregistrations/2026-08-01-gpt56-qwen32k-teacher-student.md) lands and complete private pins validate. No teacher/student measured result exists.
 
 The [2026-07-31 halted 16K pilot](results/2026-07-31-measured-pilot/summary.md) is immutable. Never rerun, relabel, repair, or pool its consumed attempt.
 
@@ -14,7 +14,7 @@ Ignore model confidence, completion prose, command exit impressions, apparent fi
 
 Harbor/Terminal Bench supplies the task environment and task-specific executable-verifier semantics. This repository validates pins, result transport, hashes, eligibility, and admission links; it does not recreate or reveal verifier internals.
 
-Use authoritative upstream documentation for Harbor installation, Docker-backed tasks, Terminus-2, ATIF, skills, llama.cpp server, and Gitleaks. Pin the chosen versions in the new preregistration. Do not assume that `gpt-5.6-sol` is available through an API. Select an operator-supplied or Harbor-compatible execution boundary only when current authoritative tooling establishes it, and record that adapter exactly.
+Use authoritative upstream documentation for Harbor installation, Docker-backed tasks, Terminus-2, ATIF, skills, llama.cpp server, and Gitleaks. Use only the versions frozen in the current preregistration. Do not assume that `gpt-5.6-sol` is available through an API; this pilot uses only the pinned host Codex subscription adapters established by current tooling.
 
 ## 1. Development checks
 
@@ -29,25 +29,36 @@ uv lock --check
 
 Synthetic fixtures are deterministic controls, not experiment data.
 
-## 2. Preregister roles, split, context, and thresholds
+## 2. Validate the landed freeze and private authorizations
 
-Before any measured action, publish a new protocol revision that freezes:
+The immutable split, task pins, adapters, 32,768-token/no-summarization/24-turn context policy, retrieval budget, thresholds, denominators, ordering, and stop rules are in `manifests/preregistration-freeze-2026-08-01.v1.json`.
 
-1. exact disjoint public memory-build and held-out task lists;
-2. public task instructions and immutable task/container/verifier bundle pins;
-3. teacher and distiller identity `gpt-5.6-sol`, operator adapters, and prompt hashes;
-4. exact local Qwen identity/revision/Q4_K_M/hash and pinned llama.cpp;
-5. a context policy demonstrated in development to reach executable verification;
-6. hardware, decoding, tools, attempt/turn budgets, retrieval controls, and memory checkpoints;
-7. success, negative-transfer, unsafe-error, and stop thresholds; and
-8. the role-specific cloud transmission inventory.
+After the preregistration PR lands, use only its exact clean revision. Validate the public freeze and private compact qualification records before creating any measured manifest:
 
-Do not reuse the halted 16,384-token setting by implication. Choose and document the next context control explicitly.
+```bash
+uv run python -m artifact_memory.preregistration \
+  --private-qualification-records PRIVATE_QUALIFICATION_RECORDS_DIR
+```
+
+For each teacher task, create a private `measured-teacher-execution-authorization-v1` record tied to the landed revision, freeze hash, exact task pins, and private qualification path/hash. The host adapter requires explicit `execution_mode=measured`, the frozen public `task_id`, and that private authorization; its default state cannot start measurement. Development mode is restricted to `hello-world`.
+
+Initialize exactly one private global execution ledger after checkout of the landed freeze, then export its fixed path for every teacher, distiller, M0, and M2 process:
+
+```bash
+uv run python -m artifact_memory.execution_ledger initialize \
+  --path PRIVATE_EXPERIMENT_ROOT/execution-ledger.v1.json
+export ARTIFACT_MEMORY_EXECUTION_LEDGER=PRIVATE_EXPERIMENT_ROOT/execution-ledger.v1.json
+```
+
+The mode-0600 locked ledger enforces the 12 frozen attempts in global order and leaves a failed or interrupted attempt permanently started, blocking retries and later phases. Measured paired execution must use `run-condition`; the combined `run` command is rejected.
+
+Never copy or mount Codex auth. Codex CLI reads the existing host subscription itself; the task container receives neither credential files nor credential-named environment values.
 
 Copy these templates only into ignored `config/local/` or `runs/` paths:
 
 ```text
 manifests/measured-run-template.v2.json
+manifests/measured-teacher-authorization-template.v1.json
 manifests/teacher-memory-build-template.v1.json
 manifests/verifier-qualification-template.v1.json
 manifests/distillation-draft-template.v1.json
@@ -147,15 +158,11 @@ M0 contains an empty retrieved-memory marker. Run every preregistered M0 probe b
 
 ## 7. Execute one cloud-teacher memory build
 
-Use the selected authoritative operator boundary to send only:
+Use Harbor custom agent `artifact_memory.host_codex_harbor:HostCodexTeacherAgent` with exact model `gpt-5.6-sol`, `execution_mode=measured`, the one frozen public build `task_id`, and its private post-merge authorization. Pin one attempt, one concurrent trial, zero retries, no resume, and `prompts/teacher.v1.md` as the extra instruction.
 
-1. the designated public memory-build task identity/instruction;
-2. `prompts/teacher.v1.md`; and
-3. task-environment observations plus teacher-selected tool inputs/outputs required for that public task.
+The adapter preflight requires Codex CLI 0.146.0, the existing ChatGPT subscription, the exact catalog model, the active digest-pinned Docker image ID, exact Harbor log-bind sources, the closed environment-name inventory, a clean landed revision, and the private qualification hash. OAuth remains in the host Codex store: never copy, mount, inspect, print, hash, archive, or forward it. The only model tool is the task-scoped MCP shell in `/app` inside a fresh zero-mount snapshot; after nonce-authenticated audit and exact-lifecycle ATIF validation, only a bounded staged `/app` may replace verifier-visible `/app`. The captured ATIF-v1.7 trajectory must identify `host-codex-subscription-task-mcp-v1` and contain only that tool.
 
-The exact execution model must be `gpt-5.6-sol`. The coding worker that prepared this repository is not automatically the measured teacher.
-
-Keep provider credentials environment-only. Do not place a key in an argument, manifest, shell history example, captured command, or log. Record the adapter name, timestamps, public task, model/prompt hashes, and local trajectory/verifier artifact hashes in a private copy of `teacher-memory-build-template.v1.json`.
+Record safe timestamps, public task, model/adapter/prompt hashes, and local trajectory/verifier hashes in a private copy of `teacher-memory-build-template.v1.json`. The coding worker, operator, development smoke, and reviewer are not measured teachers.
 
 The cloud teacher must not receive held-out probes, qualification internals, hidden tests, verifier code, reference solutions, local host details, or canaries.
 
@@ -210,7 +217,7 @@ Inspect the generated request. It is the entire cloud-distiller upload. It conta
 
 Do **not** add raw trajectories, verifier detail, scanner reports, findings, blocked terms, canaries, private paths, credentials, or unrelated context. “Stored locally” never means that earlier public teacher interactions were not transmitted, and it never grants permission to retransmit local raw files.
 
-Send this packet to `gpt-5.6-sol` through the selected operator adapter. Capture the response locally using `distillation-draft-template.v1.json`; do not invent a provider API.
+Send this packet to `gpt-5.6-sol` only through `host-codex-subscription-no-tools-v1`. Capture the response locally using `distillation-draft-template.v1.json`; do not invent a provider API.
 
 Validate the response:
 

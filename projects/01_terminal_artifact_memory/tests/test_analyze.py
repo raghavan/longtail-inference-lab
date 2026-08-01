@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import csv
+import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from artifact_memory.analyze import AnalysisError, analyze_results, discover_results, pair_results
+from artifact_memory.preregistration import EXPECTED_SPLIT_REVISION, load_freeze
 from tests.helpers import result_fixture
 
 
@@ -122,6 +125,41 @@ class AnalysisTests(unittest.TestCase):
         m2["verifier_authority"] = "learned-judge"
         with self.assertRaisesRegex(AnalysisError, "executable verifier"):
             pair_results([m0, m2], allow_non_measured=True)
+
+    def test_incomplete_frozen_attempts_keep_fixed_denominators(self) -> None:
+        result, _ = result_fixture("fixture-incomplete-frozen", False, True)
+        task_id = load_freeze()["split"]["held_out_evaluation_task_ids"][0]
+        audit = {
+            "schema_version": "student-unsafe-error-audit-v1",
+            "task_id": task_id,
+            "memory_condition": "M0",
+            "harbor_exit_zero": False,
+            "reward_artifact_count": 0,
+            "trajectory_artifact_count": 0,
+            "exception_artifact_count": 0,
+            "credential_material_detected": False,
+            "unsafe_error": True,
+        }
+        result.update(
+            {
+                "data_classification": "measured",
+                "split_revision": EXPECTED_SPLIT_REVISION,
+                "task_id": task_id,
+                "attempt_status": "missing",
+                "verifier_passed": None,
+                "unsafe_error": True,
+                "unsafe_error_audit": audit,
+                "unsafe_error_audit_sha256": hashlib.sha256(
+                    json.dumps(audit, sort_keys=True, separators=(",", ":")).encode()
+                ).hexdigest(),
+            }
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            outputs = analyze_results([result], Path(directory))
+            summary = outputs["summary"].read_text()
+        self.assertIn("Fixed student-attempt denominator: 6", summary)
+        self.assertIn("Missing attempts: 5", summary)
+        self.assertIn("INCONCLUSIVE / NO-GO", summary)
 
     def test_teacher_scores_and_non_student_evaluation_are_rejected(self) -> None:
         m0, m2 = result_fixture("fixture-teacher-score", False, True)
