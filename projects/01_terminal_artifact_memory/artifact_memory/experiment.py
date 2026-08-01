@@ -1232,21 +1232,17 @@ def run_condition(
         )
         + "\n"
     )
-    if completed.returncode != 0:
-        raise RuntimeError(f"Harbor failed for {condition}; inspect the local trial directory")
     run_environment = _mapping(manifest["run_environment"], "run_environment")
     observed_reward_artifacts = len(list(jobs_dir.glob("**/verifier/reward.txt")))
     observed_trajectory_artifacts = len(list(jobs_dir.glob("**/agent/trajectory.json")))
     observed_exception_artifacts = len(list(jobs_dir.glob("**/exception.txt")))
-    passed, trajectory_path, verifier_path, trajectory_metrics = _extract_harbor_result(
-        jobs_dir,
-        trial_dir,
-        expected_atif_schema=str(run_environment["atif_schema_version"]),
-    )
-    retrieved_ids = [page.page_id for page in retrieval_result.pages]
-    expected = list(task["expected_relevant_pages"])
+    trajectory_paths = list(jobs_dir.glob("**/agent/trajectory.json"))
     credential_material_detected = contains_credential_material(
-        completed.stdout + "\n" + completed.stderr + "\n" + trajectory_path.read_text()
+        completed.stdout
+        + "\n"
+        + completed.stderr
+        + "\n"
+        + "\n".join(path.read_text(errors="replace") for path in trajectory_paths)
     )
     unsafe_audit = {
         "schema_version": "student-unsafe-error-audit-v1",
@@ -1267,6 +1263,58 @@ def run_condition(
     }
     unsafe_audit_path = trial_dir / "unsafe-error-audit.json"
     unsafe_audit_path.write_text(json.dumps(unsafe_audit, indent=2, sort_keys=True) + "\n")
+    if unsafe_audit["unsafe_error"]:
+        status = {
+            "schema_version": RESULT_SCHEMA_VERSION,
+            "data_classification": manifest["data_classification"],
+            "protocol_revision": PROTOCOL_REVISION,
+            "split_revision": EXPECTED_SPLIT_REVISION,
+            "attempt_status": (
+                "unsafe"
+                if credential_material_detected or observed_exception_artifacts != 0
+                else "missing"
+                if observed_reward_artifacts != 1 or observed_trajectory_artifacts != 1
+                else "invalid"
+            ),
+            "verifier_passed": None,
+            "unsafe_error": True,
+            "unsafe_error_audit": unsafe_audit,
+            "unsafe_error_audit_sha256": canonical_sha256(unsafe_audit),
+            "task_role": "held_out_student_evaluation",
+            "evaluation_actor_role": "local_student",
+            "student_model_id": STUDENT_MODEL_ID,
+            "student_model_sha256": STUDENT_MODEL_SHA256,
+            "pair_id": manifest["pair_id"],
+            "task_id": task["task_id"],
+            "task_family": task["task_family"],
+            "question_type": task["question_type"],
+            "memory_checkpoint": manifest["memory_checkpoint"],
+            "memory_contributions": manifest["memory_contributions"],
+            "baseline_memory_contributions": manifest["baseline_memory_contributions"],
+            "observed_memory_pages": memory_state.admitted_pages,
+            "observed_memory_page_ids": list(memory_state.page_ids),
+            "memory_provenance": memory_provenance_snapshot(index_path),
+            "memory_condition": condition,
+            "verifier_authority": "terminal-bench-executable",
+            "retrieved_page_ids": [page.page_id for page in retrieval_result.pages],
+            "expected_relevant_pages": list(task["expected_relevant_pages"]),
+            "control_digest": digest,
+            "control_snapshot": snapshot,
+            "wiki_bytes": _wiki_bytes(wiki_dir),
+        }
+        (trial_dir / "result.json").write_text(
+            json.dumps(status, indent=2, sort_keys=True) + "\n"
+        )
+        raise RuntimeError(
+            f"Harbor attempt for {condition} is invalid or unsafe; inspect the local trial directory"
+        )
+    passed, trajectory_path, verifier_path, trajectory_metrics = _extract_harbor_result(
+        jobs_dir,
+        trial_dir,
+        expected_atif_schema=str(run_environment["atif_schema_version"]),
+    )
+    retrieved_ids = [page.page_id for page in retrieval_result.pages]
+    expected = list(task["expected_relevant_pages"])
     result = {
         "schema_version": RESULT_SCHEMA_VERSION,
         "data_classification": manifest["data_classification"],

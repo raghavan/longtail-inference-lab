@@ -45,6 +45,8 @@ class Pair:
 
     @property
     def transfer(self) -> str:
+        if self.m0["verifier_passed"] is None or self.m2["verifier_passed"] is None:
+            return "ineligible_pair"
         outcomes = (self.m0["verifier_passed"], self.m2["verifier_passed"])
         return {
             (False, True): "positive_transfer",
@@ -133,8 +135,23 @@ def _validate_result(result: Mapping[str, object]) -> None:
         or result["student_model_sha256"] != STUDENT_MODEL_SHA256
     ):
         raise AnalysisError("paired efficacy scoring is restricted to the exact local student")
-    if not isinstance(result["verifier_passed"], bool):
-        raise AnalysisError("verifier_passed must be an authoritative boolean")
+    attempt_status = result.get("attempt_status", "valid")
+    if attempt_status not in {"valid", "invalid", "missing", "unsafe"}:
+        raise AnalysisError("attempt_status is not recognized")
+    if attempt_status == "valid" and not isinstance(result["verifier_passed"], bool):
+        raise AnalysisError("valid verifier_passed must be an authoritative boolean")
+    if attempt_status != "valid" and result["verifier_passed"] is not None:
+        raise AnalysisError("invalid or unsafe attempts cannot claim a verifier outcome")
+    audit = result.get("unsafe_error_audit")
+    if result.get("data_classification") == MEASURED or audit is not None:
+        if not isinstance(audit, Mapping):
+            raise AnalysisError("result lacks an unsafe-error audit")
+        if result.get("unsafe_error") is not audit.get("unsafe_error"):
+            raise AnalysisError("result and unsafe-error audit disagree")
+        if attempt_status == "valid" and audit.get("unsafe_error") is not False:
+            raise AnalysisError("valid attempts cannot carry an unsafe error")
+        if attempt_status != "valid" and audit.get("unsafe_error") is not True:
+            raise AnalysisError("non-scorable attempts must carry an unsafe error")
     if result["verifier_authority"] != "terminal-bench-executable":
         raise AnalysisError("only the Terminal Bench executable verifier may score a result")
     if result["memory_condition"] not in {"M0", "M2"}:
@@ -315,14 +332,26 @@ def _validate_frozen_pairs(pairs: Sequence[Pair], skipped: Sequence[str]) -> boo
                 "schema_version": "student-unsafe-error-audit-v1",
                 "task_id": task_id,
                 "memory_condition": condition,
-                "harbor_exit_zero": True,
-                "reward_artifact_count": 1,
-                "trajectory_artifact_count": 1,
-                "exception_artifact_count": 0,
-                "credential_material_detected": False,
-                "unsafe_error": False,
+                "harbor_exit_zero": audit.get("harbor_exit_zero"),
+                "reward_artifact_count": audit.get("reward_artifact_count"),
+                "trajectory_artifact_count": audit.get("trajectory_artifact_count"),
+                "exception_artifact_count": audit.get("exception_artifact_count"),
+                "credential_material_detected": audit.get("credential_material_detected"),
+                "unsafe_error": audit.get("unsafe_error"),
             }:
-                raise AnalysisError("frozen unsafe-error audit artifact is incomplete or unsafe")
+                raise AnalysisError("frozen unsafe-error audit artifact is incomplete")
+            if not all(
+                isinstance(audit.get(field), expected_type)
+                for field, expected_type in (
+                    ("harbor_exit_zero", bool),
+                    ("reward_artifact_count", int),
+                    ("trajectory_artifact_count", int),
+                    ("exception_artifact_count", int),
+                    ("credential_material_detected", bool),
+                    ("unsafe_error", bool),
+                )
+            ):
+                raise AnalysisError("frozen unsafe-error audit has invalid field types")
             audit_sha256 = hashlib.sha256(
                 json.dumps(audit, sort_keys=True, separators=(",", ":")).encode()
             ).hexdigest()
@@ -331,8 +360,6 @@ def _validate_frozen_pairs(pairs: Sequence[Pair], skipped: Sequence[str]) -> boo
         if (
             pair.m0.get("memory_checkpoint") != 3
             or pair.m2.get("memory_checkpoint") != 3
-            or pair.m0.get("unsafe_error") is not False
-            or pair.m2.get("unsafe_error") is not False
             or pair.m0.get("expected_relevant_pages") != expected_pages.get(task_id)
             or pair.m2.get("expected_relevant_pages") != expected_pages.get(task_id)
         ):
@@ -350,6 +377,7 @@ def _counts(pairs: Iterable[Pair]) -> dict[str, int]:
         "negative_transfer": 0,
         "stable_success": 0,
         "unresolved_task": 0,
+        "ineligible_pair": 0,
     }
     for pair in pairs:
         counts[pair.transfer] += 1
@@ -414,6 +442,7 @@ def _checkpoint_metrics(pairs: Sequence[Pair]) -> list[dict[str, object]]:
         structural = [pair for pair in group if pair.m0["question_type"] == "structural"]
         m0_passes = sum(bool(pair.m0["verifier_passed"]) for pair in group)
         m2_passes = sum(bool(pair.m2["verifier_passed"]) for pair in group)
+        complete_valid = all(pair.transfer != "ineligible_pair" for pair in group)
         structural_m0 = sum(bool(pair.m0["verifier_passed"]) for pair in structural)
         structural_m2 = sum(bool(pair.m2["verifier_passed"]) for pair in structural)
         counts = _counts(group)
@@ -439,8 +468,8 @@ def _checkpoint_metrics(pairs: Sequence[Pair]) -> list[dict[str, object]]:
             {
                 "checkpoint": checkpoint,
                 "pairs": len(group),
-                "m0_pass_rate": _rate(m0_passes, len(group)),
-                "m2_pass_rate": _rate(m2_passes, len(group)),
+                "m0_pass_rate": _rate(m0_passes, len(group)) if complete_valid else "N/A",
+                "m2_pass_rate": _rate(m2_passes, len(group)) if complete_valid else "N/A",
                 "structural_m0_pass_rate": _rate(structural_m0, len(structural)),
                 "structural_m2_pass_rate": _rate(structural_m2, len(structural)),
                 "structural_memory_lift": (
@@ -504,6 +533,76 @@ def _markdown_table(headers: Sequence[str], rows: Iterable[Sequence[object]]) ->
     return "\n".join(lines)
 
 
+def _analyze_incomplete_frozen(
+    results: Sequence[Mapping[str, object]], output_dir: Path, skipped: Sequence[str]
+) -> dict[str, Path]:
+    if skipped:
+        raise AnalysisError("frozen analysis refuses malformed result files")
+    freeze = load_freeze()
+    split = freeze.get("split")
+    if not isinstance(split, Mapping):
+        raise AnalysisError("frozen split is malformed")
+    expected_tasks = {str(value) for value in split["held_out_evaluation_task_ids"]}  # type: ignore[index]
+    slots: dict[tuple[str, str], Mapping[str, object]] = {}
+    for result in results:
+        _validate_result(result)
+        task_id = str(result["task_id"])
+        condition = str(result["memory_condition"])
+        if (
+            result.get("data_classification") != MEASURED
+            or result.get("split_revision") != EXPECTED_SPLIT_REVISION
+            or task_id not in expected_tasks
+        ):
+            raise AnalysisError("incomplete frozen analysis contains an out-of-freeze result")
+        key = (task_id, condition)
+        if key in slots:
+            raise AnalysisError(f"duplicate {condition} result for task {task_id}")
+        audit = result["unsafe_error_audit"]
+        if result.get("unsafe_error_audit_sha256") != hashlib.sha256(
+            json.dumps(audit, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest():
+            raise AnalysisError("frozen unsafe-error audit hash mismatch")
+        slots[key] = result
+    expected_slots = {(task, condition) for task in expected_tasks for condition in CONDITIONS}
+    missing = len(expected_slots - set(slots))
+    invalid = sum(value.get("attempt_status", "valid") != "valid" for value in slots.values())
+    unsafe = sum(value.get("unsafe_error") is True for value in slots.values())
+    output_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = output_dir / "results.csv"
+    with csv_path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(
+            handle, fieldnames=["task_id", "memory_condition", "attempt_status", "unsafe_error"]
+        )
+        writer.writeheader()
+        for task_id, condition in sorted(expected_slots):
+            result = slots.get((task_id, condition))
+            writer.writerow(
+                {
+                    "task_id": task_id,
+                    "memory_condition": condition,
+                    "attempt_status": "missing" if result is None else result.get("attempt_status", "valid"),
+                    "unsafe_error": "N/A" if result is None else result.get("unsafe_error"),
+                }
+            )
+    summary_path = output_dir / "summary.md"
+    summary_path.write_text(
+        "# Paired pilot summary\n\n"
+        "**Data classification: MEASURED RESULTS.**\n\n"
+        "## Data completeness\n\n"
+        f"- Fixed M0 denominator: 3\n- Fixed M2 denominator: 3\n"
+        f"- Fixed transfer denominator: 3\n- Fixed student-attempt denominator: 6\n"
+        f"- Fixed unsafe-error-audit denominator: 6\n- Recorded attempts: {len(slots)}\n"
+        f"- Missing attempts: {missing}\n- Invalid or ineligible attempts: {invalid}\n"
+        f"- Unsafe errors: {unsafe}\n- Frozen success verdict: INCONCLUSIVE / NO-GO\n\n"
+        "No missing or non-scorable attempt is treated as an executable-verifier failure.\n"
+    )
+    transfer_path = output_dir / "paired_transfer_table.md"
+    transfer_path.write_text(
+        "# Paired transfer table\n\nTransfer classification is unavailable because the frozen corpus is incomplete or ineligible.\n"
+    )
+    return {"results_csv": csv_path, "summary": summary_path, "paired_transfer_table": transfer_path}
+
+
 def analyze_results(
     results: Iterable[Mapping[str, object]],
     output_dir: Path,
@@ -511,7 +610,19 @@ def analyze_results(
     allow_non_measured: bool = False,
     skipped: Sequence[str] = (),
 ) -> dict[str, Path]:
-    pairs = pair_results(results, allow_non_measured=allow_non_measured)
+    materialized = list(results)
+    frozen_records = [
+        result
+        for result in materialized
+        if result.get("data_classification") == MEASURED
+        and result.get("split_revision") == EXPECTED_SPLIT_REVISION
+    ]
+    if frozen_records and (
+        len(frozen_records) < 6
+        or any(result.get("attempt_status", "valid") != "valid" for result in frozen_records)
+    ):
+        return _analyze_incomplete_frozen(materialized, output_dir, skipped)
+    pairs = pair_results(materialized, allow_non_measured=allow_non_measured)
     frozen_analysis = _validate_frozen_pairs(pairs, skipped)
     rows = _pair_rows(pairs)
     checkpoint_rows = _checkpoint_metrics(pairs)
@@ -549,16 +660,23 @@ def analyze_results(
     covered, relevant = _retrieval_coverage(pairs)
     m0_passes = sum(bool(pair.m0["verifier_passed"]) for pair in pairs)
     m2_passes = sum(bool(pair.m2["verifier_passed"]) for pair in pairs)
+    attempts = [result for pair in pairs for result in (pair.m0, pair.m2)]
+    invalid_attempts = sum(result.get("attempt_status", "valid") != "valid" for result in attempts)
+    missing_attempts = sum(result.get("attempt_status") == "missing" for result in attempts)
+    unsafe_status_attempts = sum(result.get("attempt_status") == "unsafe" for result in attempts)
+    unsafe_attempts = sum(result.get("unsafe_error") is True for result in attempts)
     frozen_success = (
         frozen_analysis
         and len(pairs) == 3
+        and invalid_attempts == 0
+        and unsafe_attempts == 0
         and overall["positive_transfer"] >= 1
         and (m2_passes - m0_passes) / 3 >= 1 / 3
         and overall["negative_transfer"] == 0
         and covered == relevant == 3
     )
     frozen_verdict = (
-        f"- Frozen success verdict: {'PASS' if frozen_success else 'FAIL'}"
+        f"- Frozen success verdict: {'PASS' if frozen_success else 'INCONCLUSIVE / NO-GO'}"
         if frozen_analysis
         else "- Frozen success verdict: N/A (non-frozen analysis)"
     )
@@ -572,6 +690,11 @@ Terminal Bench executable verifier outcomes from the exact local Qwen student ar
 ## Data completeness
 
 - Paired result records analyzed: {len(pairs) * 2}
+- Fixed student-attempt denominator: {len(attempts)}/6
+- Invalid or ineligible attempts: {invalid_attempts}
+- Missing-artifact attempts: {missing_attempts}
+- Explicitly unsafe attempts: {unsafe_status_attempts}
+- Unsafe-error audits: {unsafe_attempts}/6
 - Result files under the run tree that were not student-paired-result-v2 records: {len(skipped)}
 
 {skipped_lines}
@@ -583,6 +706,7 @@ Terminal Bench executable verifier outcomes from the exact local Qwen student ar
 - Negative transfer: {overall['negative_transfer']}
 - Stable success: {overall['stable_success']}
 - Unresolved tasks: {overall['unresolved_task']}
+- Ineligible pairs: {overall['ineligible_pair']}
 - Retrieval coverage: {_rate(covered, relevant)} ({covered}/{relevant})
 {frozen_verdict}
 
