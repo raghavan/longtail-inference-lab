@@ -1,7 +1,7 @@
 # Teacher/student transfer setup
 
 **Experiment:** Terminal Artifact Memory
-**Status:** Preregistered; qualified pilot awaiting post-merge measured execution
+**Status:** Corrective preregistration awaiting merge; zero measured attempts and zero ledger slots consumed
 **Last updated:** August 1 2026
 
 ## Principle
@@ -23,7 +23,7 @@ Model confidence, narrative, apparent tool exits, and distillation quality are n
 
 - **Cloud teacher/distiller:** `gpt-5.6-sol` through pinned host Codex CLI 0.146.0. The teacher uses `host-codex-subscription-task-mcp-v1`; each distiller uses a separate fresh no-tools session. OAuth remains on the host.
 - **Local student:** Apache-2.0 `Qwen/Qwen2.5-Coder-7B-Instruct-GGUF` at Hugging Face revision `13fb94bfda8c8cf22497dc57b78f391a9acb426a`, Q4_K_M, SHA-256 `509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c`.
-- **Harbor/Terminal Bench:** isolated tasks, Terminus-2 student agent, ATIF transport, Docker environment, and task executable verifier.
+- **Harbor/Terminal Bench:** isolated tasks, Terminus-2 student agent, ATIF transport, Docker environment, and task executable verifier. Preflight records exact Docker client/server/API output separately from exact Docker Compose `2.39.1-desktop.1` output.
 - **llama.cpp:** serves the one fixed local Qwen through a loopback endpoint.
 - **Gitleaks plus `artifact_memory.sanitize`:** local secret, privacy, canary, contamination, blocked-term, allowlist, and residual gates.
 - **uv/Python standard library:** reproducible local implementation and tests.
@@ -73,19 +73,19 @@ prompts/
   memory.v1.md
 
 manifests/
-  measured-run-template.v2.json
+  measured-run-template.v3.json
   measured-teacher-authorization-template.v1.json
-  teacher-memory-build-template.v1.json
+  teacher-memory-build-template.v2.json
   verifier-qualification-template.v1.json
   verifier-qualification-attestations-2026-08-01.v1.json
   host-codex-adapter-qualification-attestation-2026-08-01.v1.json
-  preregistration-freeze-2026-08-01.v1.json
+  preregistration-freeze-2026-08-01.v2.json
   distillation-draft-template.v1.json
   external-human-approval-template.v1.json
   memory-admission-template.v2.json
 ```
 
-The v2 measured manifest records teacher, distiller, and student model identities, provider/runtime or operator adapters, role-specific prompt revisions and hashes, task role, disjoint split, transmission classification, verifier qualification, student hash, sanitizer revision, and fixed controls. Legacy `paired-run-manifest-v1` records receive a controlled rejection; the halted pilot report remains readable and unchanged.
+The corrective v3 student manifest and v2 teacher-build manifest record Docker client/server/API separately from Docker Compose, along with teacher, distiller, and student identities, adapters, prompts, task role, split, disclosure, qualification, student hash, sanitizer revision, and fixed controls. Pre-correction schemas receive a controlled rejection; the halted pilot report remains readable and unchanged.
 
 ## Verifier qualification
 
@@ -159,4 +159,4 @@ The bounded workflow does not add a cloud SDK, provider gateway, general benchma
 
 ## Readiness
 
-The machinery, task qualifications, adapter boundary, and immutable controls are preregistered. Measured execution remains blocked until the preregistration PR lands and a clean landed revision plus private task authorization validates. No new measured experiment has been run and no transfer efficacy is claimed.
+The machinery, task qualifications, adapter boundary, and immutable controls are preregistered. Measured execution remains blocked until the corrective preregistration PR lands and a clean landed revision plus fresh private task authorization validates. The dry preflight consumed no measured attempt, initialized no execution ledger, and consumed no ledger slot; no transfer efficacy is claimed.

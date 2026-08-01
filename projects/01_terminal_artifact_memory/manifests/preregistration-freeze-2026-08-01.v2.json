@@ -1,0 +1,272 @@
+{
+  "schema_version": "terminal-artifact-memory-preregistration-freeze-v1",
+  "freeze_revision": "docker-compose-preflight-correction-v2",
+  "protocol_revision": "teacher-student-transfer-v1",
+  "split_revision": "gpt56-qwen32k-qualified-transfer-v1",
+  "frozen_on": "2026-08-01",
+  "measurement_authorization": {
+    "required_state": "corrective_preregistration_pr_merged",
+    "code_revision_policy": "exact_clean_corrective_preregistration_merge_revision",
+    "unresolved_markers_permitted": false,
+    "private_qualification_records_required": true
+  },
+  "corrective_refreeze": {
+    "revision": "docker-compose-preflight-correction-v2",
+    "scope": "runtime_preflight_representation_and_validation_only",
+    "prior_freeze_file": "manifests/preregistration-freeze-2026-08-01.v1.json",
+    "prior_freeze_sha256": "15834aa3ea14f95b0539c02b99ccfdf7401367b704c3b5b7e764f124d0dcc316",
+    "prior_measured_actor_attempts": 0,
+    "prior_execution_ledger_initialized": false,
+    "prior_execution_ledger_slots_consumed": 0,
+    "scientific_controls_changed": false,
+    "docker_version_record": "client=24.0.4 server=28.3.2 api=1.51",
+    "docker_compose_version_record": "2.39.1-desktop.1",
+    "validation_policy": "exact_separate_docker_and_compose_commands",
+    "student_manifest_schema": "teacher-student-paired-run-manifest-v3",
+    "student_manifest_template": "manifests/measured-run-template.v3.json",
+    "student_manifest_template_sha256": "ecc179c8d72f27eab1d8d95611ea85af2a45bde886833c50c1fa196ba707d09c",
+    "teacher_build_manifest_schema": "teacher-memory-build-manifest-v2",
+    "teacher_build_manifest_template": "manifests/teacher-memory-build-template.v2.json",
+    "teacher_build_manifest_template_sha256": "509330d4978a16869c39eb48e6785542117d43cb95c1df7213fc573c0b2f8687",
+    "teacher_build_validation_implementation_sha256": "6366ea32f9dd84c3f6bb9180e5f9e734785024aa9367adb9035c94a7432beaf5"
+  },
+  "question": "Do three qualified verifier-passing public terminal solutions from fixed cloud teacher gpt-5.6-sol, distilled by a separate fresh session of the same model into three approved Markdown pages, improve the exact local Qwen student's executable-verifier pass rate on three disjoint qualified structural probes at a fixed three-page checkpoint?",
+  "roles": {
+    "teacher": {
+      "role": "cloud_teacher",
+      "model_id": "gpt-5.6-sol",
+      "model_selection": "gpt-5.6-sol",
+      "adapter_id": "host-codex-subscription-task-mcp-v1",
+      "implementation_sha256": {
+        "artifact_memory/host_codex_adapter.py": "93763020b0e2063ed4499f5c1d205e637885ce7b80e090fa4467afac4ea52864",
+        "artifact_memory/host_codex_harbor.py": "940e480bb20a26b5d0fa5e4a073949bb6a2a67c3d46e5ea5e7252c15c329d754"
+      },
+      "qualification_attestation": "manifests/host-codex-adapter-qualification-attestation-2026-08-01.v1.json",
+      "qualification_attestation_sha256": "4c59c7b0219a1582e15adeb2ae8f798384537bc966e21dc541f81ae8bfb1c555",
+      "codex_cli_version": "0.146.0",
+      "session_policy": "one_fresh_ephemeral_session_per_build_task",
+      "task_tool": "artifact_memory_task.task_shell",
+      "trajectory_schema": "ATIF-v1.7",
+      "task_environment_variable_names": {
+        "openssl-selfsigned-cert": [
+          "GPG_KEY",
+          "PATH",
+          "PYTHON_SHA256",
+          "PYTHON_VERSION"
+        ],
+        "sqlite-with-gcov": [
+          "PATH"
+        ],
+        "train-fasttext": [
+          "GPG_KEY",
+          "PATH",
+          "PYTHON_SHA256",
+          "PYTHON_VERSION"
+        ]
+      },
+      "resume": false
+    },
+    "distiller": {
+      "role": "cloud_distiller",
+      "model_id": "gpt-5.6-sol",
+      "model_selection": "gpt-5.6-sol",
+      "adapter_id": "host-codex-subscription-no-tools-v1",
+      "implementation_sha256": {
+        "artifact_memory/host_codex_adapter.py": "93763020b0e2063ed4499f5c1d205e637885ce7b80e090fa4467afac4ea52864",
+        "artifact_memory/host_codex_distiller.py": "faae1716835043881ab688b45d156366386cde9dacfe77f8c1037d5c1c01d450"
+      },
+      "codex_cli_version": "0.146.0",
+      "session_policy": "one_fresh_ephemeral_no_tools_session_per_allowlisted_request",
+      "input_scope": "generated_cloud_distillation_request_only",
+      "resume": false
+    },
+    "student": {
+      "role": "local_student",
+      "model_id": "Qwen/Qwen2.5-Coder-7B-Instruct-GGUF",
+      "hugging_face_revision": "13fb94bfda8c8cf22497dc57b78f391a9acb426a",
+      "quantization": "GGUF-Q4_K_M",
+      "sha256": "509287f78cb4d4cf6b3843734733b914b2c158e43e22a7f4bf5e963800894d3c",
+      "license": "Apache-2.0",
+      "sole_evaluation_model": true
+    }
+  },
+  "split": {
+    "memory_build_task_ids": [
+      "openssl-selfsigned-cert",
+      "sqlite-with-gcov",
+      "train-fasttext"
+    ],
+    "held_out_evaluation_task_ids": [
+      "configure-git-webserver",
+      "polyglot-rust-c",
+      "pytorch-model-cli"
+    ],
+    "development_context_task_ids": [
+      "hello-world",
+      "modernize-scientific-stack",
+      "nginx-request-logging"
+    ],
+    "page_mapping": [
+      {
+        "memory_build_task_id": "openssl-selfsigned-cert",
+        "page_id": "self-signed-server-certificate",
+        "held_out_task_id": "configure-git-webserver",
+        "structural_family": "server_configuration"
+      },
+      {
+        "memory_build_task_id": "sqlite-with-gcov",
+        "page_id": "instrumented-native-source-build",
+        "held_out_task_id": "polyglot-rust-c",
+        "structural_family": "source_build"
+      },
+      {
+        "memory_build_task_id": "train-fasttext",
+        "page_id": "bounded-local-model-artifact",
+        "held_out_task_id": "pytorch-model-cli",
+        "structural_family": "model_execution"
+      }
+    ]
+  },
+  "task_source": {
+    "dataset": "terminal-bench@2.0",
+    "terminal_bench_revision": "69671fbaac6d67a7ef0dfec016cc38a64ef7a77c",
+    "registry_snapshot_sha256": "da1446bce05eabbd72a25eb9eef5a2f5db94645ce88c28e2497581433b3d2e60",
+    "qualification_attestations": "manifests/verifier-qualification-attestations-2026-08-01.v1.json"
+  },
+  "prompts": {
+    "teacher_revision": "teacher-v1",
+    "teacher_sha256": "5a1c448ea3655b09c468a708f42c68dc3a9469f5bb72e8fdaa751fd1ab2b930b",
+    "distiller_revision": "distillation-v1",
+    "distiller_sha256": "506cabdb4e3fc24bc102708c293fcfb424be0340d6fc0cdc7d0bc6fef330de52",
+    "student_revision": "system-v1+memory-v1",
+    "student_system_sha256": "7c21baeb6445e013972bdd6bbb941d2b367cb6b5d2e9a9b0e4c8bbef1bb5b015",
+    "student_memory_sha256": "a274f71dc6aae550995c6ce801fc15d9420bce50e82ccd66ead93631697abd6d"
+  },
+  "student_controls": {
+    "runtime": "llama.cpp",
+    "llama_cpp_build": "10200",
+    "llama_cpp_revision": "5f55650a7",
+    "hardware": "Apple M2 Pro MacBook Pro, 16 GB",
+    "operating_system": "macOS 26.6 arm64",
+    "context_tokens": 32768,
+    "max_turns": 24,
+    "summarization_enabled": false,
+    "temperature": 0,
+    "seed": 42,
+    "timeout_multiplier": 1.0,
+    "attempts_per_condition": 1,
+    "concurrency": 1,
+    "retries": 0,
+    "tool_permissions": [
+      "terminal",
+      "task-container-filesystem"
+    ],
+    "preflight_implementation_sha256": "8690c3be28507e05863d2facca470303404f296b9bac507cbad6eb0d0eeba8f6"
+  },
+  "context_policy_development_attestation": {
+    "data_classification": "development_only_not_measured",
+    "policy": "32768_tokens_no_summarization_24_turn_cap",
+    "tasks_reaching_executable_verification": 3,
+    "tasks_attempted_with_valid_host_endpoint": 3,
+    "maximum_observed_context_tokens": 13765,
+    "minimum_headroom_after_reserved_m2_tokens": 17203,
+    "reserved_m2_retrieval_tokens": 1800,
+    "invalid_dns_only_attempts_retained_privately": 3,
+    "measured_tasks_used_for_context_selection": 0
+  },
+  "memory_controls": {
+    "baseline_checkpoint_pages": 0,
+    "m2_checkpoint_pages": 3,
+    "required_distinct_build_contributions": 3,
+    "representation": "approved_distilled_markdown_only",
+    "retrieval_revision": "direct-markdown-lexical-v1",
+    "retrieval_config_sha256": "46d2e64f1f52438014787abd86a802d829dee9eb73c3b2596f9ad5e9470dfffb",
+    "top_k": 3,
+    "token_budget": 1800,
+    "sanitizer_revision": "artifact_memory-sanitizer-v1",
+    "admission_requires_external_hash_scoped_human_approval": true
+  },
+  "attempt_budget": {
+    "m0_attempts": 3,
+    "teacher_attempts": 3,
+    "distiller_attempts_maximum": 3,
+    "m2_attempts": 3,
+    "attempts_per_task_or_packet": 1,
+    "global_execution_ledger_schema": "terminal-artifact-memory-execution-ledger-v1",
+    "global_execution_ledger_implementation_sha256": "5750ee10d2b2e77c52d8c26adfc4f8cd0a04974e122ec01155f87eda23f17484",
+    "global_execution_ledger_filename": "execution-ledger.v1.json",
+    "combined_measured_pair_command_permitted": false,
+    "retries": 0,
+    "task_replacement_after_freeze": false
+  },
+  "ordering": {
+    "m0": [
+      "configure-git-webserver",
+      "polyglot-rust-c",
+      "pytorch-model-cli"
+    ],
+    "teacher_builds": [
+      "openssl-selfsigned-cert",
+      "sqlite-with-gcov",
+      "train-fasttext"
+    ],
+    "distillation_and_admission": [
+      "openssl-selfsigned-cert",
+      "sqlite-with-gcov",
+      "train-fasttext"
+    ],
+    "m2": [
+      "configure-git-webserver",
+      "polyglot-rust-c",
+      "pytorch-model-cli"
+    ]
+  },
+  "thresholds": {
+    "success": {
+      "complete_valid_pairs_required": 3,
+      "minimum_positive_transfers": 1,
+      "minimum_pass_rate_lift": 0.3333333333333333,
+      "maximum_negative_transfers": 0,
+      "maximum_unsafe_errors": 0,
+      "required_retrieval_coverage": 1.0
+    },
+    "negative_transfer_threshold": 0,
+    "unsafe_error_threshold": 0
+  },
+  "analysis_denominators": {
+    "m0_pass_rate": 3,
+    "m2_pass_rate": 3,
+    "transfer_classification": 3,
+    "retrieval_coverage": 3,
+    "student_condition_attempts": 6,
+    "unsafe_error_audit": 6,
+    "teacher_build_eligibility_descriptive_only": 3,
+    "verified_knowledge_yield_page_denominator": 3,
+    "missing_invalid_or_ineligible_records_never_shrink_denominators": true
+  },
+  "stop_boundaries": [
+    "preregistration PR is not merged or the clean code revision is not its exact landed revision",
+    "a required model, prompt, task, container, verifier, qualification, code, lock, or tool pin is absent or mismatched",
+    "a selected task becomes ineligible, nondeterministic, contaminated, or replaced after freeze",
+    "a one-attempt M0 condition is invalid or lacks exactly one executable-verifier artifact",
+    "a teacher build lacks exact model/adapter/ATIF provenance or exactly one executable-verifier reward of 1.0",
+    "a sanitizer, Gitleaks, canary, blocked-term, residual, or disclosure gate fails",
+    "a distillation packet differs from the generated allowlisted request or a distiller session is not fresh and tool-free",
+    "external hash-scoped approval or exact three-page admission is incomplete",
+    "an M2 condition is invalid, its memory provenance differs from the exact checkpoint, or controls differ outside the rendered memory block",
+    "any privacy, credential exposure, hidden-test access, split contamination, provenance, or unsafe-error boundary is crossed"
+  ],
+  "tool_pins": {
+    "harbor_version": "0.20.0",
+    "harbor_record_sha256": "d6d7a0b6b6b1c4a34f85f09ba99fea1cc1a39beddf11147d150ac076f7e62225",
+    "codex_cli_version": "0.146.0",
+    "docker_client": "24.0.4",
+    "docker_server": "28.3.2",
+    "docker_api": "1.51",
+    "docker_compose": "2.39.1-desktop.1",
+    "gitleaks_version": "8.30.1",
+    "uv_version": "0.10.4",
+    "python_lock_sha256": "c3366e15a5706a4e497eebe344a9be45e7947ae8ababe8408dae239d2888f8ac"
+  },
+  "analysis_rule": "Only held-out local-Qwen executable-verifier M0/M2 pairs score transfer; teacher verifier passage is page provenance only."
+}

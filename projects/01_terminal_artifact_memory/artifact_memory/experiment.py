@@ -121,7 +121,8 @@ PROMPT_PATHS = {
 LOCK_PATH = PROJECT_ROOT / "uv.lock"
 MEASURED = "measured"
 CONDITIONS = ("M0", "M2")
-SCHEMA_VERSION = "teacher-student-paired-run-manifest-v2"
+SCHEMA_VERSION = "teacher-student-paired-run-manifest-v3"
+PRECORRECTION_SCHEMA_VERSION = "teacher-student-paired-run-manifest-v2"
 LEGACY_SCHEMA_VERSION = "paired-run-manifest-v1"
 RESULT_SCHEMA_VERSION = "student-paired-result-v2"
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
@@ -133,6 +134,7 @@ REQUIRED_RUN_ENVIRONMENT = (
     "code_revision",
     "harbor_version",
     "docker_version",
+    "docker_compose_version",
     "terminal_bench_version",
     "terminal_bench_revision",
     "registry_snapshot_sha256",
@@ -212,7 +214,12 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
     if manifest.get("schema_version") == LEGACY_SCHEMA_VERSION:
         raise ManifestError(
             "legacy paired-run-manifest-v1 is not valid for teacher-student measurement; "
-            "use the v2 template (the halted 16K pilot remains an immutable historical record)"
+            "use the v3 template (the halted 16K pilot remains an immutable historical record)"
+        )
+    if manifest.get("schema_version") == PRECORRECTION_SCHEMA_VERSION:
+        raise ManifestError(
+            "pre-correction teacher-student-paired-run-manifest-v2 cannot validate Docker "
+            "Compose separately; create a fresh v3 manifest from the corrective freeze"
         )
     if manifest.get("schema_version") != SCHEMA_VERSION:
         raise ManifestError(f"schema_version must be {SCHEMA_VERSION}")
@@ -754,6 +761,9 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
             runner,
             environment,
         ),
+        "docker_compose": _run_version(
+            ["docker", "compose", "version", "--short"], runner, environment
+        ),
         "harbor": _run_version(["harbor", "--version"], runner, environment),
         "gitleaks": _run_version(["gitleaks", "version"], runner, environment),
         "llama_cpp": _run_version([llama_executable, "--version"], runner, environment),
@@ -780,13 +790,17 @@ def check_prerequisites(manifest: Mapping[str, object], runner: Runner = subproc
     run_environment = _mapping(manifest["run_environment"], "run_environment")
     expected = {
         "docker": str(run_environment.get("docker_version", "")),
+        "docker_compose": str(run_environment.get("docker_compose_version", "")),
         "harbor": str(run_environment.get("harbor_version", "")),
         "gitleaks": str(run_environment.get("gitleaks_version", "")),
         "llama_cpp": str(run_environment.get("llama_cpp_revision", "")),
     }
     if manifest["data_classification"] == MEASURED:
-        for tool, pin in expected.items():
-            if pin not in versions[tool]:
+        for tool in ("docker", "docker_compose"):
+            if versions[tool] != expected[tool]:
+                raise PrerequisiteError(f"installed {tool} does not match measured-run pin")
+        for tool in ("harbor", "gitleaks", "llama_cpp"):
+            if expected[tool] not in versions[tool]:
                 raise PrerequisiteError(f"installed {tool} does not match measured-run pin")
         git_revision = _run_version(
             ["git", "-C", str(PROJECT_ROOT), "rev-parse", "HEAD"], runner, environment

@@ -13,6 +13,7 @@ from artifact_memory.experiment import (
     LOCK_PATH,
     PROJECT_ROOT,
     ManifestError,
+    PrerequisiteError,
     assert_control_equivalence,
     build_harbor_command,
     build_llama_command,
@@ -42,7 +43,7 @@ class ManifestTests(unittest.TestCase):
         validate_manifest(synthetic_manifest())
 
     def test_committed_template_hashes_match_versioned_files(self) -> None:
-        template = load_manifest(PROJECT_ROOT / "manifests" / "measured-run-template.v2.json")
+        template = load_manifest(PROJECT_ROOT / "manifests" / "measured-run-template.v3.json")
         prompt = template["controls"]["prompt"]
         self.assertEqual(prompt["system_sha256"], sha256_file(PROJECT_ROOT / "prompts" / "system.v1.md"))
         self.assertEqual(prompt["memory_sha256"], sha256_file(PROJECT_ROOT / "prompts" / "memory.v1.md"))
@@ -55,6 +56,14 @@ class ManifestTests(unittest.TestCase):
             sha256_file(DISTILLER_PROMPT_PATH),
         )
         self.assertEqual(template["run_environment"]["python_lock_hash"], sha256_file(LOCK_PATH))
+        self.assertEqual(
+            template["run_environment"]["docker_version"],
+            "client=24.0.4 server=28.3.2 api=1.51",
+        )
+        self.assertEqual(
+            template["run_environment"]["docker_compose_version"],
+            "2.39.1-desktop.1",
+        )
         self.assertEqual(template["roles"]["teacher"]["model_id"], TEACHER_MODEL_ID)
         self.assertEqual(template["roles"]["distiller"]["model_id"], TEACHER_MODEL_ID)
         self.assertEqual(template["roles"]["student"]["model_id"], STUDENT_MODEL_ID)
@@ -92,6 +101,12 @@ class ManifestTests(unittest.TestCase):
         manifest = synthetic_manifest()
         manifest["schema_version"] = "paired-run-manifest-v1"
         with self.assertRaisesRegex(ManifestError, "legacy paired-run-manifest-v1"):
+            validate_manifest(manifest)
+
+    def test_precorrection_manifest_requires_fresh_corrective_schema(self) -> None:
+        manifest = synthetic_manifest()
+        manifest["schema_version"] = "teacher-student-paired-run-manifest-v2"
+        with self.assertRaisesRegex(ManifestError, "cannot validate Docker Compose separately"):
             validate_manifest(manifest)
 
     def test_incomplete_measured_provenance_is_rejected(self) -> None:
@@ -246,6 +261,88 @@ class ExternalCommandTests(unittest.TestCase):
         for environment in observed_environments:
             self.assertNotIn(source, environment)
             self.assertNotIn(destination, environment)
+
+    def test_measured_preflight_validates_docker_and_compose_as_separate_exact_pins(self) -> None:
+        manifest = copy.deepcopy(self.manifest)
+        manifest["data_classification"] = "measured"
+        run_environment = manifest["run_environment"]
+        run_environment.update(
+            {
+                "harbor_version": "0.20.0",
+                "docker_version": "client=24.0.4 server=28.3.2 api=1.51",
+                "docker_compose_version": "2.39.1-desktop.1",
+                "gitleaks_version": "8.30.1",
+                "python_lock_hash": sha256_file(LOCK_PATH),
+            }
+        )
+        observed_commands: list[list[str]] = []
+        compose_output = ["2.39.1-desktop.1"]
+
+        def runner(command: list[str], **_kwargs: object) -> SimpleNamespace:
+            observed_commands.append(command)
+            docker_version_command = (
+                "docker",
+                "version",
+                "--format",
+                "client={{.Client.Version}} server={{.Server.Version}} "
+                "api={{.Server.APIVersion}}",
+            )
+            outputs = {
+                docker_version_command: "client=24.0.4 server=28.3.2 api=1.51",
+                ("docker", "compose", "version", "--short"): compose_output[0],
+                ("harbor", "--version"): "0.20.0",
+                ("gitleaks", "version"): "8.30.1",
+                ("llama-server", "--version"): (
+                    f"version: fixture ({run_environment['llama_cpp_revision']})"
+                ),
+                ("docker", "info"): "fixture Docker daemon",
+                ("harbor", "run", "--help"): (
+                    "--dataset --path --include-task-name --agent-kwarg --skill "
+                    "--jobs-dir --job-name --extra-instruction-path"
+                ),
+                ("git", "-C", str(PROJECT_ROOT), "rev-parse", "HEAD"): (
+                    run_environment["code_revision"]
+                ),
+                ("git", "-C", str(PROJECT_ROOT), "status", "--porcelain"): "",
+            }
+            return SimpleNamespace(returncode=0, stdout=outputs[tuple(command)], stderr="")
+
+        with tempfile.TemporaryDirectory() as directory:
+            model_path = Path(directory) / "fixed-qwen.gguf"
+            model_path.write_bytes(b"synthetic model placeholder")
+            environment = {**self.environment, "ARTIFACT_MEMORY_FIXTURE_MODEL_PATH": str(model_path)}
+
+            def pinned_hash(path: Path) -> str:
+                return (
+                    STUDENT_MODEL_SHA256
+                    if Path(path) == model_path
+                    else sha256_file(Path(path))
+                )
+
+            with (
+                patch.dict(os.environ, environment, clear=True),
+                patch("artifact_memory.experiment._require_executable"),
+                patch("artifact_memory.experiment._check_local_endpoint"),
+                patch("artifact_memory.experiment._check_local_task_pin"),
+                patch(
+                    "artifact_memory.experiment.validate_student_manifest_against_freeze"
+                ),
+                patch(
+                    "artifact_memory.experiment.sha256_file", side_effect=pinned_hash
+                ),
+            ):
+                versions = check_prerequisites(manifest, runner)
+                self.assertEqual(
+                    versions["docker"], "client=24.0.4 server=28.3.2 api=1.51"
+                )
+                self.assertEqual(versions["docker_compose"], "2.39.1-desktop.1")
+                compose_output[0] = "2.39.0"
+                with self.assertRaisesRegex(PrerequisiteError, "docker_compose"):
+                    check_prerequisites(manifest, runner)
+
+        self.assertIn(
+            ["docker", "compose", "version", "--short"], observed_commands
+        )
 
     def test_harbor_conditions_only_change_output_and_memory_paths(self) -> None:
         with patch.dict(os.environ, self.environment, clear=False):

@@ -16,7 +16,7 @@ Long Tail Inference Lab's preregistered protocol tests transfer from a fixed `gp
 
 ### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
-**Status:** Preregistered (qualified teacher/student pilot awaiting measured execution; no measured result)
+**Status:** Corrective preregistration awaiting merge (zero measured attempts and zero ledger slots consumed)
 
 **Question:** Can verifier-passing public terminal work from a fixed `gpt-5.6-sol` cloud teacher become approved Markdown memory that improves a fixed local Qwen student on disjoint held-out tasks?
 
@@ -24,7 +24,7 @@ The cloud teacher solves only preregistered public memory-build tasks, so that i
 
 The executable verifier alone establishes build eligibility and held-out student outcomes. Teacher scores, model confidence, narrative success, tool-exit impressions, and distillation quality never substitute. Private verifier qualification raises confidence in each pinned task verifier without exposing hidden tests or verifier internals to either model.
 
-The teacher boundary pins host Codex CLI 0.146.0, keeps subscription OAuth on the host, exposes only the isolated task tool, and captures ATIF provenance. The earlier genuine pilot remains intact: its first local Qwen M0 probe exceeded the frozen 16,384-token context before executable verification, so it produced no pair or memory checkpoint. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md). No teacher/student experiment has been measured yet.
+The teacher boundary pins host Codex CLI 0.146.0, keeps subscription OAuth on the host, exposes only the isolated task tool, and captures ATIF provenance. A pre-measurement dry run exposed an impossible combined Docker/Compose version check, so measurement remains blocked pending a corrective freeze that validates those two exact pins separately; no measured actor or execution-ledger slot was consumed. The earlier genuine pilot remains intact: its first local Qwen M0 probe exceeded the frozen 16,384-token context before executable verification, so it produced no pair or memory checkpoint. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md). No teacher/student experiment has been measured yet.
 
 ## PARA organization
 
