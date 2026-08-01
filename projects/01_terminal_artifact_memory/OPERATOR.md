@@ -1,6 +1,6 @@
 # Teacher/student transfer operator guide
 
-This guide operates the preregistered GPT-5.6-sol/Qwen 32K Terminal Artifact Memory pilot. It does not authorize measurement before the [2026-08-01 preregistration](preregistrations/2026-08-01-gpt56-qwen32k-teacher-student.md) lands and complete private pins validate. No teacher/student measured result exists.
+This guide operates the preregistered GPT-5.6-sol/Qwen 32K Terminal Artifact Memory pilot. It does not authorize measurement before the [corrective 2026-08-01 preregistration](preregistrations/2026-08-01-gpt56-qwen32k-teacher-student-corrective.md) lands and complete private pins validate. The dry preflight consumed zero measured attempts, initialized no execution ledger, and consumed zero ledger slots; no teacher/student measured result exists.
 
 The [2026-07-31 halted 16K pilot](results/2026-07-31-measured-pilot/summary.md) is immutable. Never rerun, relabel, repair, or pool its consumed attempt.
 
@@ -31,9 +31,9 @@ Synthetic fixtures are deterministic controls, not experiment data.
 
 ## 2. Validate the landed freeze and private authorizations
 
-The immutable split, task pins, adapters, 32,768-token/no-summarization/24-turn context policy, retrieval budget, thresholds, denominators, ordering, and stop rules are in `manifests/preregistration-freeze-2026-08-01.v1.json`.
+The immutable split, task pins, adapters, 32,768-token/no-summarization/24-turn context policy, retrieval budget, thresholds, denominators, ordering, and stop rules are in `manifests/preregistration-freeze-2026-08-01.v2.json`. The measured runtime manifest records `docker_version` as exact `docker version` client/server/API output and records `docker_compose_version` separately as exact `docker compose version --short` output.
 
-After the preregistration PR lands, use only its exact clean revision. Validate the public freeze and private compact qualification records before creating any measured manifest:
+After the corrective preregistration PR lands, discard pre-correction local manifest/authorization drafts and use only fresh records tied to its exact clean revision. Validate the public freeze and private compact qualification records before creating any measured manifest:
 
 ```bash
 uv run python -m artifact_memory.preregistration \
@@ -57,9 +57,9 @@ Never copy or mount Codex auth. Codex CLI reads the existing host subscription i
 Copy these templates only into ignored `config/local/` or `runs/` paths:
 
 ```text
-manifests/measured-run-template.v2.json
+manifests/measured-run-template.v3.json
 manifests/measured-teacher-authorization-template.v1.json
-manifests/teacher-memory-build-template.v1.json
+manifests/teacher-memory-build-template.v2.json
 manifests/verifier-qualification-template.v1.json
 manifests/distillation-draft-template.v1.json
 manifests/external-human-approval-template.v1.json
@@ -92,7 +92,7 @@ Qualification checks adequacy, while exactly-one reward transport and artifact h
 
 ## 4. Prepare local student controls
 
-Copy `measured-run-template.v2.json` to `config/local/student-pair.json` and replace every uppercase marker. The manifest must keep:
+Copy `measured-run-template.v3.json` to `config/local/student-pair.json` and replace every uppercase marker. The manifest must keep:
 
 - task role `held_out_student_evaluation` and actor `local_student`;
 - exact `gpt-5.6-sol` teacher/distiller provenance roles, even though they do not execute the probe;
@@ -162,7 +162,7 @@ Use Harbor custom agent `artifact_memory.host_codex_harbor:HostCodexTeacherAgent
 
 The adapter preflight requires Codex CLI 0.146.0, the existing ChatGPT subscription, the exact catalog model, the active digest-pinned Docker image ID, exact Harbor log-bind sources, the closed environment-name inventory, a clean landed revision, and the private qualification hash. OAuth remains in the host Codex store: never copy, mount, inspect, print, hash, archive, or forward it. The only model tool is the task-scoped MCP shell in `/app` inside a fresh zero-mount snapshot; after nonce-authenticated audit and exact-lifecycle ATIF validation, only a bounded staged `/app` may replace verifier-visible `/app`. The captured ATIF-v1.7 trajectory must identify `host-codex-subscription-task-mcp-v1` and contain only that tool.
 
-Record safe timestamps, public task, model/adapter/prompt hashes, and local trajectory/verifier hashes in a private copy of `teacher-memory-build-template.v1.json`. The coding worker, operator, development smoke, and reviewer are not measured teachers.
+Record safe timestamps, public task, model/adapter/prompt hashes, and local trajectory/verifier hashes in a private copy of `teacher-memory-build-template.v2.json`. The coding worker, operator, development smoke, and reviewer are not measured teachers.
 
 The cloud teacher must not receive held-out probes, qualification internals, hidden tests, verifier code, reference solutions, local host details, or canaries.
 

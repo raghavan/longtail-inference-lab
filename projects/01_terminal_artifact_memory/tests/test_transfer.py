@@ -56,6 +56,11 @@ class RoleAndDisclosureTests(unittest.TestCase):
 
 
 class TransferLifecycleTests(unittest.TestCase):
+    def test_precorrection_build_manifest_requires_fresh_corrective_schema(self) -> None:
+        manifest = {"schema_version": "teacher-memory-build-manifest-v1"}
+        with self.assertRaisesRegex(TransferError, "cannot record Docker Compose separately"):
+            validate_build_manifest(manifest)
+
     def test_build_provenance_is_teacher_only_and_split_disjoint(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

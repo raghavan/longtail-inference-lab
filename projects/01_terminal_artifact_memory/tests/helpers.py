@@ -113,6 +113,7 @@ def run_environment_fixture() -> dict[str, Any]:
         "code_revision": FIXTURE_REVISION,
         "harbor_version": "fixture-harbor-v0",
         "docker_version": "fixture-docker-v0",
+        "docker_compose_version": "fixture-compose-v0",
         "terminal_bench_version": "v0",
         "terminal_bench_revision": FIXTURE_REVISION,
         "registry_snapshot_sha256": FIXTURE_SHA,
@@ -141,7 +142,7 @@ def run_environment_fixture() -> dict[str, Any]:
 
 def synthetic_manifest() -> dict[str, Any]:
     return {
-        "schema_version": "teacher-student-paired-run-manifest-v2",
+        "schema_version": "teacher-student-paired-run-manifest-v3",
         "protocol_revision": PROTOCOL_REVISION,
         "data_classification": "synthetic_fixture_not_measured",
         "pair_id": "synthetic-fixture-pair",
@@ -353,7 +354,7 @@ def admission_fixture(root: Path) -> tuple[Path, Path, Path]:
         + "\n"
     )
     build = {
-        "schema_version": "teacher-memory-build-manifest-v1",
+        "schema_version": "teacher-memory-build-manifest-v2",
         "protocol_revision": PROTOCOL_REVISION,
         "data_classification": "synthetic_fixture_not_measured",
         "build_id": "fixture-build",

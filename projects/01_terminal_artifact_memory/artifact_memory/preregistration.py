@@ -15,12 +15,15 @@ from .sanitize import sha256_file
 from .verifier_qualification import validate_qualification_path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-FREEZE_PATH = PROJECT_ROOT / "manifests" / "preregistration-freeze-2026-08-01.v1.json"
+FREEZE_PATH = PROJECT_ROOT / "manifests" / "preregistration-freeze-2026-08-01.v2.json"
 ATTESTATIONS_PATH = (
     PROJECT_ROOT / "manifests" / "verifier-qualification-attestations-2026-08-01.v1.json"
 )
 FREEZE_SCHEMA = "terminal-artifact-memory-preregistration-freeze-v1"
 EXPECTED_SPLIT_REVISION = "gpt56-qwen32k-qualified-transfer-v1"
+EXPECTED_FREEZE_REVISION = "docker-compose-preflight-correction-v2"
+EXPECTED_DOCKER_VERSION = "client=24.0.4 server=28.3.2 api=1.51"
+EXPECTED_DOCKER_COMPOSE_VERSION = "2.39.1-desktop.1"
 EXPECTED_TEACHER_ADAPTER = "host-codex-subscription-task-mcp-v1"
 EXPECTED_DISTILLER_ADAPTER = "host-codex-subscription-no-tools-v1"
 PLACEHOLDER_RE = re.compile(
@@ -81,6 +84,8 @@ def load_freeze() -> dict[str, object]:
         raise PreregistrationError(f"freeze schema must be {FREEZE_SCHEMA}")
     if freeze.get("split_revision") != EXPECTED_SPLIT_REVISION:
         raise PreregistrationError("freeze split revision mismatch")
+    if freeze.get("freeze_revision") != EXPECTED_FREEZE_REVISION:
+        raise PreregistrationError("corrective freeze revision mismatch")
     placeholders = _find_placeholders(freeze, "freeze")
     if placeholders:
         raise PreregistrationError("freeze contains unresolved markers: " + ", ".join(placeholders))
@@ -150,6 +155,50 @@ def validate_public_freeze() -> None:
         PROJECT_ROOT / "artifact_memory" / "execution_ledger.py"
     ):
         raise PreregistrationError("freeze execution ledger implementation hash mismatch")
+    student_controls = _mapping(freeze["student_controls"], "freeze student controls")
+    if student_controls.get("preflight_implementation_sha256") != sha256_file(
+        PROJECT_ROOT / "artifact_memory" / "experiment.py"
+    ):
+        raise PreregistrationError("freeze student preflight implementation hash mismatch")
+    correction = _mapping(freeze["corrective_refreeze"], "corrective refreeze")
+    expected_correction = {
+        "revision": EXPECTED_FREEZE_REVISION,
+        "scope": "runtime_preflight_representation_and_validation_only",
+        "prior_measured_actor_attempts": 0,
+        "prior_execution_ledger_initialized": False,
+        "prior_execution_ledger_slots_consumed": 0,
+        "scientific_controls_changed": False,
+        "docker_version_record": EXPECTED_DOCKER_VERSION,
+        "docker_compose_version_record": EXPECTED_DOCKER_COMPOSE_VERSION,
+        "student_manifest_schema": "teacher-student-paired-run-manifest-v3",
+        "student_manifest_template": "manifests/measured-run-template.v3.json",
+        "teacher_build_manifest_schema": "teacher-memory-build-manifest-v2",
+        "teacher_build_manifest_template": "manifests/teacher-memory-build-template.v2.json",
+    }
+    for field, expected in expected_correction.items():
+        if correction.get(field) != expected:
+            raise PreregistrationError(f"corrective refreeze {field} mismatch")
+    prior_freeze_relative = "manifests/preregistration-freeze-2026-08-01.v1.json"
+    prior_freeze_path = PROJECT_ROOT / prior_freeze_relative
+    if (
+        correction.get("prior_freeze_file") != prior_freeze_relative
+        or correction.get("prior_freeze_sha256") != sha256_file(prior_freeze_path)
+    ):
+        raise PreregistrationError("corrective refreeze does not preserve the prior freeze hash")
+    corrective_artifacts = {
+        "student_manifest_template_sha256": PROJECT_ROOT
+        / "manifests"
+        / "measured-run-template.v3.json",
+        "teacher_build_manifest_template_sha256": PROJECT_ROOT
+        / "manifests"
+        / "teacher-memory-build-template.v2.json",
+        "teacher_build_validation_implementation_sha256": PROJECT_ROOT
+        / "artifact_memory"
+        / "transfer.py",
+    }
+    for field, path in corrective_artifacts.items():
+        if correction.get(field) != sha256_file(path):
+            raise PreregistrationError(f"corrective refreeze {field} mismatch")
 
     split = _mapping(freeze["split"], "freeze split")
     build = split.get("memory_build_task_ids")
@@ -396,10 +445,24 @@ def validate_teacher_execution_authorization(
     }
 
 
+def _validate_runtime_tool_pins(manifest: Mapping[str, object]) -> None:
+    run_environment = _mapping(manifest.get("run_environment"), "run_environment")
+    exact = {
+        "docker_version": EXPECTED_DOCKER_VERSION,
+        "docker_compose_version": EXPECTED_DOCKER_COMPOSE_VERSION,
+    }
+    for field, expected in exact.items():
+        if run_environment.get(field) != expected:
+            raise PreregistrationError(
+                f"measured {field} differs from the freeze's corrective runtime pins"
+            )
+
+
 def validate_student_manifest_against_freeze(manifest: Mapping[str, object]) -> None:
     if manifest.get("data_classification") != "measured":
         return
     validate_public_freeze()
+    _validate_runtime_tool_pins(manifest)
     _validate_roles(manifest)
     _validate_split(manifest)
     _validate_task_pins(manifest, expected_role="held_out_student_evaluation")
@@ -432,6 +495,7 @@ def validate_build_manifest_against_freeze(manifest: Mapping[str, object]) -> No
     if manifest.get("data_classification") != "measured":
         return
     validate_public_freeze()
+    _validate_runtime_tool_pins(manifest)
     _validate_roles(manifest)
     _validate_split(manifest)
     _validate_task_pins(manifest, expected_role="memory_build")

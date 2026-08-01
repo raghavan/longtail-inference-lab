@@ -1,6 +1,6 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Preregistered — qualified GPT-5.6-sol/Qwen 32K pilot awaiting measured execution
+**Status:** Corrective preregistration awaiting merge — zero measured attempts and zero ledger slots consumed
 **Track:** `artifact_memory` and local inference
 **Difficulty:** Intermediate  
 **Last updated:** August 1 2026
@@ -21,7 +21,7 @@
 
 Model confidence, narrative success, apparent tool exits, distillation quality, and learned-judge output never substitute for verifier passage.
 
-**Current evidence:** no teacher/student measured result exists. The earlier genuine 16,384-token pilot remains visible and halted without a pair; it is not relabeled or pooled with this preregistered protocol.
+**Current evidence:** no teacher/student measured result exists. A dry runtime preflight stopped before ledger initialization after reproducing an impossible combined Docker/Compose version comparison. The corrective freeze validates those unchanged pins separately; no measured actor or slot was consumed. The earlier genuine 16,384-token pilot remains visible and halted without a pair; it is not relabeled or pooled with this preregistered protocol.
 
 ## Preregistered transfer test
 
@@ -130,14 +130,14 @@ For an eligible individual run, the executable verifier remains the sole authori
 
 ## Disjoint build and evaluation split
 
-Every v2 manifest contains one preregistered split revision with two nonempty, disjoint lists:
+Every corrective v3 student manifest contains one preregistered split revision with two nonempty, disjoint lists:
 
 1. `memory_build_task_ids`: executed only by the cloud teacher; eligible pages may enter memory.
 2. `held_out_evaluation_task_ids`: executed only by local Qwen; they can never contribute to the checkpoint used to score them.
 
 Admission writes build task role and split provenance to the memory index. Before M2, the runner rejects legacy pages, split mismatches, duplicate build contributions, and any page derived from a held-out task.
 
-The exact task split, qualification hashes, 32,768-token/no-summarization/24-turn policy, adapters, runtime pins, denominators, and thresholds are frozen in the [2026-08-01 preregistration](preregistrations/2026-08-01-gpt56-qwen32k-teacher-student.md). The halted 16K controls are not silently reused.
+The exact task split, qualification hashes, 32,768-token/no-summarization/24-turn policy, adapters, runtime pins, denominators, and thresholds are frozen in the [corrective 2026-08-01 preregistration](preregistrations/2026-08-01-gpt56-qwen32k-teacher-student-corrective.md). The halted 16K controls are not silently reused.
 
 ## Paired student evaluation
 
@@ -164,13 +164,13 @@ A result counts as transfer only when a complete held-out Qwen pair changes from
 The standard-library implementation is intentionally narrow:
 
 1. `artifact_memory.verifier_qualification` validates private compact verifier-qualification records.
-2. `artifact_memory.experiment` validates v2 role/split/provenance controls and runs local-student M0/M2 conditions.
+2. `artifact_memory.experiment` validates corrective v3 role/split/provenance controls and runs local-student M0/M2 conditions.
 3. `artifact_memory.sanitize` preserves the strict local Gitleaks, canary, blocked-term, allowlist, and residual gates.
 4. `artifact_memory.transfer` validates teacher build evidence and emits the sole allowlisted distillation packet without calling a cloud API.
 5. `artifact_memory.memory` validates the GPT-5.6-sol draft and hash-scoped external approval before admitting Markdown.
 6. `artifact_memory.analyze` scores only held-out local-student executable-verifier pairs.
 
-Synthetic tests cover role separation, exact identity pins, disclosure policy, verifier qualification, sanitizer-before-distillation ordering, approval-before-admission, split contamination, provenance mismatch, legacy rejection, and student-only scoring. Synthetic outputs are never measured evidence.
+Synthetic tests cover role separation, exact identity pins, separate exact Docker/Compose preflight, disclosure policy, verifier qualification, sanitizer-before-distillation ordering, approval-before-admission, split contamination, provenance mismatch, legacy rejection, and student-only scoring. Synthetic outputs are never measured evidence.
 
 See [`SETUP.md`](SETUP.md) for the bounded architecture and [`OPERATOR.md`](OPERATOR.md) for the exact workflow.
 
@@ -190,7 +190,7 @@ A positive result could justify continuing the compact teacher-to-local memory d
 
 The [2026-07-31 measured pilot](results/2026-07-31-measured-pilot/summary.md) remains intact. Its first Qwen M0 probe exceeded the frozen 16,384-token context before executable verification. It produced zero complete pairs and zero memory pages, so it supports no memory-effect claim.
 
-No teacher/student measured run has been executed. The preregistered pilot is awaiting post-merge measured authorization; no efficacy claim, baseline, checkpoint, or learning-curve point exists. The planning figure below remains illustrative only.
+No teacher/student measured run has been executed. The pilot is awaiting the corrective preregistration merge and fresh hash-bound authorization; no efficacy claim, baseline, checkpoint, or learning-curve point exists. The planning figure below remains illustrative only.
 
 ![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../resources/assets/terminal_artifact_memory_learning_curve.svg)
 

@@ -5,6 +5,9 @@ import unittest
 
 from artifact_memory.preregistration import (
     ATTESTATIONS_PATH,
+    EXPECTED_DOCKER_COMPOSE_VERSION,
+    EXPECTED_DOCKER_VERSION,
+    EXPECTED_FREEZE_REVISION,
     FREEZE_PATH,
     EXPECTED_SPLIT_REVISION,
     PreregistrationError,
@@ -20,6 +23,17 @@ class PreregistrationTests(unittest.TestCase):
         validate_public_freeze()
         freeze = load_freeze()
         self.assertEqual(freeze["split_revision"], EXPECTED_SPLIT_REVISION)
+        self.assertEqual(freeze["freeze_revision"], EXPECTED_FREEZE_REVISION)
+        correction = freeze["corrective_refreeze"]
+        self.assertEqual(correction["prior_measured_actor_attempts"], 0)
+        self.assertFalse(correction["prior_execution_ledger_initialized"])
+        self.assertEqual(correction["prior_execution_ledger_slots_consumed"], 0)
+        self.assertFalse(correction["scientific_controls_changed"])
+        self.assertEqual(correction["docker_version_record"], EXPECTED_DOCKER_VERSION)
+        self.assertEqual(
+            correction["docker_compose_version_record"],
+            EXPECTED_DOCKER_COMPOSE_VERSION,
+        )
         self.assertEqual(freeze["student_controls"]["context_tokens"], 32768)
         self.assertEqual(freeze["student_controls"]["max_turns"], 24)
         self.assertFalse(freeze["student_controls"]["summarization_enabled"])

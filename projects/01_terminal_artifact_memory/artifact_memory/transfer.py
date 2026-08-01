@@ -52,7 +52,8 @@ VERIFIER_ELIGIBILITY_INVARIANT = (
     "Do not claim success; the executable verifier alone determines whether the run is "
     "eligible for local sanitization and later distillation."
 )
-BUILD_SCHEMA_VERSION = "teacher-memory-build-manifest-v1"
+BUILD_SCHEMA_VERSION = "teacher-memory-build-manifest-v2"
+PRECORRECTION_BUILD_SCHEMA_VERSION = "teacher-memory-build-manifest-v1"
 DISTILLATION_REQUEST_SCHEMA_VERSION = "cloud-distillation-request-v1"
 DISTILLATION_DRAFT_SCHEMA_VERSION = "teacher-distillation-draft-v1"
 APPROVAL_SCHEMA_VERSION = "external-human-approval-v1"
@@ -148,6 +149,7 @@ REQUIRED_BUILD_ENVIRONMENT = (
     "code_revision",
     "harbor_version",
     "docker_version",
+    "docker_compose_version",
     "terminal_bench_version",
     "terminal_bench_revision",
     "registry_snapshot_sha256",
@@ -440,6 +442,11 @@ def _validate_run_environment(environment: object, *, measured: bool) -> None:
 
 
 def validate_build_manifest(manifest: Mapping[str, object]) -> None:
+    if manifest.get("schema_version") == PRECORRECTION_BUILD_SCHEMA_VERSION:
+        raise TransferError(
+            "pre-correction teacher-memory-build-manifest-v1 cannot record Docker Compose "
+            "separately; create a fresh v2 manifest from the corrective freeze"
+        )
     _exact_keys(
         manifest,
         {
