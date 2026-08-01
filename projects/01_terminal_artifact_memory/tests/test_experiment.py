@@ -63,10 +63,11 @@ class ManifestTests(unittest.TestCase):
         )
         self.assertEqual(template["roles"]["student"]["sha256"], STUDENT_MODEL_SHA256)
 
-    def test_complete_measured_manifest_is_structurally_valid(self) -> None:
+    def test_non_frozen_synthetic_manifest_cannot_become_measured(self) -> None:
         manifest = synthetic_manifest()
         manifest["data_classification"] = "measured"
-        validate_manifest(manifest)
+        with self.assertRaisesRegex(ManifestError, "differs from the freeze"):
+            validate_manifest(manifest)
 
     def test_exact_role_identity_pins_and_student_only_task_are_required(self) -> None:
         manifest = synthetic_manifest()
@@ -109,7 +110,7 @@ class ManifestTests(unittest.TestCase):
 
     def test_ordinary_prose_is_not_treated_as_a_placeholder(self) -> None:
         manifest = synthetic_manifest()
-        manifest["data_classification"] = "measured"
+        manifest["data_classification"] = "development"
         manifest["task"]["retrieval_query"] = "install the required build toolchain and configure PATH"
         manifest["run_environment"]["hardware_description"] = "laptop, 16 GB required"
         validate_manifest(manifest)

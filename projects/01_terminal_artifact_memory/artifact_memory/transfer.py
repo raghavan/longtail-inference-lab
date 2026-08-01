@@ -17,12 +17,24 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 try:
+    from .execution_ledger import complete_attempt
+    from .host_codex_adapter import write_private_text
+    from .preregistration import (
+        PreregistrationError,
+        validate_build_manifest_against_freeze,
+    )
     from .sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
     from .verifier_qualification import (
         VerifierQualificationError,
         validate_qualification_path,
     )
 except ImportError:  # Allow direct execution from the project directory.
+    from execution_ledger import complete_attempt
+    from host_codex_adapter import write_private_text
+    from preregistration import (
+        PreregistrationError,
+        validate_build_manifest_against_freeze,
+    )
     from sanitize import SANITIZER_REVISION, inspect_unsafe, sha256_file
     from verifier_qualification import (
         VerifierQualificationError,
@@ -548,6 +560,10 @@ def validate_build_manifest(manifest: Mapping[str, object]) -> None:
             raise TransferError(
                 "measured build manifest contains unresolved placeholders: " + ", ".join(placeholders)
             )
+        try:
+            validate_build_manifest_against_freeze(manifest)
+        except PreregistrationError as exc:
+            raise TransferError(str(exc)) from exc
 
 
 def _validate_sanitizer_report(report: Mapping[str, object]) -> None:
@@ -648,7 +664,11 @@ def validate_build_evidence(manifest_path: Path) -> BuildEvidence:
 
 
 def prepare_distillation_request(
-    manifest_path: Path, output_path: Path, *, write: bool = True
+    manifest_path: Path,
+    output_path: Path,
+    *,
+    write: bool = True,
+    complete_teacher_attempt: bool = True,
 ) -> dict[str, object]:
     """Build the complete, field-allowlisted packet that an operator may upload."""
 
@@ -709,8 +729,37 @@ def prepare_distillation_request(
         },
     }
     if write:
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(json.dumps(packet, indent=2, sort_keys=True) + "\n")
+        rendered_packet = json.dumps(packet, indent=2, sort_keys=True) + "\n"
+        if manifest.get("data_classification") == "measured":
+            write_private_text(output_path, rendered_packet)
+        else:
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(rendered_packet)
+        try:
+            persisted_packet = json.loads(output_path.read_text())
+        except (OSError, json.JSONDecodeError) as exc:
+            raise TransferError("persisted distillation request is unreadable") from exc
+        if persisted_packet != packet:
+            raise TransferError("persisted distillation request differs after durable write")
+        if complete_teacher_attempt and manifest.get("data_classification") == "measured":
+            completion_envelope = {
+                "manifest_sha256": evidence.manifest_sha256,
+                "request_sha256": sha256_file(output_path),
+                "sanitized_evidence_sha256": sha256_file(evidence.sanitized_path),
+                "teacher_trajectory_sha256": sha256_file(evidence.trajectory_path),
+                "verifier_artifact_sha256": sha256_file(evidence.verifier_path),
+            }
+            complete_attempt(
+                "teacher",
+                str(task["task_id"]),
+                hashlib.sha256(
+                    json.dumps(
+                        completion_envelope,
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    ).encode()
+                ).hexdigest(),
+            )
     return packet
 
 
@@ -755,7 +804,12 @@ def validate_distillation_draft(
 ) -> dict[str, object]:
     evidence = validate_build_evidence(manifest_path)
     request = load_json_object(request_path, "cloud distillation request")
-    expected_request = prepare_distillation_request(manifest_path, request_path, write=False)
+    expected_request = prepare_distillation_request(
+        manifest_path,
+        request_path,
+        write=False,
+        complete_teacher_attempt=False,
+    )
     if request != expected_request:
         raise TransferError("distillation request is not the locally regenerated allowlisted packet")
     draft = load_json_object(draft_path, "teacher distillation draft")

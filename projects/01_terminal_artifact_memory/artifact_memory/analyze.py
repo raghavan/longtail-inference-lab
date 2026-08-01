@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 from collections import defaultdict
 from dataclasses import dataclass
@@ -19,6 +20,7 @@ try:
         ManifestError,
         assert_control_equivalence,
     )
+    from .preregistration import EXPECTED_SPLIT_REVISION, load_freeze
     from .transfer import STUDENT_MODEL_ID, STUDENT_MODEL_SHA256
 except ImportError:  # Allow `python artifact_memory/analyze.py` from the project directory.
     from experiment import (
@@ -28,6 +30,7 @@ except ImportError:  # Allow `python artifact_memory/analyze.py` from the projec
         ManifestError,
         assert_control_equivalence,
     )
+    from preregistration import EXPECTED_SPLIT_REVISION, load_freeze
     from transfer import STUDENT_MODEL_ID, STUDENT_MODEL_SHA256
 
 
@@ -232,6 +235,111 @@ def pair_results(
     return pairs
 
 
+def _validate_frozen_pairs(pairs: Sequence[Pair], skipped: Sequence[str]) -> bool:
+    frozen_flags = [
+        pair.m0.get("data_classification") == MEASURED
+        and pair.m2.get("data_classification") == MEASURED
+        and pair.m0.get("split_revision") == EXPECTED_SPLIT_REVISION
+        and pair.m2.get("split_revision") == EXPECTED_SPLIT_REVISION
+        for pair in pairs
+    ]
+    if not any(frozen_flags):
+        return False
+    if not all(frozen_flags):
+        raise AnalysisError("frozen and non-frozen pairs cannot share one analysis")
+    if skipped:
+        raise AnalysisError("frozen analysis refuses skipped or malformed result files")
+
+    freeze = load_freeze()
+    split = freeze.get("split")
+    thresholds = freeze.get("thresholds")
+    denominators = freeze.get("analysis_denominators")
+    if not all(isinstance(value, Mapping) for value in (split, thresholds, denominators)):
+        raise AnalysisError("frozen analysis controls are malformed")
+    expected_tasks = list(split["held_out_evaluation_task_ids"])  # type: ignore[index]
+    observed_tasks = [str(pair.m0["task_id"]) for pair in pairs]
+    if (
+        len(pairs) != 3
+        or set(observed_tasks) != set(expected_tasks)
+        or len(set(observed_tasks)) != 3
+    ):
+        raise AnalysisError("frozen analysis requires the exact three held-out pairs")
+    success_thresholds = thresholds.get("success")
+    if not isinstance(success_thresholds, Mapping) or {
+        "complete_valid_pairs_required": success_thresholds.get("complete_valid_pairs_required"),
+        "minimum_positive_transfers": success_thresholds.get("minimum_positive_transfers"),
+        "minimum_pass_rate_lift": success_thresholds.get("minimum_pass_rate_lift"),
+        "maximum_negative_transfers": success_thresholds.get("maximum_negative_transfers"),
+        "maximum_unsafe_errors": success_thresholds.get("maximum_unsafe_errors"),
+        "required_retrieval_coverage": success_thresholds.get("required_retrieval_coverage"),
+    } != {
+        "complete_valid_pairs_required": 3,
+        "minimum_positive_transfers": 1,
+        "minimum_pass_rate_lift": 1 / 3,
+        "maximum_negative_transfers": 0,
+        "maximum_unsafe_errors": 0,
+        "required_retrieval_coverage": 1.0,
+    }:
+        raise AnalysisError("frozen success threshold contract differs from preregistration")
+    if (
+        denominators.get("m0_pass_rate") != 3
+        or denominators.get("m2_pass_rate") != 3
+        or denominators.get("transfer_classification") != 3
+        or denominators.get("student_condition_attempts") != 6
+        or denominators.get("unsafe_error_audit") != 6
+    ):
+        raise AnalysisError("frozen denominator contract is not exactly 3/3/3/6/6")
+    page_mapping = split.get("page_mapping")
+    if not isinstance(page_mapping, list):
+        raise AnalysisError("frozen page mapping is unavailable")
+    expected_pages = {
+        str(item["held_out_task_id"]): [str(item["page_id"])]
+        for item in page_mapping
+        if isinstance(item, Mapping)
+    }
+    for pair in pairs:
+        task_id = str(pair.m0["task_id"])
+        for condition, result in (("M0", pair.m0), ("M2", pair.m2)):
+            audit = result.get("unsafe_error_audit")
+            if not isinstance(audit, Mapping) or {
+                "schema_version": audit.get("schema_version"),
+                "task_id": audit.get("task_id"),
+                "memory_condition": audit.get("memory_condition"),
+                "harbor_exit_zero": audit.get("harbor_exit_zero"),
+                "reward_artifact_count": audit.get("reward_artifact_count"),
+                "trajectory_artifact_count": audit.get("trajectory_artifact_count"),
+                "exception_artifact_count": audit.get("exception_artifact_count"),
+                "credential_material_detected": audit.get("credential_material_detected"),
+                "unsafe_error": audit.get("unsafe_error"),
+            } != {
+                "schema_version": "student-unsafe-error-audit-v1",
+                "task_id": task_id,
+                "memory_condition": condition,
+                "harbor_exit_zero": True,
+                "reward_artifact_count": 1,
+                "trajectory_artifact_count": 1,
+                "exception_artifact_count": 0,
+                "credential_material_detected": False,
+                "unsafe_error": False,
+            }:
+                raise AnalysisError("frozen unsafe-error audit artifact is incomplete or unsafe")
+            audit_sha256 = hashlib.sha256(
+                json.dumps(audit, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest()
+            if result.get("unsafe_error_audit_sha256") != audit_sha256:
+                raise AnalysisError("frozen unsafe-error audit hash mismatch")
+        if (
+            pair.m0.get("memory_checkpoint") != 3
+            or pair.m2.get("memory_checkpoint") != 3
+            or pair.m0.get("unsafe_error") is not False
+            or pair.m2.get("unsafe_error") is not False
+            or pair.m0.get("expected_relevant_pages") != expected_pages.get(task_id)
+            or pair.m2.get("expected_relevant_pages") != expected_pages.get(task_id)
+        ):
+            raise AnalysisError("frozen pair checkpoint, unsafe audit, or page mapping differs")
+    return True
+
+
 def _rate(passed: int, total: int) -> str:
     return "N/A" if total == 0 else f"{passed / total:.3f}"
 
@@ -404,6 +512,7 @@ def analyze_results(
     skipped: Sequence[str] = (),
 ) -> dict[str, Path]:
     pairs = pair_results(results, allow_non_measured=allow_non_measured)
+    frozen_analysis = _validate_frozen_pairs(pairs, skipped)
     rows = _pair_rows(pairs)
     checkpoint_rows = _checkpoint_metrics(pairs)
     checkpoint_by_id = {int(row["checkpoint"]): row for row in checkpoint_rows}
@@ -438,6 +547,21 @@ def analyze_results(
 
     overall = _counts(pairs)
     covered, relevant = _retrieval_coverage(pairs)
+    m0_passes = sum(bool(pair.m0["verifier_passed"]) for pair in pairs)
+    m2_passes = sum(bool(pair.m2["verifier_passed"]) for pair in pairs)
+    frozen_success = (
+        frozen_analysis
+        and len(pairs) == 3
+        and overall["positive_transfer"] >= 1
+        and (m2_passes - m0_passes) / 3 >= 1 / 3
+        and overall["negative_transfer"] == 0
+        and covered == relevant == 3
+    )
+    frozen_verdict = (
+        f"- Frozen success verdict: {'PASS' if frozen_success else 'FAIL'}"
+        if frozen_analysis
+        else "- Frozen success verdict: N/A (non-frozen analysis)"
+    )
     skipped_lines = "\n".join(f"- Skipped: `{location}`" for location in skipped) or "- None."
     summary = f"""# Paired pilot summary
 
@@ -460,6 +584,7 @@ Terminal Bench executable verifier outcomes from the exact local Qwen student ar
 - Stable success: {overall['stable_success']}
 - Unresolved tasks: {overall['unresolved_task']}
 - Retrieval coverage: {_rate(covered, relevant)} ({covered}/{relevant})
+{frozen_verdict}
 
 ## Checkpoints
 

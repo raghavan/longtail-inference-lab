@@ -10,13 +10,13 @@ A research lab for testing whether verified cloud-teacher terminal work can beco
 
 A lightweight local model does not need to know everything to become useful. It may need access to compact approved evidence produced by a stronger teacher on separate verified work.
 
-Long Tail Inference Lab's next planned protocol tests transfer from a fixed `gpt-5.6-sol` cloud teacher and sanitized-evidence distiller to one fixed local Qwen student. The student model stays fixed, approved teacher-derived Markdown memory grows, and held-out executable-verifier M0/M2 pairs decide whether capability improves.
+Long Tail Inference Lab's preregistered protocol tests transfer from a fixed `gpt-5.6-sol` cloud teacher and sanitized-evidence distiller to one fixed local Qwen student. The student model stays fixed, approved teacher-derived Markdown memory grows, and held-out executable-verifier M0/M2 pairs decide whether capability improves.
 
 ## Active experiment
 
 ### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
-**Status:** Running (teacher/student machinery ready; no teacher/student measured result)
+**Status:** Preregistered (qualified teacher/student pilot awaiting measured execution; no measured result)
 
 **Question:** Can verifier-passing public terminal work from a fixed `gpt-5.6-sol` cloud teacher become approved Markdown memory that improves a fixed local Qwen student on disjoint held-out tasks?
 
@@ -24,7 +24,7 @@ The cloud teacher solves only preregistered public memory-build tasks, so that i
 
 The executable verifier alone establishes build eligibility and held-out student outcomes. Teacher scores, model confidence, narrative success, tool-exit impressions, and distillation quality never substitute. Private verifier qualification raises confidence in each pinned task verifier without exposing hidden tests or verifier internals to either model.
 
-No cloud SDK is assumed; execution uses an operator-supplied or Harbor-compatible boundary established by current tooling. The earlier genuine pilot remains intact: its first local Qwen M0 probe exceeded the frozen 16,384-token context before executable verification, so it produced no pair or memory checkpoint. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md). No teacher/student experiment has been measured yet.
+The teacher boundary pins host Codex CLI 0.146.0, keeps subscription OAuth on the host, exposes only the isolated task tool, and captures ATIF provenance. The earlier genuine pilot remains intact: its first local Qwen M0 probe exceeded the frozen 16,384-token context before executable verification, so it produced no pair or memory checkpoint. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md). No teacher/student experiment has been measured yet.
 
 ## PARA organization
 

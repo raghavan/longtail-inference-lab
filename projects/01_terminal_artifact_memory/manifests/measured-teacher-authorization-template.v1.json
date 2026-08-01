@@ -1,0 +1,13 @@
+{
+  "schema_version": "measured-teacher-execution-authorization-v1",
+  "preregistration_pr_merged": true,
+  "preregistration_freeze_sha256": "REQUIRED_LANDED_FREEZE_SHA256",
+  "code_revision": "REQUIRED_EXACT_LANDED_ORIGIN_MAIN_REVISION",
+  "task_id": "REQUIRED_FROZEN_MEMORY_BUILD_TASK_ID",
+  "public_instruction_sha256": "REQUIRED_FROZEN_PUBLIC_INSTRUCTION_SHA256",
+  "effective_instruction_sha256": "REQUIRED_EXACT_MODEL_VISIBLE_INSTRUCTION_SHA256",
+  "task_container_digest": "sha256:REQUIRED_FROZEN_CONTAINER_DIGEST",
+  "verifier_bundle_sha256": "REQUIRED_FROZEN_VERIFIER_BUNDLE_SHA256",
+  "qualification_record_path": "REQUIRED_PRIVATE_QUALIFICATION_RECORD_PATH",
+  "qualification_record_sha256": "REQUIRED_FROZEN_PRIVATE_QUALIFICATION_RECORD_SHA256"
+}

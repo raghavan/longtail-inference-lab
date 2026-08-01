@@ -21,6 +21,8 @@ from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
 try:
+    from .execution_ledger import complete_attempt, reserve_attempt
+    from .host_codex_adapter import contains_credential_material
     from .memory import (
         CONTAINER_DIGEST_RE,
         PLACEHOLDER_RE,
@@ -33,6 +35,12 @@ try:
         render_retrieved_memory,
         retrieve,
         validate_memory_split,
+    )
+    from .preregistration import (
+        EXPECTED_SPLIT_REVISION,
+        PreregistrationError,
+        TASK_FAMILIES,
+        validate_student_manifest_against_freeze,
     )
     from .sanitize import SANITIZER_REVISION, sha256_file
     from .verifier_qualification import (
@@ -59,6 +67,8 @@ try:
         validate_transmission_policy,
     )
 except ImportError:  # Allow `python artifact_memory/experiment.py` from the project directory.
+    from execution_ledger import complete_attempt, reserve_attempt
+    from host_codex_adapter import contains_credential_material
     from memory import (
         CONTAINER_DIGEST_RE,
         PLACEHOLDER_RE,
@@ -71,6 +81,12 @@ except ImportError:  # Allow `python artifact_memory/experiment.py` from the pro
         render_retrieved_memory,
         retrieve,
         validate_memory_split,
+    )
+    from preregistration import (
+        EXPECTED_SPLIT_REVISION,
+        PreregistrationError,
+        TASK_FAMILIES,
+        validate_student_manifest_against_freeze,
     )
     from sanitize import SANITIZER_REVISION, sha256_file
     from verifier_qualification import (
@@ -279,8 +295,8 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
             "evaluation task fields must match the auditable contract; unexpected or missing: "
             + ", ".join(sorted(set(task) ^ expected_task_fields))
         )
-    if task.get("task_family") != "environment_setup":
-        raise ManifestError("the first pilot is locked to the environment_setup task family")
+    if task.get("task_family") not in {"environment_setup", *TASK_FAMILIES.values()}:
+        raise ManifestError("task_family is not supported by the frozen structural pilot")
     if task.get("executed_by_role") != "local_student":
         raise ManifestError("held-out evaluation tasks must be executed only by the local_student")
     try:
@@ -442,6 +458,11 @@ def validate_manifest(manifest: Mapping[str, object]) -> None:
         for field, control_value in cross_checks.items():
             if run_environment.get(field) != control_value:
                 raise ManifestError(f"run_environment.{field} disagrees with fixed controls")
+
+    try:
+        validate_student_manifest_against_freeze(manifest)
+    except PreregistrationError as exc:
+        raise ManifestError(str(exc)) from exc
 
 
 def verified_memory_state(
@@ -894,6 +915,53 @@ def _wiki_bytes(wiki_dir: Path) -> int:
     return sum(path.stat().st_size for path in wiki_dir.glob("*.md") if path.is_file())
 
 
+def _validate_student_completion(
+    manifest: Mapping[str, object],
+    condition: str,
+    result_path: Path,
+    trajectory_path: Path,
+    verifier_path: Path,
+    unsafe_audit_path: Path,
+) -> str:
+    validate_manifest(manifest)
+    result = json.loads(result_path.read_text())
+    verifier = json.loads(verifier_path.read_text())
+    unsafe_audit = json.loads(unsafe_audit_path.read_text())
+    task = _mapping(manifest["task"], "task")
+    if (
+        not isinstance(result, dict)
+        or result.get("task_id") != task.get("task_id")
+        or result.get("memory_condition") != condition
+        or result.get("trajectory_sha256") != sha256_file(trajectory_path)
+        or result.get("verifier_artifact_sha256") != sha256_file(verifier_path)
+        or result.get("unsafe_error_audit") != unsafe_audit
+        or result.get("unsafe_error_audit_sha256") != canonical_sha256(unsafe_audit)
+        or result.get("unsafe_error") is not False
+    ):
+        raise RuntimeError("student completion artifact differs from manifest or local provenance")
+    if (
+        not isinstance(verifier, dict)
+        or verifier.get("authoritative") != "terminal-bench-executable"
+        or verifier.get("passed") != result.get("verifier_passed")
+        or verifier.get("reward_artifact_count") != 1
+    ):
+        raise RuntimeError("student completion verifier artifact is not authoritative")
+    if (
+        not isinstance(unsafe_audit, dict)
+        or unsafe_audit.get("schema_version") != "student-unsafe-error-audit-v1"
+        or unsafe_audit.get("task_id") != task.get("task_id")
+        or unsafe_audit.get("memory_condition") != condition
+        or unsafe_audit.get("harbor_exit_zero") is not True
+        or unsafe_audit.get("exception_artifact_count") != 0
+        or unsafe_audit.get("credential_material_detected") is not False
+        or unsafe_audit.get("reward_artifact_count") != 1
+        or unsafe_audit.get("trajectory_artifact_count") != 1
+        or unsafe_audit.get("unsafe_error") is not False
+    ):
+        raise RuntimeError("student completion unsafe-error audit is not clean and complete")
+    return sha256_file(result_path)
+
+
 def run_pair(
     manifest: Mapping[str, object],
     *,
@@ -904,6 +972,10 @@ def run_pair(
     preflight: bool = True,
 ) -> Path:
     validate_manifest(manifest)
+    if manifest["data_classification"] == MEASURED:
+        raise ManifestError(
+            "frozen measured sequence requires run-condition and the global execution ledger"
+        )
     if manifest["data_classification"] == MEASURED and not preflight:
         raise ManifestError("measured runs cannot bypass prerequisite and verifier-qualification checks")
     if _find_placeholders(manifest):
@@ -1001,6 +1073,8 @@ def run_pair(
             "schema_version": RESULT_SCHEMA_VERSION,
             "data_classification": manifest["data_classification"],
             "protocol_revision": PROTOCOL_REVISION,
+            "split_revision": EXPECTED_SPLIT_REVISION,
+            "unsafe_error": False,
             "task_role": "held_out_student_evaluation",
             "evaluation_actor_role": "local_student",
             "student_model_id": STUDENT_MODEL_ID,
@@ -1134,6 +1208,8 @@ def run_condition(
     command = build_harbor_command(
         manifest, condition=condition, jobs_dir=jobs_dir, skill_dir=skill_dir
     )
+    if manifest["data_classification"] == MEASURED:
+        reserve_attempt(condition, str(task["task_id"]))
     started = time.monotonic()
     completed = runner(
         command,
@@ -1159,6 +1235,9 @@ def run_condition(
     if completed.returncode != 0:
         raise RuntimeError(f"Harbor failed for {condition}; inspect the local trial directory")
     run_environment = _mapping(manifest["run_environment"], "run_environment")
+    observed_reward_artifacts = len(list(jobs_dir.glob("**/verifier/reward.txt")))
+    observed_trajectory_artifacts = len(list(jobs_dir.glob("**/agent/trajectory.json")))
+    observed_exception_artifacts = len(list(jobs_dir.glob("**/exception.txt")))
     passed, trajectory_path, verifier_path, trajectory_metrics = _extract_harbor_result(
         jobs_dir,
         trial_dir,
@@ -1166,10 +1245,36 @@ def run_condition(
     )
     retrieved_ids = [page.page_id for page in retrieval_result.pages]
     expected = list(task["expected_relevant_pages"])
+    credential_material_detected = contains_credential_material(
+        completed.stdout + "\n" + completed.stderr + "\n" + trajectory_path.read_text()
+    )
+    unsafe_audit = {
+        "schema_version": "student-unsafe-error-audit-v1",
+        "task_id": task["task_id"],
+        "memory_condition": condition,
+        "harbor_exit_zero": completed.returncode == 0,
+        "reward_artifact_count": observed_reward_artifacts,
+        "trajectory_artifact_count": observed_trajectory_artifacts,
+        "exception_artifact_count": observed_exception_artifacts,
+        "credential_material_detected": credential_material_detected,
+        "unsafe_error": (
+            completed.returncode != 0
+            or observed_reward_artifacts != 1
+            or observed_trajectory_artifacts != 1
+            or observed_exception_artifacts != 0
+            or credential_material_detected
+        ),
+    }
+    unsafe_audit_path = trial_dir / "unsafe-error-audit.json"
+    unsafe_audit_path.write_text(json.dumps(unsafe_audit, indent=2, sort_keys=True) + "\n")
     result = {
         "schema_version": RESULT_SCHEMA_VERSION,
         "data_classification": manifest["data_classification"],
         "protocol_revision": PROTOCOL_REVISION,
+        "split_revision": EXPECTED_SPLIT_REVISION,
+        "unsafe_error": unsafe_audit["unsafe_error"],
+        "unsafe_error_audit": unsafe_audit,
+        "unsafe_error_audit_sha256": canonical_sha256(unsafe_audit),
         "task_role": "held_out_student_evaluation",
         "evaluation_actor_role": "local_student",
         "student_model_id": STUDENT_MODEL_ID,
@@ -1228,6 +1333,16 @@ def run_condition(
             )
             + "\n"
         )
+    if manifest["data_classification"] == MEASURED:
+        completion_sha256 = _validate_student_completion(
+            manifest,
+            condition,
+            trial_dir / "result.json",
+            trajectory_path,
+            verifier_path,
+            unsafe_audit_path,
+        )
+        complete_attempt(condition, str(task["task_id"]), completion_sha256)
     return trial_dir
 
 

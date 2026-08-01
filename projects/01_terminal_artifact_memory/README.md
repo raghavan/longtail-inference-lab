@@ -1,6 +1,6 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Running — teacher/student transfer machinery implemented; next measured protocol not yet preregistered
+**Status:** Preregistered — qualified GPT-5.6-sol/Qwen 32K pilot awaiting measured execution
 **Track:** `artifact_memory` and local inference
 **Difficulty:** Intermediate  
 **Last updated:** August 1 2026
@@ -55,19 +55,19 @@ memory-build task and split
 → Qwen M2 retrieval record
 ```
 
-The coding agent or worker that implements this repository is not a measured teacher execution. Only an operator-captured run satisfying the teacher build manifest is measured provenance.
+The coding agent or worker that implements this repository is not a measured teacher execution. Only a post-merge, task-authorized run through the pinned host-Codex task-MCP adapter satisfying the teacher build manifest is measured provenance.
 
 ## Fixed roles
 
 | Role | Exact identity | May do | May not do |
 | --- | --- | --- | --- |
-| Cloud teacher | `gpt-5.6-sol` | Solve designated public memory-build tasks through an operator-supplied or Harbor-compatible boundary | Run held-out probes, score Qwen efficacy, or claim verifier passage |
+| Cloud teacher | `gpt-5.6-sol` via Codex CLI 0.146.0 | Solve designated public memory-build tasks through the pinned host-subscription task-MCP boundary | Run held-out probes, score Qwen efficacy, or claim verifier passage |
 | Cloud distiller | `gpt-5.6-sol` | Draft structured Markdown from the generated sanitized-evidence request | Receive raw trajectories, hidden tests, scanner details, or outside evidence |
 | Local student | pinned Qwen model above | Run every held-out M0/M2 probe through pinned llama.cpp | Build measured memory or transmit evaluation data to cloud roles |
 | External human reviewer | recorded safe reviewer identity | Approve exact request, evidence, and draft hashes | Waive verifier, sanitizer, split, or provenance failures |
 | Executable verifier | pinned task bundle | Decide individual run pass/fail | Reveal its internals to either model |
 
-No cloud SDK is included. `artifact_memory.transfer` creates and validates the bounded request, but an operator supplies the execution adapter. Repository copy does not claim that `gpt-5.6-sol` exists behind an API surface not established by authoritative tooling.
+No provider API is invented. `artifact_memory.host_codex_harbor` pins the current Codex subscription boundary, keeps OAuth on the host, exposes one MCP tool backed by a mount-free task snapshot, synchronizes only verifier-safe task state after ATIF validation, and captures ATIF events; `artifact_memory.transfer` creates and validates the bounded distillation request.
 
 ## What the cloud sees
 
@@ -137,7 +137,7 @@ Every v2 manifest contains one preregistered split revision with two nonempty, d
 
 Admission writes build task role and split provenance to the memory index. Before M2, the runner rejects legacy pages, split mismatches, duplicate build contributions, and any page derived from a held-out task.
 
-The exact next task list, verifier qualification records, context policy, runtime pins, and success thresholds must be frozen in a new preregistration. The halted 16K controls are not silently reused. The accepted but unfrozen design is recorded in the [teacher/student transfer plan](preregistrations/teacher-student-transfer-planning.md).
+The exact task split, qualification hashes, 32,768-token/no-summarization/24-turn policy, adapters, runtime pins, denominators, and thresholds are frozen in the [2026-08-01 preregistration](preregistrations/2026-08-01-gpt56-qwen32k-teacher-student.md). The halted 16K controls are not silently reused.
 
 ## Paired student evaluation
 
@@ -182,7 +182,7 @@ The primary metric is structural held-out Qwen memory lift:
 M2 executable-verifier pass rate - M0 executable-verifier pass rate
 ```
 
-Reports must also show raw positive transfer, negative transfer, stable success, unresolved tasks, retrieval coverage, verified knowledge yield, latency, prompt/output tokens, and wiki bytes. A next preregistration must set the numeric success, negative-transfer, unsafe-error, context, and stop thresholds before execution.
+Reports must also show raw positive transfer, negative transfer, stable success, unresolved tasks, retrieval coverage, verified knowledge yield, latency, prompt/output tokens, and wiki bytes. The current freeze requires three valid pairs, at least one positive transfer, lift of at least 1/3, full expected-page retrieval coverage, and zero negative transfers or unsafe errors.
 
 A positive result could justify continuing the compact teacher-to-local memory design for the qualified workload. A negative result could justify direct cloud inference or simpler search. Mixed evidence should identify whether qualification, memory quality, retrieval, local capacity, or context controls are limiting. This experiment cannot justify deployment outside isolated benchmark tasks.
 
@@ -190,10 +190,10 @@ A positive result could justify continuing the compact teacher-to-local memory d
 
 The [2026-07-31 measured pilot](results/2026-07-31-measured-pilot/summary.md) remains intact. Its first Qwen M0 probe exceeded the frozen 16,384-token context before executable verification. It produced zero complete pairs and zero memory pages, so it supports no memory-effect claim.
 
-No teacher/student measured run has been executed. No efficacy claim, baseline, checkpoint, or learning-curve point exists for the planned transfer protocol. The planning figure below remains illustrative only.
+No teacher/student measured run has been executed. The preregistered pilot is awaiting post-merge measured authorization; no efficacy claim, baseline, checkpoint, or learning-curve point exists. The planning figure below remains illustrative only.
 
 ![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../resources/assets/terminal_artifact_memory_learning_curve.svg)
 
 ## Completion condition
 
-The experiment is complete only after a new preregistration, qualified disjoint tasks, a frozen student baseline, at least three approved teacher-derived memory checkpoints, complete held-out M0/M2 pairs, positive and negative transfer analysis, stress/removal tests, tail and ruin analysis, limitations, and an operational conclusion are published.
+The preregistered pilot is complete only after the exact qualified build tasks produce three approved pages, all three frozen held-out M0/M2 pairs are valid, every fixed denominator and threshold is reported, limitations are stated, and an operational conclusion is published.
