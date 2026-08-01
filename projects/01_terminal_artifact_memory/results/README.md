@@ -2,9 +2,9 @@
 
 **Status:** No teacher/student measured result exists.
 
-The [2026-07-31 measured pilot](2026-07-31-measured-pilot/summary.md) remains intact and visible. Its first local Qwen M0 attempt exceeded the frozen 16,384-token context before executable verification. It produced no scored pair and no memory contribution. It must never be relabeled, repaired, or pooled with the planned teacher/student protocol.
+The [2026-07-31 measured pilot](2026-07-31-measured-pilot/summary.md) remains intact and visible. Its first local Qwen M0 attempt exceeded the frozen 16,384-token context before executable verification. It produced no scored pair and no memory contribution. It must never be relabeled, repaired, or pooled with the current preregistered teacher/student protocol.
 
-The next planned experiment uses `gpt-5.6-sol` as cloud teacher and sanitized-evidence distiller, and the exact pinned local Qwen model as sole held-out M0/M2 evaluation model. No such measured run has occurred.
+The [current preregistered experiment](../preregistrations/2026-08-01-gpt56-qwen32k-teacher-student.md) uses `gpt-5.6-sol` through the pinned host-Codex teacher and no-tools distiller adapters, and the exact pinned local Qwen model as the sole held-out M0/M2 evaluation model. No such measured run has occurred.
 
 ## Evidence authority
 

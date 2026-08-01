@@ -217,7 +217,7 @@ Inspect the generated request. It is the entire cloud-distiller upload. It conta
 
 Do **not** add raw trajectories, verifier detail, scanner reports, findings, blocked terms, canaries, private paths, credentials, or unrelated context. “Stored locally” never means that earlier public teacher interactions were not transmitted, and it never grants permission to retransmit local raw files.
 
-Send this packet to `gpt-5.6-sol` through the selected operator adapter. Capture the response locally using `distillation-draft-template.v1.json`; do not invent a provider API.
+Send this packet to `gpt-5.6-sol` only through `host-codex-subscription-no-tools-v1`. Capture the response locally using `distillation-draft-template.v1.json`; do not invent a provider API.
 
 Validate the response:
 

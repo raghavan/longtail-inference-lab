@@ -34,12 +34,12 @@ The frozen student policy is 32,768 context tokens, no summarization, and a 24-t
 
 ```mermaid
 flowchart TD
-    A[Public memory-build split] --> B[Operator-supplied gpt-5.6-sol teacher]
+    A[Public memory-build split] --> B[Pinned host-Codex gpt-5.6-sol teacher]
     B --> C[Pinned task executable verifier]
     C -->|pass| D[Ignored local trajectory export]
     D --> E[Local sanitizer and scanners]
     E --> F[cloud-distillation-request-v1]
-    F --> G[Operator-supplied gpt-5.6-sol distiller]
+    F --> G[Pinned no-tools host-Codex gpt-5.6-sol distiller]
     G --> H[Structured Markdown draft]
     H --> I[External hash-scoped approval]
     I --> J[Admitted local wiki]
@@ -48,7 +48,7 @@ flowchart TD
     L --> M[Held-out task executable verifier]
 ```
 
-The repository owns validation and packet construction, not cloud provider infrastructure or verifier semantics.
+The repository owns the pinned host-Codex adapters, validation, and packet construction, not cloud provider infrastructure or verifier semantics.
 
 ## Authoritative files
 

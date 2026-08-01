@@ -21,9 +21,9 @@
 
 Model confidence, narrative success, apparent tool exits, distillation quality, and learned-judge output never substitute for verifier passage.
 
-**Current evidence:** no teacher/student measured result exists. The earlier genuine 16,384-token pilot remains visible and halted without a pair; it is not relabeled or pooled with this planned protocol.
+**Current evidence:** no teacher/student measured result exists. The earlier genuine 16,384-token pilot remains visible and halted without a pair; it is not relabeled or pooled with this preregistered protocol.
 
-## Planned transfer test
+## Preregistered transfer test
 
 ```mermaid
 flowchart TD
