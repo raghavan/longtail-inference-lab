@@ -32,6 +32,14 @@ The sharp question is no longer *do the models fit*. It is **what does the extra
 
 That reframing has an uncomfortable corollary the project should accept in advance: if the sequential-loading baseline meets the latency target on its own, then residency bought nothing, and the honest conclusion is that the 8 GB part would have been sufficient. The first experiment is designed so that outcome is visible rather than obscured.
 
+## Laptop pilot
+
+Before any hardware is bought, the complete loop runs on an ordinary laptop: [`software/`](software/README.md).
+
+The pilot is not Experiment 02.1 and its numbers are never pooled with device runs — a laptop is a different hardware condition. What it does buy is most of the software, written and debugged for free: the controller state machine, the residency policy, the ledger schema, the analysis script, the question set, and the spoken-response style. Those carry to the device unchanged. Absolute latency, peak memory under an 8 GB ceiling, energy, and thermals do not.
+
+Run `python3 controller/main.py --mode dry-run` first. It needs no models, no microphone, and no speaker.
+
 ## First bounded experiment
 
 **[Experiment 02.1 — Spoken response latency and residency policy](experiments/01_spoken_latency_and_residency.md)**
@@ -82,6 +90,10 @@ projects/02_edge_offline_intelligence_device/
     01_spoken_latency_and_residency.md         first bounded experiment
   hardware/
     bill_of_materials.md                       what to order, with links and risks
+  software/
+    controller/                                the voice loop, portable
+    evaluations/question_set.jsonl             40 questions in four strata
+    analyze.py                                 distributions and stage breakdown
   results/
     README.md                                  published measurements
 ```

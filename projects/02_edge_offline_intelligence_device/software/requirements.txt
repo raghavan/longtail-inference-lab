@@ -1,0 +1,5 @@
+# Optional. The dry run needs none of these; the interactive mode needs all three.
+faster-whisper>=1.0
+sounddevice>=0.4
+# Answer generation goes through a local Ollama server over HTTP (stdlib urllib).
+# Speech synthesis goes through the Piper binary on PATH.
