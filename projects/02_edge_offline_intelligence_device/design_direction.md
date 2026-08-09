@@ -220,9 +220,9 @@ Optional encrypted local memory
 
 ### Prototype compute
 
-**Decision, August 9 2026:** the project skips the 8 GB prototype and begins on the **Jetson Orin NX 16 GB** tier described under *Refined compute* below. The two subsections that follow record the original reasoning, which remains useful because Experiment 02.1 is designed to reveal whether the higher tier was actually necessary.
+**Decision, August 9 2026:** confirmed. The project begins with an **NVIDIA Jetson Orin Nano Super Developer Kit with 8 GB memory**, bought after a laptop pilot of the complete loop.
 
-The original direction was to begin with an **NVIDIA Jetson Orin Nano Super Developer Kit with 8 GB memory**.
+The decision briefly moved to the Orin NX 16 GB tier the same day and was reverted once a $500 hardware ceiling was set. The reversal is recorded rather than tidied away, because it restores this section's original staged logic: measure the 8 GB prototype first, and treat the more expensive module as a finding rather than a purchase.
 
 This is the lowest complexity way to validate the complete pipeline because it provides:
 
@@ -241,9 +241,7 @@ A refined daily device should evaluate an **NVIDIA Jetson Orin NX 16 GB module o
 
 The additional memory should make it easier to keep speech recognition, language generation, and speech synthesis available without aggressive unloading. A smaller carrier can also produce a cleaner enclosure than the full developer kit.
 
-The original plan was to measure the 8 GB prototype first and move to the more expensive module only when the measurement demanded it. That ordering was reversed by the August 9 2026 decision to buy the higher tier directly.
-
-Reversing it has a cost that the project should hold itself to: the 16 GB part relieves the memory-contention risk before that risk is ever observed, so the project loses the chance to learn whether 8 GB was enough. Experiment 02.1 partly recovers that by measuring a sequential-loading condition — the discipline an 8 GB device would force — against full residency, and by requiring the operational conclusion to state plainly when the extra memory bought nothing.
+This ordering stands: measure the 8 GB prototype first, and move to this module only when the measurement demands it. Experiment 02.1 makes that demand explicit by requiring at least 1.0 GB of headroom under peak load in the resident condition, and by treating a failure to fit as a publishable result rather than a setup problem.
 
 See [`hardware/bill_of_materials.md`](hardware/bill_of_materials.md) for the specific variant, alternatives, and ordering links.
 
@@ -802,7 +800,7 @@ The device should expose these limits honestly rather than imitate confidence.
 
 ### Memory contention
 
-Speech and language models may not fit comfortably at the same time on an 8 GB device. The August 9 2026 decision to buy the 16 GB tier substantially relieves this risk, which is why it is no longer the leading question. The residual risk is that the extra memory is paid for and never earns its cost in perceived responsiveness, which is what Experiment 02.1 measures.
+Speech and language models may not fit comfortably at the same time on an 8 GB device. This remains the leading technical risk, and Experiment 02.1 measures it directly as a stated feasibility gate rather than assuming either outcome.
 
 Mitigation:
 

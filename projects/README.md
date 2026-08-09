@@ -22,7 +22,9 @@ The [corrective preregistered protocol](01_terminal_artifact_memory/preregistrat
 
 How much useful spoken intelligence fits inside one self-contained device that keeps working when the network disappears?
 
-The first bounded question is [Experiment 02.1](02_edge_offline_intelligence_device/experiments/01_spoken_latency_and_residency.md): on a fixed Jetson Orin NX 16 GB running a fixed modular pipeline of local speech recognition, a four-bit quantized compact instruct model, and local speech synthesis, how is button-release-to-first-spoken-word latency distributed, and does keeping all three models resident justify its complexity against sequential loading? It runs fully offline with a packet-counter assertion and decomposes every interaction into a per-stage latency ledger.
+The first bounded question is [Experiment 02.1](02_edge_offline_intelligence_device/experiments/01_spoken_latency_and_residency.md): on a fixed Jetson Orin Nano Super 8 GB running a fixed modular pipeline of local speech recognition, a four-bit quantized compact instruct model, and local speech synthesis, how is button-release-to-first-spoken-word latency distributed, can all three models be held resident within 8 GB, and does residency justify its complexity against sequential loading? It runs fully offline with a packet-counter assertion and decomposes every interaction into a per-stage latency ledger.
+
+The complete loop runs first as a [laptop pilot](02_edge_offline_intelligence_device/software/README.md) on general-purpose hardware, so the controller and analysis exist before any hardware is bought. Pilot output is never pooled with device runs.
 
 ## Status meanings
 

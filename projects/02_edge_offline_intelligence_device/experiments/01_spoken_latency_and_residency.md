@@ -8,9 +8,9 @@
 
 ## One minute summary
 
-**Question:** On a fixed Jetson Orin NX 16 GB running a fixed modular voice pipeline, what is the distribution of button-release-to-first-spoken-word latency, and does keeping all three models resident reduce it enough to justify the complexity compared with sequential load and unload?
+**Question:** On a fixed Jetson Orin Nano Super 8 GB running a fixed modular voice pipeline, what is the distribution of button-release-to-first-spoken-word latency, can all three models be held resident within 8 GB at all, and does residency reduce latency enough to justify the complexity compared with sequential load and unload?
 
-**Decision:** whether the shipped device keeps models resident, whether 16 GB is actually required, and which pipeline stage receives engineering effort next.
+**Decision:** whether the shipped device keeps models resident, whether 8 GB is sufficient or the Orin NX 16 GB upgrade is justified by evidence, and which pipeline stage receives engineering effort next.
 
 **Workload:** forty scripted spoken questions of the kind the device is meant for — definitions, explanations, comparisons, short reasoning, general recall — spoken by the operator at close range in a quiet room.
 
@@ -20,7 +20,7 @@
 
 ## Research question
 
-On a fixed Jetson Orin NX 16 GB device running a fixed modular pipeline of local speech recognition, a four-bit quantized compact instruct model, and local speech synthesis, under scripted close-range spoken questions with all network interfaces disabled:
+On a fixed Jetson Orin Nano Super 8 GB device running a fixed modular pipeline of local speech recognition, a four-bit quantized compact instruct model, and local speech synthesis, under scripted close-range spoken questions with all network interfaces disabled:
 
 **How is button-release-to-first-spoken-word latency distributed, and how does that distribution change across model residency policy and speech synthesis granularity?**
 
@@ -48,10 +48,11 @@ The experiment also tests whether a capability the lab paid for — the extra me
 
 ## Decision being informed
 
-1. **If the evidence supports residency:** the device keeps all three models resident, 16 GB is justified and retained in the refined design, and the controller carries the memory-management complexity that residency implies.
-2. **If the evidence does not support residency:** the device loads sequentially, the controller stays simpler, and the project records that the 8 GB part would have been sufficient — including the cost consequence of having bought otherwise.
-3. **If the evidence is mixed or incomplete:** publish the per-stage latency ledger and target the single stage that dominates p95 before making any residency commitment.
-4. **This experiment will not justify:** any claim about answer quality, factual accuracy, speech recognition accuracy across speakers or accents, battery life, enclosure thermals, or the viability of the tiny audio module. It measures one speaker, one room, one reference audio path, and one power mode.
+1. **If residency fits and wins:** the device keeps all three models resident on 8 GB, the controller carries the memory-management complexity that residency implies, and no upgrade is bought.
+2. **If residency does not fit within 8 GB:** that is a first-class result, not a setup failure. The device loads sequentially, and the Orin NX 16 GB upgrade becomes a decision informed by measured headroom rather than by anticipation.
+3. **If residency fits but wins nothing:** the device loads sequentially, the controller stays simpler, and the 8 GB part is confirmed as sufficient. No upgrade is justified.
+4. **If the evidence is mixed or incomplete:** publish the per-stage latency ledger and target the single stage that dominates p95 before making any residency commitment.
+5. **This experiment will not justify:** any claim about answer quality, factual accuracy, speech recognition accuracy across speakers or accents, battery life, enclosure thermals, or the viability of the tiny audio module. It measures one speaker, one room, one reference audio path, and one power mode.
 
 ## What you will learn
 
@@ -60,6 +61,23 @@ The experiment also tests whether a capability the lab paid for — the extra me
 3. How to test an offline claim as an assertion with evidence rather than as a marketing label.
 
 ## Hypothesis
+
+**H0 (feasibility):** all three models can be held resident within 8 GB while leaving at least 1.0 GB of headroom under peak load.
+
+H0 is a gate rather than a finding. If it fails, the resident arm cannot be measured, and the experiment reports a two-condition result plus the memory ceiling that caused it. Recording H0 in advance is what keeps that outcome a result rather than an embarrassment.
+
+Planned resident budget, to be replaced by measurement:
+
+| Component | Estimated | Notes |
+| --- | --- | --- |
+| Four-bit 4 B answer model weights | ~2.5 GB | fixed by the quantization pin |
+| Key-value cache | ~0.3 GB | scales with the frozen context length |
+| Speech recognition | ~0.3–1.0 GB | the base and small variants differ enough to matter |
+| Speech synthesis | ~0.15 GB | |
+| Operating system, headless | ~1.5 GB | a desktop environment would cost roughly 1 GB more |
+| **Total** | **~4.8–5.5 GB** | of 8 GB shared between CPU and GPU |
+
+Headless boot is therefore a fixed control, not a preference.
 
 **H1 (residency):** full residency reduces p95 first-word latency by at least 1.5 s compared with sequential loading, holding synthesis policy fixed.
 
@@ -91,7 +109,7 @@ Long answers dominate energy and total time. Report the share of total energy co
 
 ### Failure tail
 
-1. Out-of-memory termination requiring a reboot.
+1. Out-of-memory termination requiring a reboot. On 8 GB this is a live risk in the resident condition rather than a theoretical one.
 2. Thermal throttling mid-interaction.
 3. USB audio dropout producing unintelligible or truncated speech.
 4. Runaway generation that never terminates.
@@ -131,7 +149,8 @@ Earlier events can change the result, so the protocol controls for them:
 ### Held fixed
 
 1. Exact hardware, including compute module, carrier, storage, and audio device.
-2. JetPack version and power mode, both recorded.
+2. Headless boot with no desktop environment, verified by recording free memory at idle before each block.
+3. JetPack version and power mode, both recorded.
 3. Fan profile.
 4. Exact model identities, quantizations, and file hashes for speech recognition, answer generation, and speech synthesis.
 5. Runtime versions, pinned.
@@ -238,7 +257,7 @@ Compare all conditions on the full distribution, not the mean. Report the per-st
 | `t_first_sentence` | s | lower | p95 ≤ 10.0 | as above | guards against a fast word then a stall |
 | `t_complete` | s | lower | p95 ≤ 20.0 | as above | correlates with answer length |
 | `gap_max` | ms | lower | ≤ 700 within an answer | buffer granularity | a mid-answer gap reads as a fault |
-| `peak_memory` | GB | lower | must not reach the out-of-memory boundary | sampling misses sub-100 ms spikes | decides whether 16 GB is required |
+| `peak_memory` | GB | lower | ≥ 1.0 GB headroom remaining of 8 GB | sampling misses sub-100 ms spikes | decides whether the 16 GB upgrade is justified |
 | `energy_per_interaction` | J | lower | recorded, no threshold in this experiment | rail sensing accuracy | sizes the future battery |
 | `idle_power` | W | lower | recorded | as above | dominates standby life |
 | `soc_temp_max` | °C | lower | below the throttle point | sensor placement | drives enclosure design |
@@ -264,7 +283,7 @@ Negative and inconvenient results are published. If the device is unusably slow,
 
 To be completed after measurement, as a decision record covering evidence observed, decision supported, decision not supported, safe operating region, escalation conditions, and confidence.
 
-The conclusion must explicitly state whether the 16 GB purchase was justified by the measurement, including when it was not.
+The conclusion must explicitly state whether 8 GB proved sufficient, and if it did not, exactly which measurement justifies the Orin NX 16 GB upgrade.
 
 ## Limitations and open evidence
 
