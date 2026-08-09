@@ -121,8 +121,9 @@ Ledgers from your own machine may contain host details, so they are not committe
 
 ## Interface prototype
 
-`ui/index.html` is a front-end mockup of the finished object: a field-radio panel with a phosphor
-scope between the control clusters. Open it directly in a browser, or serve it:
+`ui/index.html` is a front-end mockup of the finished object: a mid-century tabletop set in
+pistachio and cream, with the frequency graphs living inside the tuning dial. Open it directly in a
+browser, or serve it:
 
 ```bash
 python3 -m http.server 8000 --directory ui
