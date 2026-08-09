@@ -17,7 +17,7 @@ The website is an ongoing responsibility rather than a bounded research project.
 ## Responsibilities
 
 1. Keep claims aligned with published research.
-2. Present the single active experiment clearly.
+2. Present every active project clearly, including its measurement status. A project with zero measurements must say so on the page.
 3. Keep experiment links current.
 4. Preserve accessibility and responsive behavior.
 5. Maintain the luxury minimalist design language: warm ivory paper, soft black ink, a single bronze accent, fine hairline rules, and generous white space.

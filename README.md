@@ -4,7 +4,7 @@
 
 # Long Tail Inference Lab
 
-A research lab for testing whether verified cloud-teacher terminal work can become reusable local intelligence.
+A research lab for moving useful intelligence closer to the person: onto local models, local evidence, and local hardware.
 
 ## Thesis
 
@@ -12,7 +12,11 @@ A lightweight local model does not need to know everything to become useful. It 
 
 Long Tail Inference Lab's preregistered protocol tests transfer from a fixed `gpt-5.6-sol` cloud teacher and sanitized-evidence distiller to one fixed local Qwen student. The student model stays fixed, approved teacher-derived Markdown memory grows, and held-out executable-verifier M0/M2 pairs decide whether capability improves.
 
-## Active experiment
+The second question is physical. If local intelligence is worth having, it has to survive the network going away — inside one object, on one battery, within a latency a person will actually wait through. That constraint is measured in seconds, joules, and degrees rather than verifier passes.
+
+## Active projects
+
+Two projects are active, and neither has published a measurement yet. They share a method rather than evidence: fixed controls, an authoritative measurement named before the first run, and published negative results.
 
 ### [01 Terminal Artifact Memory](projects/01_terminal_artifact_memory/README.md)
 
@@ -26,11 +30,24 @@ The executable verifier alone establishes build eligibility and held-out student
 
 The teacher boundary pins host Codex CLI 0.146.0, keeps subscription OAuth on the host, exposes only the isolated task tool, and captures ATIF provenance. A pre-measurement dry run exposed an impossible combined Docker/Compose version check, so measurement remains blocked pending a corrective freeze that validates those two exact pins separately; no measured actor or execution-ledger slot was consumed. The earlier genuine pilot remains intact: its first local Qwen M0 probe exceeded the frozen 16,384-token context before executable verification, so it produced no pair or memory checkpoint. See the [halted pilot report](projects/01_terminal_artifact_memory/results/2026-07-31-measured-pilot/summary.md). No teacher/student experiment has been measured yet.
 
+### [02 Edge Offline Intelligence Device](projects/02_edge_offline_intelligence_device/README.md)
+
+**Status:** Specified (hardware not ordered and zero measurements taken)
+
+**Question:** How much useful spoken intelligence fits inside one self-contained device that keeps working when the network disappears?
+
+A push-to-talk voice appliance whose entire conversation path — capture, speech recognition, answer generation, speech synthesis, playback — runs on local hardware with no cloud service, companion phone, or local network server. The device is the stable product boundary; the models are replaceable parts.
+
+The first bounded question is [Experiment 02.1](projects/02_edge_offline_intelligence_device/experiments/01_spoken_latency_and_residency.md). On a fixed Jetson Orin NX 16 GB running a fixed modular pipeline, how is button-release-to-first-spoken-word latency distributed, and does keeping all three models simultaneously resident justify its complexity against sequential load and unload? The experiment runs entirely offline with an interface packet-counter assertion as a ruin boundary, and decomposes every interaction into a per-stage latency ledger so that a slow system names its own bottleneck rather than reporting one opaque number.
+
+No latency, memory, energy, or thermal figure has been measured. Every number in that project is currently a target or a budget.
+
 ## PARA organization
 
 ```text
 projects/
   01_terminal_artifact_memory/
+  02_edge_offline_intelligence_device/
 
 areas/
   lab_operations/
@@ -46,7 +63,7 @@ resources/
 
 ### Projects
 
-Projects contain active experiments with a bounded research question, a measurement plan, and a completion condition. The lab intentionally has one active experiment until its first baseline and memory checkpoint results are published.
+Projects contain active work with a bounded research question, a measurement plan, and a completion condition. There is no cap on how many run at once, so each carries that burden alone and states its measurement status honestly wherever it is listed.
 
 ### Areas
 

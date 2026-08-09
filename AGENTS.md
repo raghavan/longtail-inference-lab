@@ -10,9 +10,11 @@ These instructions are for all AI coding assistants working in this repository, 
 
 ## Repository intent
 
-Long Tail Inference Lab currently focuses on one active experiment: whether executable-verifier-passing public terminal work from a fixed cloud teacher can become approved Markdown memory that improves a fixed local student on disjoint held-out tasks.
+Long Tail Inference Lab studies where useful intelligence can move closer to the person: onto local models, local evidence, and local hardware. Two projects are active.
 
-Use `projects/01_terminal_artifact_memory/README.md` as the active protocol overview. Keep the local student model, prompt, runtime, and hardware fixed during the core learning curve unless a documented experiment phase explicitly changes one of those controls.
+`projects/01_terminal_artifact_memory/README.md` asks whether executable-verifier-passing public terminal work from a fixed cloud teacher can become approved Markdown memory that improves a fixed local student on disjoint held-out tasks. Use it as the active protocol overview for that project. Keep the local student model, prompt, runtime, and hardware fixed during the core learning curve unless a documented experiment phase explicitly changes one of those controls.
+
+`projects/02_edge_offline_intelligence_device/README.md` asks how much useful spoken intelligence fits inside one self-contained offline device. Its measurements are device-level rather than verifier-level: latency distributions, peak memory, energy, thermals, and offline integrity. Treat the device as the stable product boundary and the models as replaceable parts.
 
 ## Naming and branding
 
@@ -44,9 +46,11 @@ Do not duplicate the template question set in this file. Update the template whe
 ## Focus discipline
 
 1. Keep `projects/` limited to work receiving active attention.
-2. Do not add another active experiment until the current project has a published baseline and at least one measured memory checkpoint, unless the user explicitly changes that rule.
-3. Move superseded specifications into `archives/` without carrying their narrative into active surfaces.
-4. Never present synthetic seed data or illustrative diagrams as measured results.
+2. There is no cap on the number of concurrent active experiments. The former single-active-experiment rule was removed on August 9 2026 at the user's explicit request.
+3. Because concurrency is now allowed, each active project carries the burden alone: a bounded question, a measurement plan, a stop boundary, and a completion condition before it enters `projects/`.
+4. State measurement status honestly on every surface. A project with zero measurements must say so wherever it is listed, and must never borrow credibility from another project's results.
+5. Move superseded specifications into `archives/` without carrying their narrative into active surfaces.
+6. Never present synthetic seed data or illustrative diagrams as measured results.
 
 ## Repository organization
 

@@ -1,10 +1,12 @@
-# Edge Offline Intelligence Device
+# Edge Offline Intelligence Device — design direction
 
 ## Status
 
-Proposal
+Promoted to an active project on August 9 2026.
 
-This document describes a possible lab project. It is not an active experiment and does not yet have an implementation commitment.
+This document is the systems and product direction for [project 02](README.md). It is the source of the device's shape, constraints, and open questions. It is not itself a measurement plan, and nothing in it is evidence.
+
+Where a decision has since been taken, the decision wins. See the decision table in the [project charter](README.md) and the recorded decisions inline below. The first bounded question drawn out of this direction is [Experiment 02.1](experiments/01_spoken_latency_and_residency.md).
 
 ## Project idea
 
@@ -218,7 +220,9 @@ Optional encrypted local memory
 
 ### Prototype compute
 
-Begin with an **NVIDIA Jetson Orin Nano Super Developer Kit with 8 GB memory**.
+**Decision, August 9 2026:** the project skips the 8 GB prototype and begins on the **Jetson Orin NX 16 GB** tier described under *Refined compute* below. The two subsections that follow record the original reasoning, which remains useful because Experiment 02.1 is designed to reveal whether the higher tier was actually necessary.
+
+The original direction was to begin with an **NVIDIA Jetson Orin Nano Super Developer Kit with 8 GB memory**.
 
 This is the lowest complexity way to validate the complete pipeline because it provides:
 
@@ -237,7 +241,11 @@ A refined daily device should evaluate an **NVIDIA Jetson Orin NX 16 GB module o
 
 The additional memory should make it easier to keep speech recognition, language generation, and speech synthesis available without aggressive unloading. A smaller carrier can also produce a cleaner enclosure than the full developer kit.
 
-The project should first measure whether the 8 GB prototype delivers an acceptable experience before moving to the more expensive module.
+The original plan was to measure the 8 GB prototype first and move to the more expensive module only when the measurement demanded it. That ordering was reversed by the August 9 2026 decision to buy the higher tier directly.
+
+Reversing it has a cost that the project should hold itself to: the 16 GB part relieves the memory-contention risk before that risk is ever observed, so the project loses the chance to learn whether 8 GB was enough. Experiment 02.1 partly recovers that by measuring a sequential-loading condition — the discipline an 8 GB device would force — against full residency, and by requiring the operational conclusion to state plainly when the extra memory bought nothing.
+
+See [`hardware/bill_of_materials.md`](hardware/bill_of_materials.md) for the specific variant, alternatives, and ordering links.
 
 ### Storage
 
@@ -272,6 +280,8 @@ It contains:
 6. USB power and programmable firmware
 
 The project should test whether it can operate as a direct USB audio device attached to the Jetson inside the same enclosure.
+
+**Correction, August 9 2026:** public specifications describe this module as an ESP32-S3 with an I2S codec rather than a native USB audio class peripheral, so "attach it over USB and it appears as a sound card" is unlikely to hold without custom firmware. The realistic options are USB audio class firmware on the ESP32-S3, direct I2S wiring to the Jetson header, or abandoning the module. Streaming audio over WiFi is not an option, because it breaks the single-device offline boundary. This became a bounded Phase 2 question rather than an assumption, and Experiment 02.1 uses a plug-and-play USB audio device as a reference instrument so that latency measurement does not depend on this bring-up.
 
 This module is appropriate because the device is a close range personal assistant rather than a room scale smart speaker.
 
@@ -792,7 +802,7 @@ The device should expose these limits honestly rather than imitate confidence.
 
 ### Memory contention
 
-Speech and language models may not fit comfortably at the same time on an 8 GB device.
+Speech and language models may not fit comfortably at the same time on an 8 GB device. The August 9 2026 decision to buy the 16 GB tier substantially relieves this risk, which is why it is no longer the leading question. The residual risk is that the extra memory is paid for and never earns its cost in perceived responsiveness, which is what Experiment 02.1 measures.
 
 Mitigation:
 
