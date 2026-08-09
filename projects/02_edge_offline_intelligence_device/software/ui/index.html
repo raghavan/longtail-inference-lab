@@ -1,0 +1,1035 @@
+<title>Field Set AN/LTL-1 — Interface Prototype</title>
+<style>
+  /* ------------------------------------------------------------------
+     Single committed theme. This page is a physical object, not a
+     document, so it paints its own ground in both host themes rather
+     than adapting. Every colour is explicit for that reason.
+     ------------------------------------------------------------------ */
+  :root {
+    --od:          #3b4031;
+    --od-lit:      #4a5040;
+    --od-deep:     #22261c;
+    --od-shadow:   #171a12;
+    --steel:       #8a8f7c;
+    --stencil:     #d8d2bc;
+    --stencil-dim: #8d9280;
+    --phosphor:    #7cff6b;
+    --phosphor-dim:#2f6b2a;
+    --amber:       #ffb23f;
+    --fault:       #e2483a;
+    --ground:      #14160f;
+
+    --mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    --gap:   clamp(0.75rem, 1.6vw, 1.25rem);
+    --radius: 3px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: clamp(1rem, 4vw, 3rem) 1rem;
+    background:
+      radial-gradient(120% 90% at 50% 0%, #1e2118 0%, var(--ground) 60%, #0b0d08 100%);
+    color: var(--stencil);
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .rig {
+    width: 100%;
+    max-width: 1040px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* ---------------------------------------------------------------- chassis */
+
+  .chassis {
+    position: relative;
+    padding: clamp(1rem, 2.6vw, 1.9rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    border-radius: 6px;
+    background:
+      linear-gradient(180deg, var(--od-lit) 0%, var(--od) 22%, #343829 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.14),
+      inset 0 -2px 0 rgba(0,0,0,0.5),
+      0 24px 60px -20px rgba(0,0,0,0.9),
+      0 2px 0 #101208;
+    border: 1px solid #2a2e21;
+  }
+
+  /* Crackle finish, kept faint so it reads as texture not noise. */
+  .chassis::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image:
+      radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.08) 1px, transparent 1px);
+    background-size: 7px 7px, 11px 11px;
+    background-position: 0 0, 3px 4px;
+  }
+
+  .screw {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #9aa08a, #4c5142 60%, #2b2f23);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45), 0 1px 1px rgba(255,255,255,0.08);
+  }
+  .screw::after {
+    content: "";
+    position: absolute;
+    inset: 3px 2px;
+    border-top: 1.5px solid rgba(0,0,0,0.55);
+    transform: rotate(34deg);
+  }
+  .screw--tl { top: 10px;    left: 10px; }
+  .screw--tr { top: 10px;    right: 10px; }
+  .screw--bl { bottom: 10px; left: 10px; }
+  .screw--br { bottom: 10px; right: 10px; }
+
+  /* --------------------------------------------------------------- nameplate */
+
+  .nameplate {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0 0 0.65rem;
+    border-bottom: 1px solid rgba(0,0,0,0.4);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.07);
+    position: relative;
+  }
+
+  .nameplate__id {
+    margin: 0;
+    font-size: clamp(0.95rem, 2.1vw, 1.25rem);
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--stencil);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+    text-wrap: balance;
+  }
+
+  .nameplate__sub {
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #9ba08c;
+  }
+
+  /* -------------------------------------------------------------------- deck */
+
+  .deck {
+    display: grid;
+    grid-template-columns: 148px minmax(0, 1fr) 148px;
+    gap: var(--gap);
+    align-items: stretch;
+  }
+
+  .cluster {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 0.85rem 0.7rem;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(0,0,0,0.16), rgba(0,0,0,0.30));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.35);
+  }
+
+  .label {
+    margin: 0;
+    font-size: 0.58rem;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+    color: #a3a892;
+    text-align: center;
+  }
+
+  /* ------------------------------------------------------------------ vu bay */
+
+  .vu {
+    position: relative;
+    height: 70px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #d9d3b4, #b9b394);
+    box-shadow: inset 0 0 0 1px #6d7159, inset 0 2px 6px rgba(0,0,0,0.35);
+    overflow: hidden;
+  }
+  .vu__arc {
+    position: absolute;
+    inset: 8px 10px auto;
+    height: 40px;
+    border-top: 1px solid #7d7a5f;
+    border-radius: 50% / 100% 100% 0 0;
+    opacity: 0.65;
+  }
+  .vu__red {
+    position: absolute;
+    top: 8px; right: 10px;
+    width: 34%;
+    height: 12px;
+    border-top: 2px solid #b03a2c;
+    border-radius: 50% / 100% 100% 0 0;
+    opacity: 0.8;
+  }
+  .vu__needle {
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    width: 1.5px;
+    height: 46px;
+    background: linear-gradient(180deg, #2b2b22, #6a6a55);
+    transform-origin: 50% 100%;
+    transform: rotate(-42deg);
+    transition: transform 120ms cubic-bezier(.3,1.4,.5,1);
+  }
+  .vu__pivot {
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    width: 9px; height: 9px;
+    margin-left: -4.5px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #55553f, #22221a);
+  }
+  .vu__mark {
+    position: absolute;
+    left: 10px; bottom: 6px;
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    color: #55523f;
+  }
+
+  /* ------------------------------------------------------------------- knobs */
+
+  .knob-row { display: flex; justify-content: space-around; gap: 0.5rem; }
+
+  .knob {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    position: relative;
+    background:
+      radial-gradient(circle at 38% 30%, #55594a 0%, #33372a 55%, #1d2016 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.16),
+      0 3px 6px rgba(0,0,0,0.55);
+    display: grid;
+    place-items: center;
+  }
+  /* Knurled rim, drawn with a conic gradient rather than 24 elements. */
+  .knob::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(#3f4436 0deg 5deg, #262a1e 5deg 10deg);
+    z-index: -1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+  }
+  .knob__pointer {
+    position: absolute;
+    top: 5px;
+    width: 2px;
+    height: 15px;
+    border-radius: 1px;
+    background: var(--stencil);
+    opacity: 0.85;
+  }
+  .knob__cap {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #6b7059, #2c3023);
+  }
+
+  /* ------------------------------------------------------------------ screen */
+
+  .screen {
+    position: relative;
+    border-radius: 4px;
+    padding: 12px;
+    background: #0a0d07;
+    box-shadow:
+      inset 0 0 0 2px #1b1f14,
+      inset 0 0 0 9px #2f3427,
+      inset 0 3px 14px rgba(0,0,0,0.9),
+      0 0 0 1px #1a1d13;
+    min-height: 268px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen__glass {
+    position: relative;
+    flex: 1;
+    border-radius: 2px;
+    overflow: hidden;
+    background:
+      radial-gradient(115% 130% at 50% 40%, #0d160b 0%, #060a05 70%, #030502 100%);
+  }
+
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* Scanlines and glass curvature sit above the trace. */
+  .screen__scan,
+  .screen__curve {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .screen__scan {
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,0.34) 3px,
+      rgba(0,0,0,0.34) 4px
+    );
+    mix-blend-mode: multiply;
+    animation: flicker 5.5s steps(2, end) infinite;
+  }
+  .screen__curve {
+    background:
+      radial-gradient(105% 105% at 50% 45%, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0) 55%),
+      radial-gradient(130% 120% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.75) 100%);
+  }
+
+  @keyframes flicker {
+    0%, 96%, 100% { opacity: 1; }
+    97%           { opacity: 0.86; }
+    98%           { opacity: 1; }
+    99%           { opacity: 0.92; }
+  }
+
+  .screen__head,
+  .screen__foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--phosphor-dim);
+  }
+  .screen__head { padding-bottom: 8px; }
+  .screen__foot { padding-top: 8px; }
+
+  .freq {
+    font-size: clamp(1.15rem, 2.8vw, 1.6rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--phosphor);
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 12px rgba(124,255,107,0.55);
+  }
+  .freq__unit { font-size: 0.6rem; letter-spacing: 0.2em; opacity: 0.75; }
+
+  .mode {
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--phosphor);
+    text-shadow: 0 0 10px rgba(124,255,107,0.5);
+  }
+  .mode[data-state="transmitting"] {
+    color: var(--amber);
+    text-shadow: 0 0 10px rgba(255,178,63,0.55);
+  }
+  .mode[data-state="muted"] {
+    color: var(--fault);
+    text-shadow: 0 0 10px rgba(226,72,58,0.5);
+  }
+
+  /* ------------------------------------------------------------ right column */
+
+  .lamp-bay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lamp {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #1b1e14;
+    box-shadow:
+      inset 0 0 0 2px #4a4f3d,
+      inset 0 2px 5px rgba(0,0,0,0.8);
+    position: relative;
+    transition: background 200ms linear, box-shadow 200ms linear;
+  }
+  .lamp::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .lamp[data-lamp="ready"] {
+    background: #cfd3c0;
+    box-shadow: inset 0 0 0 2px #4a4f3d, 0 0 16px 3px rgba(207,211,192,0.45);
+  }
+  .lamp[data-lamp="listening"] {
+    background: var(--phosphor);
+    box-shadow: inset 0 0 0 2px #4a4f3d, 0 0 20px 4px rgba(124,255,107,0.6);
+    animation: breathe 1.1s ease-in-out infinite;
+  }
+  .lamp[data-lamp="thinking"] {
+    background: #4f8f46;
+    box-shadow: inset 0 0 0 2px #4a4f3d, 0 0 12px 2px rgba(79,143,70,0.5);
+    animation: breathe 2.4s ease-in-out infinite;
+  }
+  .lamp[data-lamp="speaking"] {
+    background: var(--amber);
+    box-shadow: inset 0 0 0 2px #4a4f3d, 0 0 22px 5px rgba(255,178,63,0.55);
+  }
+  .lamp[data-lamp="fault"] {
+    background: var(--fault);
+    box-shadow: inset 0 0 0 2px #4a4f3d, 0 0 18px 4px rgba(226,72,58,0.5);
+  }
+
+  @keyframes breathe {
+    0%, 100% { filter: brightness(0.62); }
+    50%      { filter: brightness(1.25); }
+  }
+
+  /* ------------------------------------------------------------------ switch */
+
+  .switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    background: none;
+    border: 0;
+    padding: 0.35rem 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+  }
+  .switch:focus-visible { outline: 2px solid var(--phosphor); outline-offset: 3px; }
+
+  .switch__body {
+    width: 38px;
+    height: 56px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #1b1e14, #2b2f22);
+    box-shadow: inset 0 0 0 1px #4a4f3d, inset 0 2px 6px rgba(0,0,0,0.7);
+    position: relative;
+  }
+  .switch__lever {
+    position: absolute;
+    left: 50%;
+    width: 12px;
+    height: 26px;
+    margin-left: -6px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #b6bba4, #6d7259);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    top: 5px;
+    transition: top 140ms cubic-bezier(.3,1.5,.5,1), background 140ms linear;
+  }
+  .switch[aria-pressed="true"] .switch__lever {
+    top: 25px;
+    background: linear-gradient(180deg, #e08c82, #a8382c);
+  }
+  .switch__state {
+    font-size: 0.55rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #a3a892;
+  }
+  .switch[aria-pressed="true"] .switch__state { color: var(--fault); }
+
+  /* --------------------------------------------------------------------- ptt */
+
+  .ptt {
+    width: 100%;
+    padding: 1.05rem 1rem;
+    border: 0;
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--stencil);
+    cursor: pointer;
+    background: linear-gradient(180deg, #565b49 0%, #3d4232 55%, #2b2f22 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 4px 0 #1c1f15,
+      0 8px 14px rgba(0,0,0,0.55);
+    transition: transform 70ms linear, box-shadow 70ms linear, color 140ms linear;
+    touch-action: none;
+    user-select: none;
+  }
+  .ptt:focus-visible { outline: 2px solid var(--phosphor); outline-offset: 3px; }
+  .ptt[data-held="true"] {
+    transform: translateY(4px);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.7), 0 0 0 #1c1f15;
+    color: var(--phosphor);
+  }
+  .ptt:disabled {
+    cursor: not-allowed;
+    color: #6f7462;
+    background: linear-gradient(180deg, #3a3e30, #2a2e21);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+  }
+
+  .ptt-row { display: flex; flex-direction: column; gap: 0.5rem; }
+  .ptt-hint {
+    margin: 0;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8f9482;
+    text-align: center;
+  }
+  kbd {
+    font: inherit;
+    font-size: 0.95em;
+    padding: 0.05em 0.4em;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.35);
+    box-shadow: inset 0 0 0 1px rgba(216,210,188,0.25);
+  }
+
+  /* --------------------------------------------------------------- telemetry */
+
+  .telemetry {
+    border-top: 1px solid rgba(0,0,0,0.4);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    padding-top: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .telemetry__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .telemetry__total {
+    font-variant-numeric: tabular-nums;
+    color: var(--phosphor);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .stages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stage {
+    padding: 0.42rem 0.5rem;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.26);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    opacity: 0.4;
+    transition: opacity 160ms linear, background 160ms linear;
+  }
+  .stage[data-lit="true"] {
+    opacity: 1;
+    background: rgba(124,255,107,0.10);
+    box-shadow: inset 0 0 0 1px rgba(124,255,107,0.28);
+  }
+  .stage__name {
+    font-size: 0.52rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: #a3a892;
+  }
+  .stage__ms {
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--phosphor-dim);
+  }
+  .stage[data-lit="true"] .stage__ms { color: var(--phosphor); }
+
+  /* ---------------------------------------------------------------- footnote */
+
+  .footnote {
+    margin: 0;
+    font-size: 0.66rem;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    color: #7f8472;
+    max-width: 68ch;
+  }
+  .footnote strong { color: #a9ae99; font-weight: 700; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 720px) {
+    .deck { grid-template-columns: 1fr; }
+    .cluster { flex-direction: row; align-items: center; justify-content: space-around; }
+    .vu { flex: 1; min-width: 140px; }
+    .screen { order: -1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .screen__scan { animation: none; }
+    .lamp { animation: none !important; }
+    .vu__needle { transition: none; }
+    .ptt { transition: none; }
+  }
+</style>
+
+<div class="rig">
+  <div class="chassis">
+    <span class="screw screw--tl"></span>
+    <span class="screw screw--tr"></span>
+    <span class="screw screw--bl"></span>
+    <span class="screw screw--br"></span>
+
+    <header class="nameplate">
+      <h1 class="nameplate__id">Field Set AN/LTL&#8209;1</h1>
+      <p class="nameplate__sub">Offline voice terminal &middot; no network &middot; interface prototype</p>
+    </header>
+
+    <div class="deck">
+      <div class="cluster cluster--left">
+        <p class="label">Input level</p>
+        <div class="vu">
+          <span class="vu__arc"></span>
+          <span class="vu__red"></span>
+          <span class="vu__mark">-20</span>
+          <span class="vu__needle" id="needle"></span>
+          <span class="vu__pivot"></span>
+        </div>
+        <div class="knob-row">
+          <div class="knob"><span class="knob__pointer"></span><span class="knob__cap"></span></div>
+          <div class="knob"><span class="knob__pointer" style="transform: rotate(128deg); transform-origin: 1px 21px;"></span><span class="knob__cap"></span></div>
+        </div>
+        <p class="label">Volume &nbsp;/&nbsp; Squelch</p>
+      </div>
+
+      <section class="screen" aria-label="Signal display">
+        <div class="screen__head">
+          <span class="freq"><span id="freq">51.475</span> <span class="freq__unit">MHz</span></span>
+          <span class="mode" id="mode" data-state="standby">Standby</span>
+        </div>
+
+        <div class="screen__glass">
+          <canvas id="scope"></canvas>
+          <div class="screen__scan"></div>
+          <div class="screen__curve"></div>
+        </div>
+
+        <div class="screen__foot">
+          <span>Trace &middot; envelope</span>
+          <span id="band">Spectrum &middot; 32 bin</span>
+        </div>
+      </section>
+
+      <div class="cluster cluster--right">
+        <div class="lamp-bay">
+          <p class="label">Status</p>
+          <span class="lamp" id="lamp" data-lamp="ready"></span>
+          <p class="label" id="lampText">Ready</p>
+        </div>
+        <button class="switch" id="mute" type="button" aria-pressed="false">
+          <span class="switch__body"><span class="switch__lever"></span></span>
+          <span class="switch__state" id="muteText">Mic live</span>
+        </button>
+        <p class="label">Mic cut</p>
+      </div>
+    </div>
+
+    <div class="ptt-row">
+      <button class="ptt" id="ptt" type="button" data-held="false">Press and hold to speak</button>
+      <p class="ptt-hint">Hold the bar, or hold <kbd>Space</kbd> &middot; <kbd>M</kbd> cuts the microphone</p>
+    </div>
+
+    <section class="telemetry" aria-label="Stage telemetry">
+      <div class="telemetry__head">
+        <p class="label" style="text-align: left;">Latency ledger &middot; button release to first spoken word</p>
+        <span class="telemetry__total"><span id="total">0.00</span> s</span>
+      </div>
+      <ul class="stages" id="stages"></ul>
+    </section>
+  </div>
+
+  <p class="footnote">
+    <strong>Interface prototype.</strong> The traces are generated, not measured &mdash; there is no
+    microphone, no speech recognition, and no model behind this page. It exists to test how the
+    device reads at a glance: whether you can tell listening from thinking from speaking without a
+    screen full of text. Stage names match the real ledger in
+    <em>experiments/01_spoken_latency_and_residency.md</em>, and the status lamp follows the colour
+    vocabulary in the design direction. Cutting the microphone overrides everything, which is the
+    one behaviour the finished device must guarantee in hardware.
+  </p>
+
+  <p class="sr-only" role="status" aria-live="polite" id="live">Standby.</p>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Stage names are the frozen schema from the experiment spec. Keeping them
+  // identical means this mock and a real ledger line describe the same thing.
+  const STAGES = [
+    { key: "endpoint",           label: "Endpoint",   range: [40, 90] },
+    { key: "stt_compute",        label: "STT",        range: [380, 760] },
+    { key: "llm_prefill",        label: "Prefill",    range: [260, 620] },
+    { key: "llm_first_sentence", label: "1st sent.",  range: [190, 480] },
+    { key: "tts_first_chunk",    label: "TTS",        range: [150, 340] },
+    { key: "audio_out",          label: "Audio out",  range: [8, 22] }
+  ];
+
+  const el = {
+    scope:    document.getElementById("scope"),
+    mode:     document.getElementById("mode"),
+    lamp:     document.getElementById("lamp"),
+    lampText: document.getElementById("lampText"),
+    ptt:      document.getElementById("ptt"),
+    mute:     document.getElementById("mute"),
+    muteText: document.getElementById("muteText"),
+    needle:   document.getElementById("needle"),
+    stages:   document.getElementById("stages"),
+    total:    document.getElementById("total"),
+    freq:     document.getElementById("freq"),
+    live:     document.getElementById("live")
+  };
+
+  const LAMP = {
+    standby:      { lamp: "ready",     mode: "Standby",      text: "Ready" },
+    listening:    { lamp: "listening", mode: "Listening",    text: "Listening" },
+    thinking:     { lamp: "thinking",  mode: "Working",      text: "Working" },
+    transmitting: { lamp: "speaking",  mode: "Transmitting", text: "Speaking" },
+    muted:        { lamp: "fault",     mode: "Mic cut",      text: "Mic cut" }
+  };
+
+  let state = "standby";
+  let muted = false;
+  let timers = [];
+
+  // ---------------------------------------------------------------- telemetry
+
+  const stageEls = STAGES.map((stage) => {
+    const li = document.createElement("li");
+    li.className = "stage";
+    li.dataset.lit = "false";
+    li.innerHTML =
+      '<span class="stage__name"></span><span class="stage__ms">—</span>';
+    li.querySelector(".stage__name").textContent = stage.label;
+    el.stages.appendChild(li);
+    return li;
+  });
+
+  function resetLedger() {
+    stageEls.forEach((li) => {
+      li.dataset.lit = "false";
+      li.querySelector(".stage__ms").textContent = "—";
+    });
+    el.total.textContent = "0.00";
+  }
+
+  /** Light each stage in turn with a plausible random cost. */
+  function runLedger() {
+    let cumulative = 0;
+    STAGES.forEach((stage, i) => {
+      const ms = Math.round(stage.range[0] + Math.random() * (stage.range[1] - stage.range[0]));
+      cumulative += ms;
+      const at = cumulative;
+      timers.push(setTimeout(() => {
+        stageEls[i].dataset.lit = "true";
+        stageEls[i].querySelector(".stage__ms").textContent = ms + " ms";
+        el.total.textContent = (at / 1000).toFixed(2);
+      }, REDUCED ? i * 90 : at));
+    });
+    return cumulative;
+  }
+
+  // -------------------------------------------------------------------- state
+
+  function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function setState(next) {
+    state = next;
+    const conf = LAMP[next];
+    el.lamp.dataset.lamp = conf.lamp;
+    el.lampText.textContent = conf.text;
+    el.mode.textContent = conf.mode;
+    el.mode.dataset.state = next;
+    el.live.textContent = conf.mode + ".";
+  }
+
+  function beginListening() {
+    if (muted || state !== "standby") return;
+    clearTimers();
+    resetLedger();
+    setState("listening");
+    el.ptt.dataset.held = "true";
+  }
+
+  function endListening() {
+    if (state !== "listening") return;
+    el.ptt.dataset.held = "false";
+    setState("thinking");
+
+    const ledgerMs = runLedger();
+    // The first word arrives when the ledger completes; speech runs on after.
+    timers.push(setTimeout(() => {
+      if (state !== "thinking") return;
+      setState("transmitting");
+      timers.push(setTimeout(() => {
+        if (state === "transmitting") setState("standby");
+      }, 3200 + Math.random() * 2200));
+    }, REDUCED ? 700 : ledgerMs));
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    el.mute.setAttribute("aria-pressed", String(muted));
+    el.muteText.textContent = muted ? "Mic cut" : "Mic live";
+    el.ptt.disabled = muted;
+    clearTimers();
+    if (muted) {
+      resetLedger();
+      setState("muted");
+    } else {
+      setState("standby");
+    }
+  }
+
+  // ----------------------------------------------------------------- controls
+
+  el.ptt.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    el.ptt.setPointerCapture(event.pointerId);
+    beginListening();
+  });
+  el.ptt.addEventListener("pointerup", endListening);
+  el.ptt.addEventListener("pointercancel", endListening);
+  el.mute.addEventListener("click", toggleMute);
+
+  let spaceDown = false;
+  document.addEventListener("keydown", (event) => {
+    if (event.code === "Space" && !spaceDown) {
+      if (event.target === el.mute) return;
+      event.preventDefault();
+      spaceDown = true;
+      beginListening();
+    } else if (event.key === "m" || event.key === "M") {
+      toggleMute();
+    }
+  });
+  document.addEventListener("keyup", (event) => {
+    if (event.code === "Space") {
+      spaceDown = false;
+      endListening();
+    }
+  });
+
+  // ------------------------------------------------------------------- canvas
+
+  const ctx = el.scope.getContext("2d");
+  const BINS = 32;
+  let trace = [];
+  let bins = new Array(BINS).fill(0.04);
+  let width = 0;
+  let height = 0;
+  let sweep = 0;
+
+  function resize() {
+    const rect = el.scope.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = Math.max(1, Math.round(rect.width));
+    height = Math.max(1, Math.round(rect.height));
+    el.scope.width = Math.round(width * dpr);
+    el.scope.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const want = Math.round(width / 2);
+    if (trace.length !== want) trace = new Array(want).fill(0);
+  }
+
+  if (typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(resize).observe(el.scope);
+  }
+  window.addEventListener("resize", resize);
+
+  /** Envelope shaped by state: speech is bursty, synthesis is smoother. */
+  function sample(t) {
+    switch (state) {
+      case "listening": {
+        const burst = Math.sin(t * 0.011) * 0.5 + 0.5;
+        const syllable = Math.sin(t * 0.05) * 0.35 + 0.65;
+        return (Math.random() * 2 - 1) * (0.28 + burst * syllable * 0.66);
+      }
+      case "thinking": {
+        return Math.sin(t * 0.03) * 0.10 + (Math.random() * 2 - 1) * 0.035;
+      }
+      case "transmitting": {
+        const carrier = Math.sin(t * 0.09) * 0.42 + Math.sin(t * 0.031) * 0.26;
+        const shape = Math.sin(t * 0.007) * 0.3 + 0.7;
+        return carrier * shape + (Math.random() * 2 - 1) * 0.07;
+      }
+      case "muted":
+        return (Math.random() * 2 - 1) * 0.012;
+      default:
+        return (Math.random() * 2 - 1) * 0.045 + Math.sin(t * 0.006) * 0.03;
+    }
+  }
+
+  function targetBin(i, t) {
+    const tilt = 1 - i / BINS;
+    switch (state) {
+      case "listening":
+        // Voice energy sits low in the band.
+        return Math.random() * (0.25 + tilt * tilt * 0.85);
+      case "thinking":
+        return 0.06 + Math.max(0, Math.sin(t * 0.02 - i * 0.4)) * 0.22;
+      case "transmitting":
+        return Math.random() * (0.2 + tilt * 0.6) + 0.12;
+      case "muted":
+        return 0.02;
+      default:
+        return Math.random() * 0.09;
+    }
+  }
+
+  function draw(now) {
+    const t = now / 10;
+    const splitY = Math.round(height * 0.56);
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Graticule
+    ctx.strokeStyle = "rgba(124,255,107,0.09)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x = 0; x <= width; x += Math.max(28, width / 10)) {
+      ctx.moveTo(Math.round(x) + 0.5, 0);
+      ctx.lineTo(Math.round(x) + 0.5, height);
+    }
+    for (let y = 0; y <= height; y += Math.max(22, height / 6)) {
+      ctx.moveTo(0, Math.round(y) + 0.5);
+      ctx.lineTo(width, Math.round(y) + 0.5);
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(124,255,107,0.16)";
+    ctx.beginPath();
+    ctx.moveTo(0, splitY + 0.5);
+    ctx.lineTo(width, splitY + 0.5);
+    ctx.stroke();
+
+    const hot = state === "transmitting" ? "#ffb23f" : "#7cff6b";
+
+    // ---- trace
+    trace.push(sample(t));
+    while (trace.length > Math.round(width / 2)) trace.shift();
+
+    const mid = splitY / 2;
+    const amp = splitY * 0.40;
+    ctx.save();
+    ctx.shadowColor = hot;
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = hot;
+    ctx.lineWidth = 1.6;
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    for (let i = 0; i < trace.length; i++) {
+      const x = (i / (trace.length - 1 || 1)) * width;
+      const y = mid - trace[i] * amp;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // ---- spectrum
+    const baseY = height - 6;
+    const barMax = height - splitY - 16;
+    const slot = width / BINS;
+    for (let i = 0; i < BINS; i++) {
+      const target = targetBin(i, t);
+      bins[i] += (target - bins[i]) * (state === "listening" ? 0.34 : 0.16);
+      const h = Math.max(1.5, bins[i] * barMax);
+      const x = i * slot + slot * 0.18;
+      const w = slot * 0.64;
+      ctx.fillStyle = hot;
+      ctx.globalAlpha = 0.22 + bins[i] * 0.6;
+      ctx.fillRect(x, baseY - h, w, h);
+      ctx.globalAlpha = 1;
+      // Peak cap, the detail that makes a spectrum read as an instrument.
+      ctx.fillRect(x, baseY - h - 2, w, 1.5);
+    }
+
+    // ---- sweep line while working
+    if (state === "thinking") {
+      sweep = (sweep + width / 150) % width;
+      const grad = ctx.createLinearGradient(sweep - 40, 0, sweep, 0);
+      grad.addColorStop(0, "rgba(124,255,107,0)");
+      grad.addColorStop(1, "rgba(124,255,107,0.30)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(sweep - 40, 0, 40, splitY);
+    }
+
+    // ---- needle follows recent energy
+    const recent = trace.slice(-14);
+    const level = recent.reduce((sum, v) => sum + Math.abs(v), 0) / (recent.length || 1);
+    el.needle.style.transform = "rotate(" + (-42 + Math.min(1, level * 1.9) * 84).toFixed(1) + "deg)";
+
+    requestAnimationFrame(draw);
+  }
+
+  // Drift the dial a little so the set feels alive rather than printed.
+  setInterval(() => {
+    if (state === "standby") {
+      el.freq.textContent = (51.4 + Math.random() * 0.15).toFixed(3);
+    }
+  }, 3400);
+
+  resize();
+  requestAnimationFrame(draw);
+})();
+</script>

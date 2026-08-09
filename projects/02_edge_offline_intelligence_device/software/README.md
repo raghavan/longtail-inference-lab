@@ -118,3 +118,26 @@ software/
 ## Publication rules
 
 Ledgers from your own machine may contain host details, so they are not committed by default. If you want to publish a pilot result, put it under `results/` with a dated folder, strip host identifiers, and run `python3 areas/lab_operations/safety_scan.py` first. Label it a pilot, on general-purpose hardware, in the summary's first line.
+
+## Interface prototype
+
+`ui/index.html` is a front-end mockup of the finished object: a field-radio panel with a phosphor
+scope between the control clusters. Open it directly in a browser, or serve it:
+
+```bash
+python3 -m http.server 8000 --directory ui
+# then open http://localhost:8000
+```
+
+Hold the bar or the space key to speak; `M` cuts the microphone. The traces are generated, not
+measured — there is no microphone, recognition, or model behind the page. It exists to test whether
+listening, working, and speaking read at a glance without a screen full of text, which is the
+interaction question the design direction raises and no amount of prose settles.
+
+Two details are deliberate rather than decorative. The stage names in the telemetry strip are the
+frozen ledger schema from the experiment spec, so the mock and a real ledger line describe the same
+thing. And cutting the microphone overrides every other state, because that is the one behaviour the
+finished device must guarantee in hardware rather than software.
+
+Wiring it to the real controller is a later step: the controller already knows its state at every
+moment, so a small local event stream could drive the panel instead of the random generator.
