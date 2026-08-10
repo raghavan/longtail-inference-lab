@@ -119,6 +119,19 @@ software/
 
 Ledgers from your own machine may contain host details, so they are not committed by default. If you want to publish a pilot result, put it under `results/` with a dated folder, strip host identifiers, and run `python3 areas/lab_operations/safety_scan.py` first. Label it a pilot, on general-purpose hardware, in the summary's first line.
 
+## End-to-end app
+
+`app/` is the whole loop behind a single **Ask** button: a browser page shaped like the device,
+served by a local Python server that runs the same pipeline, the same models, and writes the same
+ledger. It is the rehearsal for the Jetson build.
+
+```bash
+python3 app/server.py --stub      # no models, verifies the whole path
+python3 app/server.py             # real models
+```
+
+See [`app/README.md`](app/README.md) for setup and for which of its numbers mean anything.
+
 ## Interface prototype
 
 `ui/index.html` is a front-end mockup of the finished object: a mid-century tabletop set in
