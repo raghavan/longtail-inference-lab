@@ -1,9 +1,9 @@
 # 02 Edge Offline Intelligence Device
 
-**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. Detailed device evaluation and model-selection intake remain open.
+**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. Portable Jetson sourcing is in progress; no hardware order placed. Detailed device evaluation and model-selection intake remain open.
 **Evidence:** Development checks, owner-confirmed Mac voice input/text response, and an owner report of basic iOS operation; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 **Track:** Local inference and device systems
-**Last updated:** September 12, 2026
+**Last updated:** September 13, 2026
 
 ## One minute summary
 
@@ -23,7 +23,7 @@
 | 2. iOS | Native iPhone app using the same selected answer backend, prompt policy, and shared application logic; distribution through the owner's TestFlight | Physical-device tests under memory pressure, cold start, interruptions, thermal load, and loss of connectivity; beta feedback against agreed usefulness criteria |
 | 3. Jetson | Self-contained NVIDIA device running recognition and answers locally, with its own input, output, storage, and power | A complete parts quote within the remaining budget and measured Jetson latency, memory, energy, thermals, and offline integrity |
 
-A successful TestFlight beta supports a launch decision; launch remains conditional on the evidence and App Store review. The exact device output, enclosure, and portable power design are later decisions. Each platform publishes its own measurements.
+A successful TestFlight beta supports a launch decision; launch remains conditional on the evidence and App Store review. The physical prototype is now specified as a small carryable box with its own screen and about two hours per charge. Enclosure fit and the battery operating envelope remain to be validated. Each platform publishes its own measurements.
 
 ## Agreed requirements and proposed defaults
 
@@ -36,6 +36,8 @@ For Apple models, continuity means the same on-device integration and tested beh
 Apple's model is an Apple-platform dependency. Jetson requires a local open-model backend and a different platform layer. Reuse the interaction contract, prompts, evaluation cases, and portable model artifacts where applicable; validate each backend on its own hardware.
 
 ## Budget and hardware
+
+The [portable procurement brief](hardware/portable_procurement.md) contains the current parts plan, supplier availability, electrical compatibility, and proposed device acceptance procedure. No order has been placed. The two-hour battery target is unmeasured.
 
 The [budget](hardware/bill_of_materials.md) records the confirmed $1,000 first-year ceiling: all new hardware needed for the end product, required subscriptions and software/distribution fees, tax, and shipping. Reuse the already-owned Mac and iPhone; any new development or test hardware and required renewals during the first year also count toward the ceiling.
 

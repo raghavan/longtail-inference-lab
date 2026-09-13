@@ -1,8 +1,10 @@
 # Project budget and Jetson selection
 
 **First-year total ceiling:** $1,000 USD, confirmed September 12, 2026.
-**Status:** Planning allocation; no purchase placed or new spending recorded in this update.
+**Status:** Portable sourcing proposal dated September 13, 2026; no purchase placed or new spending recorded.
 **Evidence:** Zero published Jetson measurements.
+
+The [portable procurement brief](portable_procurement.md) records the agreed carryable box, its own screen, and an approximately two-hour battery target. It contains dated supplier observations, the complete cost plan, compatibility checks, and the remaining purchase gates. The proposed $399 Orin Nano Super configuration totals $952.46 with allowances and the $99 distribution reserve; shipping stock, final accessory quotes, enclosure fit, and checkout charges remain unresolved. This is not a placed order or a guaranteed delivered price.
 
 ## Cost scope
 
@@ -12,13 +14,13 @@ Count each required subscription over its expected use during the first year, in
 
 | Allocation | Maximum planned amount |
 | --- | ---: |
-| Jetson configuration and all physical accessories | $700 |
-| Required subscriptions, software, and app-distribution fees | $100 |
+| Jetson configuration and all physical/development accessories | $753.46 |
+| Required subscriptions, software, and app-distribution fees | $99.00 |
 | Tax and shipping reserve | $100 |
-| Contingency | $100 |
+| Contingency | $47.54 |
 | **Total** | **$1,000** |
 
-These are provisional spending envelopes, not vendor quotes. The $1,000 total and its first-year scope are confirmed; the category allocations can move within that total. The hardware envelope must cover the compute module or kit, carrier if separate, cooling, storage, microphone, output/control hardware, power, and the chosen physical packaging. Optional battery work also consumes this same budget. A parts list is viable only if its complete delivered cost fits; a module-only price cannot establish that.
+These are provisional spending envelopes combining listed prices and allowances, not checkout quotes. The $1,000 total and its first-year scope are confirmed; the category allocations can move within that total. The hardware envelope covers the compute kit, cooling, storage, audio, display/controls, mains and battery power, packaging, and required development accessories. Battery work is now part of the agreed prototype. A parts list is viable only if its complete delivered cost fits; a module-only price cannot establish that.
 
 The local-inference design plans for no paid cloud inference subscription. If a paid runtime, model license, or other subscription becomes necessary, its first-year cost must fit within the same ceiling by reallocating these envelopes.
 
@@ -37,6 +39,6 @@ The larger budget gives the complete prototype more room; it does not establish 
 
 ## Procurement gate
 
-Use the Mac/iPhone iterations to settle the useful workload and model envelope. Then produce a dated complete quote, remaining-budget calculation, supported software/JetPack configuration, power and cooling plan, and target-device measurement plan. Begin the physical prototype on mains power with a dependable reference microphone. Select its text display or voice output before finalizing the parts list.
+The owner requested procurement after confirming basic iOS beta operation. The output and portability scope is now agreed: a carryable box with its own screen and about two hours per charge, retaining optional manual speech output. The [sourcing brief](portable_procurement.md) prepares the complete configuration while keeping the open Apple evaluation and Jetson model/software qualifications explicit. Before payment, resolve the listed procurement gates and record the complete delivered cost. Begin physical bring-up on mains power and qualify the microphone before enclosure integration.
 
 Mac and iPhone measurements inform the workload and implementation. They cannot predict Jetson performance precisely, including CUDA memory behavior, energy, thermals, and model residency. Purchase decisions and later upgrades must state which assumptions remain unmeasured.

@@ -6,7 +6,7 @@ Projects contain the laboratory's active, bounded research. Each needs a questio
 
 ### [02 Edge Offline Intelligence Device](02_edge_offline_intelligence_device/README.md)
 
-**Status:** Native Mac voice input, text answers, and optional local read-aloud work; model-selection intake remains open. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
+**Status:** Native Mac voice input, text answers, and optional local read-aloud work; the owner confirmed basic iOS TestFlight operation. [Portable Jetson sourcing](02_edge_offline_intelligence_device/hardware/portable_procurement.md) is in progress with no order placed. Model-selection intake remains open. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
 Build a local voice-input and text-answer experience in three iterations: a native Mac app, an iPhone app through TestFlight with conditional launch, and a self-contained NVIDIA Jetson prototype. The first-year total ceiling is $1,000, covering all new hardware for the end product, required subscriptions and software/distribution fees, tax, and shipping.
 

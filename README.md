@@ -26,7 +26,7 @@ The [Apple development app](projects/02_edge_offline_intelligence_device/softwar
 
 The [model-selection intake](resources/project_proposals/apple_local_voice_intake.md) records the broader quality and resource evaluation. English general conversation is the first workload; the target iPhone and representative cases remain open. Additional languages are deferred. Apple is the current development backend, with final model selection pending that evaluation.
 
-The Orin Nano Super 8 GB is the physical prototype candidate. A higher-memory Orin NX 16 GB configuration must justify its cost and fit the complete [project budget](projects/02_edge_offline_intelligence_device/hardware/bill_of_materials.md). Mac, iPhone, and Jetson results remain separate.
+The Orin Nano Super 8 GB is the physical prototype candidate. [Portable hardware sourcing](projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md) now targets a carryable box with its own screen and about two hours per charge. No hardware order has been placed; battery life is unmeasured. A higher-memory Orin NX 16 GB configuration must justify its cost and fit the complete [project budget](projects/02_edge_offline_intelligence_device/hardware/bill_of_materials.md). Mac, iPhone, and Jetson results remain separate.
 
 ## PARA organization
 
