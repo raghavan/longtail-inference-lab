@@ -10,7 +10,7 @@ Useful intelligence should keep working when the network disappears. The lab bui
 
 ### [02 Edge Offline Intelligence Device](projects/02_edge_offline_intelligence_device/README.md)
 
-**Status:** Native Mac voice input, text answers, and optional local read-aloud work. The iPhone app is available to the invited owner through TestFlight as **Local Voice Lab 0.3.0 (build 5)**. Physical iPhone evaluation and model-selection intake remain open. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
+**Status:** Native Mac voice input, text answers, and optional local read-aloud work. Following TestFlight delivery of **Local Voice Lab 0.3.0 (build 5)**, the owner confirmed that the beta works on their iOS device. Detailed device evaluation and model-selection intake remain open. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
 The project asks whether useful local voice input and text answers can fit an iPhone's constraints, share their model integration with a Mac app, and inform a self-contained NVIDIA device. The **first-year total ceiling is $1,000**, including all new hardware for the end product and required subscriptions, software/distribution fees, tax, and shipping.
 

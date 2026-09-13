@@ -34,7 +34,7 @@ Record app/source revision, OS/SDK, voice identifier, locale, and synthesis boun
 
 ## Completion and next question
 
-The [status record](../status.md) and [software guide](../software/README.md) hold exact checks and reproduction steps. Identify the target physical iPhone/OS and install the delivered TestFlight beta. Evaluate installed English voice quality, local playback, stop/record transitions, interruptions, storage, memory, startup delay, and usefulness there before making phone quality or performance claims. Apple voices do not transfer to the later Jetson device; its local output backend remains a separate implementation decision.
+The [status record](../status.md) and [software guide](../software/README.md) hold exact checks and reproduction steps. The owner confirmed basic iOS operation after installing the TestFlight beta; record the tested device/OS and confirm the individual speech paths. Evaluate installed English voice quality, local playback, stop/record transitions, interruptions, storage, memory, startup delay, and usefulness there before making phone quality or performance claims. Apple voices do not transfer to the later Jetson device; its local output backend remains a separate implementation decision.
 
 ## Primary references
 

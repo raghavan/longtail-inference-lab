@@ -1,6 +1,6 @@
 # iPhone application and TestFlight development milestone
 
-**Status:** Delivery complete September 12, 2026; build Ready to Test and owner Invited. Physical iPhone installation and evaluation remain open.
+**Status:** Delivery complete September 12, 2026; owner subsequently confirmed the beta works on their iOS device. Detailed device evaluation remains open.
 
 **Tracking:** [GitHub issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44); [implementation PR 45](https://github.com/raghavan/longtail-inference-lab/pull/45).
 
@@ -40,4 +40,4 @@ The physical-device archive completed for 0.3.0 (build 5). The arm64 app passed 
 
 The App Store Connect and TestFlight listing is **Local Voice Lab**, because **Local Voice** was unavailable as a listing name. The installed app retains **Local Voice**. Existing developer access covered delivery; no purchase or subscription was added. No external testers or public App Store release were included.
 
-This meets the delivery boundary. Invitation acceptance and installation on the physical iPhone are unverified; microphone use, offline operation, voice quality, and resource behavior remain the next evaluation gate. The [iPhone guide](../software/apple/iOS/README.md) records installation, reproducible build, and future delivery steps.
+This meets the delivery boundary. After delivery on September 12, the owner confirmed that the beta works on their iOS device. Record this as owner-reported installation and basic operation. The device model, iOS version, and individual feature paths were not specified; microphone behavior, offline operation, voice quality, and resource use remain the next evaluation gate. The [iPhone guide](../software/apple/iOS/README.md) records installation, reproducible build, and future delivery steps.
