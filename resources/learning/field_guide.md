@@ -1,6 +1,6 @@
 # A Field Guide to Local Voice Applications and Devices
 
-The [Edge Offline Intelligence Device](../../projects/02_edge_offline_intelligence_device/README.md) develops through a Mac app, an iPhone app, and a Jetson prototype. The Mac development slice works, basic iOS TestFlight operation is owner-confirmed, and the [Jetson shopping list](../../projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md) is recorded for a first mains-powered voice prototype. The owner confirmed ordering the six DigiKey accessories; kit and storage orders remain unconfirmed. There are zero published comparative quality or performance measurements for these iterations. This guide explains how to turn that sequence into evidence about useful local inference.
+The [Edge Offline Intelligence Device](../../projects/02_edge_offline_intelligence_device/README.md) develops through a Mac app, an iPhone app, and a Jetson prototype. The Mac development slice works, basic iOS TestFlight operation is owner-confirmed, and the [Jetson shopping list](../../projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md) is recorded for a first mains-powered voice prototype. The six DigiKey accessories and Newegg storage card are ordered; the Jetson kit order remains unconfirmed. There are zero published comparative quality or performance measurements for these iterations. This guide explains how to turn that sequence into evidence about useful local inference.
 
 ## 1. Trace the interaction
 

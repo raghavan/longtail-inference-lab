@@ -2,11 +2,11 @@
 
 **First-year total ceiling:** $1,000 USD, confirmed September 12, 2026.
 
-**Checkpoint:** September 13, 2026; the owner confirmed the six-item DigiKey accessory order. The export establishes a $48.30 parts subtotal; its final delivered total remains pending. Jetson kit and microSD card orders are not yet confirmed.
+**Checkpoint:** September 13, 2026; six DigiKey accessories and one Newegg microSD card are ordered. Their parts values are $48.30 and $42.99 respectively, totaling $91.29. Final delivered totals remain pending. The Jetson kit order is still unconfirmed.
 
 **Evidence:** Zero published Jetson measurements.
 
-The [shopping list](portable_procurement.md) contains eight exact items from Arrow, DigiKey, and Newegg, with purchase links and dated supplier observations. The first hardware stage is a mains-powered Orin Nano Super 8 GB with USB microphone, USB speaker, physical button, 128 GB SanDisk card, reader, and two data cables. The listed parts subtotal is **$490.29 before tax, shipping, and tariffs**. It includes the ordered DigiKey items and is not a guaranteed delivered price.
+The [shopping list](portable_procurement.md) contains eight exact items from Arrow, DigiKey, and Newegg, with purchase links and dated supplier observations. The first hardware stage is a mains-powered Orin Nano Super 8 GB with USB microphone, USB speaker, physical button, 128 GB SanDisk card, reader, and two data cables. The listed parts subtotal is **$490.29 before tax, shipping, and tariffs**. It includes the seven ordered items and is not a guaranteed delivered price.
 
 ## First-year allocation
 
@@ -28,9 +28,9 @@ The first three rows total **$490.29**. Together with the $99 fee reserve and $1
 | --- | --- | ---: | --- |
 | DigiKey | Owner confirmed order placement on September 13; exported line items match all six accessories, one each | $48.30 parts subtotal | Final tax, shipping, tariff, total, and fulfillment status |
 | Arrow | Kit order not yet confirmed; earlier cart held one complete 8 GB kit | $399.00 listed price | Successful checkout and delivered total |
-| Newegg | Storage order not yet confirmed; earlier guest checkout held one exact 128 GB card | $42.99 listed price | Successful checkout and delivered total |
+| Newegg | Supplied September 13 order summary confirms one SanDisk Extreme 128 GB card, item N82E16820173727, sold and fulfilled by Newegg | $42.99 item price | Final tax, shipping, total, and fulfillment status |
 
-The DigiKey checkout previously quoted $4.99 shipping and $0.45 tariff, or **$53.74 before tax**. The item export does not establish those final charges. The confirmed $48.30 ordered parts value is already in the allocation above; the actual aggregate spend and exact remaining first-year balance remain pending. Do not reorder the six accessories. Shipment, delivery, and payment settlement are not established by order placement alone. Private receipts and identifiers stay outside this public record.
+The DigiKey checkout previously quoted $4.99 shipping and $0.45 tariff, or **$53.74 before tax**. The item export does not establish those final charges. Newegg checkout previously quoted free shipping, but the supplied order summary does not show the final charges. The **$91.29 ordered parts value** is already in the allocation above; the actual aggregate spend and exact remaining first-year balance remain pending. Do not reorder the six accessories or the card. Shipment, delivery, and payment settlement are not established by order placement or a retailer fulfillment label alone. Private receipts and identifiers stay outside this public record.
 
 The ceiling covers all new hardware needed for the end product and required software, model licenses, subscriptions, and distribution fees during the first 12 months. Any new setup or test equipment also counts. Reuse the existing Mac and iPhone without counting their original prices. Existing equipment or prepaid services can reduce new spending but do not increase the ceiling. Count renewals due during the year; report later years separately.
 
@@ -46,6 +46,6 @@ A 16 GB Jetson configuration requires evaluating the Orin NX tier and its comple
 
 ## Before ordering
 
-Resume from the [purchase and setup checklist](portable_procurement.md#next-steps). Reconcile the existing accessory order first and check whether the kit or card has since been purchased. Recheck stock and prices for remaining items, the complete kit contents, checkout charges, and any setup equipment needed for the received firmware. Confirm that the delivered total plus all required first-year fees fits the ceiling. Keep private checkout details outside public records.
+Resume from the [purchase and setup checklist](portable_procurement.md#next-steps). Reconcile the existing accessory and storage orders and check whether the Jetson kit has since been purchased. Recheck kit stock and price, complete kit contents, checkout charges, and any setup equipment needed for the received firmware. Confirm that the delivered total plus all required first-year fees fits the ceiling. Keep private checkout details outside public records.
 
 Mac and iPhone checks cannot establish Jetson memory headroom, answer quality, speed, energy use, thermals, or offline integrity. Record the Jetson configuration and its results separately. Keep [issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47) open until sourcing and device acceptance are recorded.
