@@ -2,15 +2,15 @@
 
 **Recorded:** September 13, 2026
 
-**Status:** Shopping list ready; purchasing is on hold until the next owner session, planned for next week. No order, payment, or reservation has been completed.
+**Status:** Purchasing resumed. The owner confirmed placing the six-item DigiKey accessory order. Its parts subtotal is $48.30; the final total and fulfillment details remain unrecorded. Jetson kit and microSD card orders are not yet confirmed.
 
 **Tracking:** [Hardware issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47)
 
 **Evidence:** Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
-## Buy these eight items from three stores
+## Eight-item parts list
 
-Buy **one of each**. Prices and availability below are September 13 observations, not reserved stock or checkout quotes. Recheck them when resuming. The first prototype uses mains power, a microphone, a speaker, and a physical listening button. Screen, battery, enclosure, and NVMe storage are deferred.
+The list requires **one of each**. **The six DigiKey items are already ordered; do not purchase them again.** Prices and availability for the remaining items are September 13 observations, not reserved stock or guaranteed checkout quotes. Recheck them before ordering. The first prototype uses mains power, a microphone, a speaker, and a physical listening button. Screen, battery, enclosure, and NVMe storage are deferred.
 
 | Store | Item and purchase link | Purpose | Listed price |
 | --- | --- | --- | ---: |
@@ -21,14 +21,14 @@ Buy **one of each**. Prices and availability below are September 13 observations
 | DigiKey | [Adafruit USB-C microSD reader, 5212](https://www.digikey.com/en/products/detail/adafruit-industries-llc/5212/15761513) | Write the system card using the existing Mac | $6.95 |
 | DigiKey | [Adafruit USB-C to USB-C data cable, 4199](https://www.digikey.com/en/products/detail/adafruit-industries-llc/4199/10230016) | Mac-to-Jetson setup/console connection | $9.95 |
 | DigiKey | [Adafruit USB-A to USB-C data cable, 4474](https://www.digikey.com/en/products/detail/adafruit-industries-llc/4474/11587355) | Connect the button to the Jetson | $4.95 |
-| B&H | [SanDisk Extreme 128 GB A2 UHS-I microSDXC](https://www.bhphotovideo.com/c/product/1948572-REG/sandisk_sdsqxh9_128g_gz6ma_128gb_extreme_uhs_i_microsdxc.html/overview), SDSQXH9-128G-GZ6MA | System, applications, and model storage | $40.25 |
-| | **Arrow $399.00 + DigiKey $48.30 + B&H $40.25** | **Parts subtotal; checkout charges excluded** | **$487.55** |
+| Newegg | [SanDisk Extreme 128 GB A2 UHS-I microSDXC](https://www.newegg.com/sandisk-2tb-microsd-a2-v30/p/N82E16820173727), SDSQXH9-128G-GZ6MA | System, applications, and model storage; select this exact 128 GB SKU | $42.99 |
+| | **Arrow $399.00 + DigiKey $48.30 + Newegg $42.99** | **Parts subtotal; checkout charges excluded** | **$490.29** |
 
 ### Supplier and checkout checkpoint
 
-- **Arrow is the preferred Jetson source at this checkpoint.** Its product page showed one unit in US stock, and the prepared cart showed quantity one at $399 with an estimated shipment of “Ships tomorrow.” This was a dated estimate, not a delivery promise. Checkout reached account sign-in; payment was not completed. A cart does not reserve inventory and may expire. Confirm the exact complete kit and included US mains cord before payment.
-- **DigiKey:** all six listed accessories showed availability. Consolidate them into one order. Final shipping and any tariff charges remain unconfirmed.
-- **B&H:** the selected SanDisk card showed in stock with free item shipping. Recheck final tax and delivery charges.
+- **Arrow is the preferred Jetson source at this checkpoint.** Its product page showed one unit in US stock, and the prepared cart showed quantity one at $399 with an estimated shipment of “Ships tomorrow.” This was a dated estimate, not a delivery promise. No successful kit order is recorded. A cart does not reserve inventory and may expire. Confirm the exact complete kit and included US mains cord before payment.
+- **DigiKey: ordered, owner-confirmed on September 13.** The supplied item export matches all six part numbers, quantities, and prices above and totals $48.30. It lists each item as Immediate but contains no final order total or shipment confirmation. During checkout, standard shipping was quoted at $4.99 and tariff at $0.45, giving $53.74 before tax; these remain estimates until reconciled with the final receipt. Do not order these accessories again.
+- **Newegg:** a guest checkout was prepared for one exact SanDisk 128 GB card at $42.99, sold and shipped by Newegg, with free shipping before tax. No successful storage order is recorded. The product URL has a misleading capacity slug; verify the visible 128 GB capacity and manufacturer SKU before payment. This replaces the same $40.25 B&H option because B&H checkout was temporarily closed during the ordering session. Purchase only one card, from one retailer.
 - **Jetson fallback links:** [NVIDIA's direct US store](https://marketplace.nvidia.com/en-us/enterprise/robotics-edge/jetson-orin-nano-super-developer-kit/) showed $399 but out of stock; [SparkFun](https://www.sparkfun.com/nvidia-jetson-orin-nano-developer-kit.html) showed $399 on backorder without a firm shipment date. Refresh availability before changing suppliers.
 
 ## Memory and the first interaction
@@ -45,14 +45,14 @@ The working Apple apps use Apple's on-device answer backend, not a selected down
 
 ## Budget checkpoint
 
-The **first-year ceiling remains $1,000** for all new hardware, required subscriptions and software/distribution fees, tax, shipping, and tariffs. The [budget record](bill_of_materials.md) allocates $487.55 for these parts, $99 for a possible Apple Developer renewal, and a provisional $100 allowance for checkout charges. That leaves **$313.45 unallocated** for later work and contingency, subject to actual checkout costs. No paid inference subscription is planned. New spending recorded at this checkpoint: **$0**.
+The **first-year ceiling remains $1,000** for all new hardware, required subscriptions and software/distribution fees, tax, shipping, and tariffs. The [budget record](bill_of_materials.md) allocates $490.29 for these parts, $99 for a possible Apple Developer renewal, and a provisional $100 allowance for checkout charges. That leaves **$310.71 provisionally unallocated** for later work and contingency, subject to actual checkout costs. The $48.30 DigiKey parts order is included in that allocation, not added a second time. Its final delivered total is pending, so actual total spending and the exact remaining balance cannot yet be stated. No paid inference subscription is planned.
 
 Battery operation, a portable enclosure, and any screen are later decisions within that same ceiling. Approximately two hours per charge remains an unmeasured future target, not a condition for this first purchase batch.
 
-## Resume here next week
+## Next steps
 
-1. Read this list, [current status](../status.md), and [issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47). Recheck Arrow stock, all eight prices, and the cart contents; do not assume the prepared cart remains available. Keep the SanDisk card and the six-item DigiKey order unless a new sourcing decision is recorded.
-2. Confirm the complete delivered totals, included power supply/US cord, and any renewal due within the first year. Keep the whole project within $1,000. Record purchases only after successful checkout; publish item, amount, and fulfillment status without private order or account details.
+1. Read this list, [current status](../status.md), and [issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47). Reconcile the DigiKey final receipt and fulfillment status without repurchasing its six accessories. Check whether the kit or card has since been ordered before creating another order. For any remaining purchase, recheck stock, price, and cart quantity; do not assume a prepared cart survives.
+2. Confirm the complete delivered totals, included power supply/US cord, and any renewal due within the first year. Keep the whole project within $1,000. Record the evidence for order placement separately from payment settlement and delivery; publish only item, amount, and fulfillment status. Keep raw receipts, exports, and private order or account details outside GitHub.
 3. After arrival, inspect firmware and use a supported official installation path. Start with the supplied mains adapter, the existing Mac, the microSD reader, and USB data console. The Jetson USB-C connection is for data, not mains power. Qualify microphone, speaker, and button connectivity before building the voice loop.
 4. Select and record exact transcription, answer, and voice artifacts, licenses, quantization, runtime versions, context/output limits, and the approved test prompt. Implement the button flow and verify a local spoken question and spoken reply. Use deliberately authored evaluation examples; keep private prompts and raw microphone content out of GitHub.
 5. After setup downloads, disconnect external networks and test the full voice loop, errors, and cancellation. Agree on usefulness and acceptable waiting time before scoring; record latency, peak memory, failures, and power/thermal conditions separately for Jetson. Revisit battery and enclosure choices after the mains-powered loop works. Purchased parts alone do not establish a working device or measured result.
