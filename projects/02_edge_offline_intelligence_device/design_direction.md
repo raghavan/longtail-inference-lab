@@ -30,6 +30,12 @@ or embedded speech model             or embedded open model
 
 The shared interfaces describe capabilities and failures without assuming a particular provider's token stream, context window, or sampling controls. They carry readiness, final transcript, partial/final answer, cancellation, and sanitized timing events. The Jetson implementation follows this contract with a Linux audio/UI layer and local open models; SwiftUI and Apple system models do not transfer to it.
 
+## Initial Jetson interaction
+
+The September 13 hardware direction is a mains-powered, voice-only first stage using the complete Orin Nano Super 8 GB kit. Press a physical button to start recording and press again to finish; local transcription feeds a local answer model with a configurable system prompt, then a local synthesizer speaks the completed answer automatically. Use the button's light for readiness and recording status. The button controls listening while the device stays powered. English, one question at a time, with no conversation history or retrieval, bounds the first implementation. The Apple apps retain their current manual read-aloud behavior.
+
+Start Jetson trials around a 1–3B parameter answer model with 4-bit weights, a compact English transcriber, and local speech synthesis. Exact artifacts, runtimes, context limits, voice quality, and memory headroom remain to be qualified. The Apple backend and installed voices cannot be transferred to Jetson. Screen, battery, and portable enclosure are deferred; approximately two hours per charge remains a future unmeasured target. Read the [shopping list and restart checklist](hardware/portable_procurement.md) before procurement or implementation. No Jetson code or measurement is established by this design record.
+
 ## Options considered
 
 | Option | Benefit | Cost or limitation | Disposition |
