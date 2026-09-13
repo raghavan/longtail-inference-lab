@@ -1,14 +1,14 @@
 # Current technical status
 
 **Updated:** September 12, 2026
-**App:** Mac Local Voice 0.2.0 (build 4); iPhone candidate 0.3.0 (build 5), signing and TestFlight delivery pending
+**App:** Mac Local Voice 0.2.0 (build 4); iPhone candidate 0.3.0 (build 5), development archive signed; TestFlight delivery pending
 **Tracking:** [iPhone/TestFlight issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44); [speech-output milestone](https://github.com/raghavan/longtail-inference-lab/issues/42); [initial voice-input milestone](https://github.com/raghavan/longtail-inference-lab/issues/40)
 
 ## Current milestone
 
 The [macOS local voice development slice](development/README.md) is complete: local speech transcription, an editable visible transcript, and a streamed local text answer. The owner confirmed successful live voice input and visible text answers after the crash repair. The app now includes [local speech output](development/local_speech_output.md): manual **Read aloud** and **Stop speaking**, installed-voice selection, and a synthetic preview. Automatic selection prefers Premium, then Enhanced, then Standard English voices. The owner confirmed that initial read-aloud worked and found the compact voice mechanical; the updated app uses an installed Premium voice when available. The current workload is English general conversation, one question at a time. Additional languages are deferred. No web, document, or vector retrieval is included.
 
-The owner requested the [iPhone app and TestFlight milestone](development/ios_testflight.md). A native app target now runs the same core and SwiftUI source in an iPhone simulator. Its typed-answer, manual speech, voice selection, and keyboard paths were exercised. Physical-device signing has reached the keychain approval step; App Store Connect registration, upload, processing, and owner TestFlight availability remain pending.
+The owner requested the [iPhone app and TestFlight milestone](development/ios_testflight.md). A native app target now runs the same core and SwiftUI source in an iPhone simulator. Its typed-answer, manual speech, voice selection, and keyboard paths were exercised. The arm64 iPhone release archive completed and passed strict signature verification. App Store Connect access is available. Apple displays an updated Developer Program License Agreement requiring Account Holder acceptance. The app registration form is prepared; app identifier registration, distribution signing, upload, processing, and owner TestFlight availability remain pending.
 
 No public app release, TestFlight upload, or hardware purchase has been performed in this milestone. Zero published comparative quality or performance measurements exist for Mac, iPhone, or Jetson. The first-year ceiling remains $1,000 across all required new hardware, subscriptions/software/distribution fees, tax, and shipping.
 
@@ -26,8 +26,9 @@ The development configuration was an M2 Pro with 16 GB memory, macOS 26.6 (25G70
 | App controls after repair | Microphone capture entered Listening; Cancel returned to idle; a completed question and visible answer were observed | Brief interactive check, not a reliability measurement |
 | Local speech output | An authored English sentence produced 72,849 audio frames with non-silent samples and completion using `com.apple.voice.premium.en-US.Ava` | Buffer synthesis check, no human naturalness score; Apple manages asset revision and hash |
 | Speech controls | Premium voice displayed and selected; Preview, Stop speaking, restart, and completion exercised in the packaged app | Brief interactive development check; no long-session reliability claim |
-| iOS application build | Native app bundle compiled for arm64 and x86_64 iOS Simulator, SDK 26.5, deployment target iOS 26 | Signing and distribution are separate pending gates |
+| iOS application build | Native app bundle compiled for arm64 and x86_64 iOS Simulator, SDK 26.5, deployment target iOS 26 | App Store distribution signing and delivery remain pending |
 | iOS simulator interaction | iPhone 17 Pro simulator completed an authored typed question and manual read-aloud; voice selection, preview, explicit stop, and keyboard Done were exercised | Local transcription unavailable; Standard voices only; no physical-phone inference, audio, or performance claim |
+| iPhone release archive | Xcode archive succeeded for 0.3.0 (build 5); arm64 binary, development signature, icon, privacy manifest, and iOS 26 minimum checked | Development signing only; no accepted App Store upload or TestFlight build |
 | Audio interruptions | Two controlled-backend regressions verify stopping playback preserves completed text and cancellation discards partial/late output | Physical calls, audio routes, and recording interruptions remain untested |
 | Manual voice check | Owner confirmed voice input through visible text response in version 0.1.1 | No scored corpus, timing, private transcript, or recording retained in the public record |
 
@@ -48,7 +49,7 @@ The original crash report and personal screenshots remain private. This record c
 - Evaluate the Premium voice through listening checks; the Apple quality tier is not a conversational-naturalness score.
 - Evaluate ordinary spoken questions, repeated record/stop/cancel cycles, permission denial, input-device changes, interruptions, and long sessions. A successful manual check does not establish reliability.
 - Confirm offline operation after setup with a defined network-observation boundary.
-- Complete release signing and owner TestFlight delivery. Identify the physical iPhone/OS and test English voice availability, naturalness, startup delay, memory/storage, recording-to-playback transitions, and audio interruptions. Simulator checks are insufficient for this gate.
+- Complete Apple account prerequisites, App Store distribution signing, and owner TestFlight delivery. Identify the physical iPhone/OS and test English voice availability, naturalness, startup delay, memory/storage, recording-to-playback transitions, and audio interruptions. Simulator checks are insufficient for this gate.
 - Freeze representative conversation cases and usefulness/resource gates before comparative measurements. The current single-turn prototype is not conversational memory.
 
 ## Durable record
