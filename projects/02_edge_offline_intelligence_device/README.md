@@ -1,6 +1,6 @@
 # 02 Edge Offline Intelligence Device
 
-**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. Seven of eight hardware items are ordered: six DigiKey accessories and one Newegg microSD card. The Jetson kit order remains unconfirmed. Detailed device evaluation and model-selection intake remain open.
+**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. All eight first-batch hardware items are ordered across Arrow, DigiKey, and Newegg; arrival, setup, and device acceptance remain open. Detailed device evaluation and model-selection intake remain open.
 **Evidence:** Development checks, owner-confirmed Mac voice input/text response, and an owner report of basic iOS operation; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 **Track:** Local inference and device systems
 **Last updated:** September 13, 2026
@@ -37,7 +37,7 @@ Apple's model is an Apple-platform dependency. Jetson requires a local open-mode
 
 ## Budget and hardware
 
-The [shopping list and restart checklist](hardware/portable_procurement.md) contains eight exact items from Arrow, DigiKey, and Newegg. It records dated stock observations, setup dependencies, and the proposed device acceptance steps. The owner confirmed ordering all six DigiKey accessories on September 13; the export confirms $48.30 in parts, with the final delivered total pending. The Newegg order summary confirms one SanDisk Extreme 128 GB card at $42.99, with final charges and fulfillment pending. The Jetson kit order remains unconfirmed. Do not repurchase the seven ordered items.
+The [order record and arrival checklist](hardware/portable_procurement.md) contains eight exact items from Arrow, DigiKey, and Newegg. All eight were ordered on September 13. Arrow confirms the complete US-region Jetson kit at $428.93 including tax and free shipping, with expected shipment September 14 and delivery September 21, 2026. Actual arrival is not yet confirmed. The six DigiKey accessories total $48.30 in parts and the Newegg SanDisk Extreme 128 GB card is $42.99; their final charges remain pending. Do not repurchase any first-batch item. The checklist records setup dependencies and proposed device acceptance steps without PII or private purchase identifiers.
 
 The [budget](hardware/bill_of_materials.md) records the confirmed $1,000 first-year ceiling: all new hardware needed for the end product, required subscriptions and software/distribution fees, tax, and shipping. Reuse the already-owned Mac and iPhone; any new development or test hardware and required renewals during the first year also count toward the ceiling.
 
