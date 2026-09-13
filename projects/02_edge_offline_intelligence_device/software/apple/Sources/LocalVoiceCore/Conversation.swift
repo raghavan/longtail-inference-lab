@@ -206,6 +206,17 @@ public enum VoiceError: LocalizedError {
         notice = "Cancelled. You can start again."
     }
 
+    public func interruptAudio() async {
+        if isBusy {
+            let cancelledRevision = revision + 1
+            await cancel()
+            guard revision == cancelledRevision else { return }
+            notice = "Audio was interrupted. You can start again."
+        } else if isSpeaking {
+            stopSpeaking()
+        }
+    }
+
     public func clear() async {
         await cancel()
         transcript = ""

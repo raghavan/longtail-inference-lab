@@ -2,6 +2,8 @@ import SwiftUI
 import LocalVoiceCore
 #if os(macOS)
 import AppKit
+#else
+import AVFoundation
 #endif
 
 @main struct LocalVoiceApp: App {
@@ -27,19 +29,14 @@ import AppKit
 
 struct ConversationView: View {
     @Environment(\.scenePhase) private var scenePhase
+    @FocusState private var questionFocused: Bool
     @Bindable var conversation: Conversation
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text("Local Voice").font(.largeTitle.weight(.semibold))
-                        Text("Speak a question. Read or listen to an answer.").foregroundStyle(.secondary)
-                    }
-                    Spacer()
-                    Label("On this device", systemImage: "desktopcomputer")
-                        .font(.caption.weight(.medium)).padding(9)
-                        .background(.green.opacity(0.10), in: Capsule())
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .top) { headerTitle; Spacer(); deviceBadge }
+                    VStack(alignment: .leading, spacing: 12) { headerTitle; deviceBadge }
                 }
                 VStack(alignment: .leading, spacing: 10) {
                     readinessRow("Answers", state: conversation.answerReadiness)
@@ -92,29 +89,12 @@ struct ConversationView: View {
                         .padding(9).background(.background, in: RoundedRectangle(cornerRadius: 10))
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(.secondary.opacity(0.3)))
                         .disabled(conversation.isBusy)
+                        .focused($questionFocused)
                         .accessibilityLabel("Question or transcript")
                     Text("Record up to 30 seconds, or type here. You can edit the transcript and ask again.")
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                HStack(spacing: 12) {
-                    if conversation.phase == .listening {
-                        Button("Stop and answer", systemImage: "stop.fill") { conversation.stopRecording() }
-                            .buttonStyle(.borderedProminent).tint(.red)
-                    } else {
-                        Button("Record", systemImage: "mic.fill") { conversation.record() }
-                            .disabled(conversation.isBusy || !conversation.speechReadiness.isReady)
-                    }
-                    Button("Answer", systemImage: "arrow.up") { conversation.ask() }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(conversation.isBusy || conversation.transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !conversation.answerReadiness.isReady)
-                        .keyboardShortcut(.return, modifiers: .command)
-                    if conversation.isBusy {
-                        Button("Cancel") { Task { await conversation.cancel() } }
-                            .disabled(conversation.phase == .cancelling)
-                    }
-                    Spacer()
-                    Button("Clear") { Task { await conversation.clear() } }.disabled(conversation.isBusy)
-                }
+                actionControls
                 HStack(spacing: 9) {
                     if conversation.isBusy { ProgressView().controlSize(.small) }
                     Text(conversation.notice).font(.callout).foregroundStyle(.secondary)
@@ -140,14 +120,101 @@ struct ConversationView: View {
                 Text("Early prototype · English · One question at a time. Audio and text are not saved by this app.")
                     .font(.caption).foregroundStyle(.secondary)
             }
-            .padding(28).frame(maxWidth: 900)
+            .padding(contentPadding).frame(maxWidth: 900)
             .frame(maxWidth: .infinity)
         }
+        .scrollDismissesKeyboard(.interactively)
+        #if os(iOS)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { questionFocused = false }
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.interruptionNotification)) { notification in
+            guard let value = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+                  AVAudioSession.InterruptionType(rawValue: value) == .began else { return }
+            Task { await conversation.interruptAudio() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: AVAudioSession.routeChangeNotification)) { notification in
+            guard let value = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt,
+                  AVAudioSession.RouteChangeReason(rawValue: value) == .oldDeviceUnavailable else { return }
+            Task { await conversation.interruptAudio() }
+        }
+        #endif
         .onDisappear { Task { await conversation.cancel() } }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { Task { await conversation.cancel() } }
-            if phase == .active { conversation.refreshVoices() }
+            if phase == .active, !conversation.isBusy { Task { await conversation.refresh() } }
         }
+    }
+
+    private var headerTitle: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text("Local Voice").font(.largeTitle.weight(.semibold))
+            Text("Speak a question. Read or listen to an answer.").foregroundStyle(.secondary)
+        }
+    }
+
+    private var deviceBadge: some View {
+        Label("On this device", systemImage: deviceIcon)
+            .font(.caption.weight(.medium)).padding(9)
+            .background(.green.opacity(0.10), in: Capsule())
+    }
+
+    @ViewBuilder private var actionControls: some View {
+        #if os(iOS)
+        VStack(spacing: 12) {
+            HStack { captureButton; answerButton }
+                .buttonStyle(.bordered).controlSize(.large)
+            HStack { cancelButton; Spacer(); clearButton }
+        }
+        #else
+        HStack(spacing: 12) { captureButton; answerButton; cancelButton; Spacer(); clearButton }
+        #endif
+    }
+
+    @ViewBuilder private var captureButton: some View {
+        if conversation.phase == .listening {
+            Button("Stop and answer", systemImage: "stop.fill") { conversation.stopRecording() }
+                .buttonStyle(.borderedProminent).tint(.red)
+        } else {
+            Button("Record", systemImage: "mic.fill") { questionFocused = false; conversation.record() }
+                .disabled(conversation.isBusy || !conversation.speechReadiness.isReady)
+        }
+    }
+
+    private var answerButton: some View {
+        Button("Answer", systemImage: "arrow.up") { questionFocused = false; conversation.ask() }
+            .buttonStyle(.borderedProminent)
+            .disabled(conversation.isBusy || conversation.transcript.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !conversation.answerReadiness.isReady)
+            .keyboardShortcut(.return, modifiers: .command)
+    }
+
+    @ViewBuilder private var cancelButton: some View {
+        if conversation.isBusy {
+            Button("Cancel") { Task { await conversation.cancel() } }.disabled(conversation.phase == .cancelling)
+        }
+    }
+
+    private var clearButton: some View {
+        Button("Clear") { questionFocused = false; Task { await conversation.clear() } }.disabled(conversation.isBusy)
+    }
+
+    private var deviceIcon: String {
+        #if os(macOS)
+        "desktopcomputer"
+        #else
+        "iphone"
+        #endif
+    }
+
+    private var contentPadding: CGFloat {
+        #if os(macOS)
+        28
+        #else
+        20
+        #endif
     }
 
     private var voiceSetupHelp: String {

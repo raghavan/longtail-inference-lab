@@ -3,3 +3,11 @@
 build/
 *.xcuserstate
 xcuserdata/
+
+# Distribution and signing remain private.
+*.xcarchive/
+*.ipa
+*.mobileprovision
+*.p12
+*.p8
+iOS/Config/Signing.local.xcconfig

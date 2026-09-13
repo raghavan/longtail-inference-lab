@@ -8,9 +8,9 @@ import FoundationModels
         switch SystemLanguageModel.default.availability {
         case .available: return .ready
         case .unavailable(.appleIntelligenceNotEnabled):
-            return .unavailable("Enable Apple Intelligence in System Settings to use local answers.")
+            return .unavailable("Enable Apple Intelligence to use local answers.")
         case .unavailable(.modelNotReady):
-            return .unavailable("The local answer model is not ready. Check Apple Intelligence in System Settings.")
+            return .unavailable("The local answer model is not ready. Check Apple Intelligence settings.")
         case .unavailable(.deviceNotEligible):
             return .unavailable("This device does not support Apple's local answer model.")
         case .unavailable:

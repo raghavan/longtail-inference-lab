@@ -1,0 +1,222 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01E0D3161BAB2A7639267EA1 /* LocalVoiceCore in Frameworks */ = {isa = PBXBuildFile; productRef = E2842362E6378D299C3E853D /* LocalVoiceCore */; };
+		0FEC3BE792E121E81428FCA3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = BA3375BFA13A6876A8C0E0EC /* PrivacyInfo.xcprivacy */; };
+		23DB1113D45D79E8642364B0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1A19B884DF8E894B6C527BC /* Assets.xcassets */; };
+		68E73B8243CB13AD75B60C9E /* LocalVoiceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD4A2743FD9A16DDC705AC4 /* LocalVoiceApp.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		06EE73C1BC86D7424C97D6FF /* LocalVoice.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocalVoice.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C595BE965E43949882F61CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		48376AB1AE6F1FDD6A0EC168 /* Config/App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/App.xcconfig; sourceTree = "<group>"; };
+		4CD4A2743FD9A16DDC705AC4 /* LocalVoiceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LocalVoiceApp.swift; path = ../Sources/LocalVoiceApp/LocalVoiceApp.swift; sourceTree = "<group>"; };
+		BA3375BFA13A6876A8C0E0EC /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F1A19B884DF8E894B6C527BC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D40F45BA83833FA24E0ACECD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01E0D3161BAB2A7639267EA1 /* LocalVoiceCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3771FAF48190858EA267C5EC = {
+			isa = PBXGroup;
+			children = (
+				4CD4A2743FD9A16DDC705AC4 /* LocalVoiceApp.swift */,
+				F1A19B884DF8E894B6C527BC /* Assets.xcassets */,
+				BA3375BFA13A6876A8C0E0EC /* PrivacyInfo.xcprivacy */,
+				1C595BE965E43949882F61CA /* Info.plist */,
+				48376AB1AE6F1FDD6A0EC168 /* Config/App.xcconfig */,
+				E93C40781FED24F92CB150B5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E93C40781FED24F92CB150B5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				06EE73C1BC86D7424C97D6FF /* LocalVoice.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B5C9CE0AB680151050DF827D /* LocalVoice */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4154002CEF187810B44724E4 /* Build configuration list for PBXNativeTarget "LocalVoice" */;
+			buildPhases = (
+				98FC1BA8E5C7AF2CF2BC83E4 /* Sources */,
+				D40F45BA83833FA24E0ACECD /* Frameworks */,
+				6F27DEFA5E912AD67810D510 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LocalVoice;
+			packageProductDependencies = (
+				E2842362E6378D299C3E853D /* LocalVoiceCore */,
+			);
+			productName = LocalVoice;
+			productReference = 06EE73C1BC86D7424C97D6FF /* LocalVoice.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B0377D6F4BD8B9C908BC22DD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					B5C9CE0AB680151050DF827D = {
+						CreatedOnToolsVersion = 26.6;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 42E58120221EEF672F288ABD /* Build configuration list for PBXProject "LocalVoice" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3771FAF48190858EA267C5EC;
+			packageReferences = (
+				46D8B05B543AD348C57465DD /* XCLocalSwiftPackageReference ".." */,
+			);
+			productRefGroup = E93C40781FED24F92CB150B5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B5C9CE0AB680151050DF827D /* LocalVoice */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6F27DEFA5E912AD67810D510 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23DB1113D45D79E8642364B0 /* Assets.xcassets in Resources */,
+				0FEC3BE792E121E81428FCA3 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		98FC1BA8E5C7AF2CF2BC83E4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				68E73B8243CB13AD75B60C9E /* LocalVoiceApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		24A985189347CB9688792B22 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5D041A696DC65DBB21CB7519 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 48376AB1AE6F1FDD6A0EC168 /* Config/App.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		A637004D6A151CA8B2EC9C6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+			};
+			name = Debug;
+		};
+		CE2689AFBB37F8B054E82B1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 48376AB1AE6F1FDD6A0EC168 /* Config/App.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4154002CEF187810B44724E4 /* Build configuration list for PBXNativeTarget "LocalVoice" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5D041A696DC65DBB21CB7519 /* Debug */,
+				CE2689AFBB37F8B054E82B1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		42E58120221EEF672F288ABD /* Build configuration list for PBXProject "LocalVoice" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A637004D6A151CA8B2EC9C6D /* Debug */,
+				24A985189347CB9688792B22 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		46D8B05B543AD348C57465DD /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E2842362E6378D299C3E853D /* LocalVoiceCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 46D8B05B543AD348C57465DD /* XCLocalSwiftPackageReference ".." */;
+			productName = LocalVoiceCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = B0377D6F4BD8B9C908BC22DD /* Project object */;
+}
