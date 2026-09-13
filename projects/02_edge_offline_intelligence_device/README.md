@@ -1,6 +1,6 @@
 # 02 Edge Offline Intelligence Device
 
-**Status:** Active project; Mac app works, native iPhone simulator checks pass, owner TestFlight delivery pending, model-selection intake open.
+**Status:** Active project; Mac app works, iPhone beta available to the invited owner in TestFlight, physical iPhone evaluation and model-selection intake open.
 **Evidence:** Development checks and owner-confirmed voice input/text response; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 **Track:** Local inference and device systems
 **Last updated:** September 12, 2026
@@ -53,7 +53,7 @@ The project can be marked complete when the three iterations have dated, reprodu
 
 Mac Local Voice 0.2.0 (build 4) extends the [specified Mac development slice](development/README.md) with [manual local speech output](development/local_speech_output.md). The owner confirmed voice input, text answers, and read-aloud. An initial microphone callback crash was repaired and covered by a background-callback regression test.
 
-The [iPhone candidate](development/ios_testflight.md), 0.3.0 (build 5), uses the same core and SwiftUI source in a native app target. Seventeen shared automated tests passed, and the iOS simulator completed an authored typed question and manual read-aloud. Local speech recognition was unavailable in that simulator. The development-signed iPhone archive passed verification; App Store distribution and owner TestFlight delivery are pending. The [technical status](status.md) records each platform's configuration and evidence limits.
+The [iPhone beta](development/ios_testflight.md), 0.3.0 (build 5), uses the same core and SwiftUI source in a native app target. Seventeen shared automated tests passed, and the iOS simulator completed an authored typed question and manual read-aloud. Local speech recognition was unavailable in that simulator. Apple accepted and processed the signed upload; the build is Ready to Test in the internal owner group, and the owner is Invited. The TestFlight listing is **Local Voice Lab**; the installed app is **Local Voice**. Physical iPhone installation and evaluation remain unverified. The [technical status](status.md) records each platform's configuration and evidence limits.
 
 The app handles one question at a time, with no conversation history. English is the current language scope; additional languages are deferred. General conversation is the task family. The target iPhone/OS and representative evaluation cases remain open. No physical iPhone or Jetson test has run.
 

@@ -1,8 +1,19 @@
 # iPhone app and TestFlight delivery
 
-The `LocalVoice.xcodeproj` application target builds the existing shared SwiftUI entry point and links `LocalVoiceCore` from the parent Swift package. It produces a real iPhone app bundle. There is no duplicate phone model implementation, external package dependency, or bundled model weight. Current candidate: **Local Voice 0.3.0 (build 5)**, bundle identifier `lab.longtailinference.localvoice`.
+The `LocalVoice.xcodeproj` application target builds the existing shared SwiftUI entry point and links `LocalVoiceCore` from the parent Swift package. It produces a real iPhone app bundle. There is no duplicate phone model implementation, external package dependency, or bundled model weight. Current beta: **Local Voice Lab 0.3.0 (build 5)** in TestFlight, bundle identifier `lab.longtailinference.localvoice`. The installed app is named **Local Voice**.
 
 Use an Apple Intelligence–capable iPhone running iOS 26 or later. Enable Apple Intelligence and install the required system assets on that phone. The app checks answer, transcription, and speaking-voice availability at runtime. English is the current scope. Each completed answer remains silent until **Read aloud** is pressed.
+
+## Install the owner beta
+
+Apple processed build 0.3.0 (5) on September 12, 2026. The internal **Owner testing** group contains the build as **Ready to Test** and the authorized owner as **Invited**. Installation and physical-device evaluation remain unverified.
+
+1. Open Apple's TestFlight invitation on the iPhone and follow it into the TestFlight app.
+2. Accept the invitation and install **Local Voice Lab**. Open **Local Voice** from the home screen.
+3. Check answer and speech readiness. Use **Prepare local speech** if offered; initial system asset setup may require internet. Allow microphone access when testing recording.
+4. Try a short typed question, then **Record** and **Stop and answer**. Press **Read aloud** only when playback is wanted. Use **Voice** and **Preview voice** to compare installed English voices.
+
+For a higher-quality installed voice, use Settings → Accessibility → Read & Speak → Voices → English, download an available Enhanced or Premium voice, and refresh voices in the app. Voice names and availability vary by device. Record the phone model and iOS version before evaluating microphone accuracy, voice naturalness, interruptions, offline behavior, or resource use. Keep private questions, recordings, and invitation links out of public project records.
 
 ## Build and inspect
 
@@ -29,7 +40,7 @@ This requests automatic provisioning and creates `build/ios/LocalVoice.xcarchive
 
 ## Deliver to the owner
 
-1. Register or locate the matching iOS app in App Store Connect. Use English (U.S.) and the matching bundle identifier; a stable internal SKU can be `local-voice-ios`. Check for an existing record before creating one.
+1. Use the existing **Local Voice Lab** iOS record in App Store Connect: English (U.S.), the matching bundle identifier, and SKU `local-voice-ios`. Increment the build number in `Config/App.xcconfig` for a new upload; do not create a duplicate app record.
 2. Open the archive in Xcode Organizer, choose **Distribute App**, and upload to App Store Connect using the existing developer team. Resolve any validation errors before claiming acceptance.
 3. Wait for Apple processing. In the app's TestFlight tab, make the processed build available to the owner's internal testing group. Add only the authorized owner; external testers and public release are separate decisions.
 4. Confirm the actual TestFlight build state and owner availability, then record the version/build and sanitized status in the [delivery record](../../../development/ios_testflight.md). Never publish signing or account identifiers.

@@ -1,8 +1,8 @@
 # iPhone application and TestFlight development milestone
 
-**Status:** Implementation authorized September 12, 2026; build and distribution in progress.
+**Status:** Delivery complete September 12, 2026; build Ready to Test and owner Invited. Physical iPhone installation and evaluation remain open.
 
-**Tracking:** [GitHub issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44).
+**Tracking:** [GitHub issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44); [implementation PR 45](https://github.com/raghavan/longtail-inference-lab/pull/45).
 
 This record applies the relevant [experiment template](../../../resources/experiment_template/README.md) sections to packaging and distributing the existing Apple app. It is a development milestone, not the broader comparative model-selection experiment.
 
@@ -32,8 +32,12 @@ Simulators may lack local answer models and transcription assets; show an honest
 
 ## Completion record
 
-Candidate **0.3.0 (build 5)** has a native iPhone target, shared core and SwiftUI source, an opaque app icon, permission descriptions, and a required-reason privacy manifest. Xcode 26.6 and the iOS 26.5 SDK built the simulator app. Seventeen shared automated tests passed, including two focused interruption regressions.
+Beta **0.3.0 (build 5)** has a native iPhone target, shared core and SwiftUI source, an opaque app icon, permission descriptions, and a required-reason privacy manifest. Xcode 26.6 and the iOS 26.5 SDK built the simulator app. Seventeen shared automated tests passed, including two focused interruption regressions. Mac release compilation also passed.
 
 An iPhone 17 Pro simulator running iOS 26.5 was used for development UI checks. It returned a local text answer to an authored typed question and completed manual read-aloud. Installed English voice selection, preview, explicit stop preserving the answer, text entry, and software-keyboard dismissal were exercised. The simulator reported local English transcription as unavailable and listed Standard English speaking voices. These observations are separate from physical-device evaluation.
 
-The physical-device archive completed for 0.3.0 (build 5). The arm64 app passed strict signature verification using a development profile; its iOS 26 minimum, icon, and privacy manifest were checked. App Store Connect sign-in is complete. Apple displays an updated Developer Program License Agreement requiring Account Holder acceptance. The app creation form is prepared, but app identifier registration, App Store distribution signing, upload, processing, and owner TestFlight availability remain pending. No TestFlight delivery is claimed. The [iPhone guide](../software/apple/iOS/README.md) records reproducible build and delivery steps.
+The physical-device archive completed for 0.3.0 (build 5). The arm64 app passed strict signature verification using a development profile; its iOS 26 minimum, icon, and privacy manifest were checked. App Store distribution export and upload then succeeded. Apple reports the upload as **Complete**, and the build is **Ready to Test** in the internal **Owner testing** group. The group contains one build and one authorized owner tester with status **Invited**. Automatic distribution is disabled; later builds require deliberate assignment.
+
+The App Store Connect and TestFlight listing is **Local Voice Lab**, because **Local Voice** was unavailable as a listing name. The installed app retains **Local Voice**. Existing developer access covered delivery; no purchase or subscription was added. No external testers or public App Store release were included.
+
+This meets the delivery boundary. Invitation acceptance and installation on the physical iPhone are unverified; microphone use, offline operation, voice quality, and resource behavior remain the next evaluation gate. The [iPhone guide](../software/apple/iOS/README.md) records installation, reproducible build, and future delivery steps.

@@ -12,7 +12,7 @@ These instructions are for all AI coding assistants working in this repository, 
 
 ## Repository intent
 
-Long Tail Inference Lab studies where useful intelligence can move closer to the person: onto local models, local evidence, and local hardware. The Edge Offline Intelligence Device is the active project. The English Mac app works, and the native iPhone app has simulator checks; owner TestFlight delivery is pending. Read `projects/02_edge_offline_intelligence_device/status.md` for current gates and limitations. It has zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
+Long Tail Inference Lab studies where useful intelligence can move closer to the person: onto local models, local evidence, and local hardware. The Edge Offline Intelligence Device is the active project. The English Mac app works, and the native iPhone app is available to the invited owner through TestFlight as Local Voice Lab; physical iPhone evaluation remains open. Read `projects/02_edge_offline_intelligence_device/status.md` for current gates and limitations. It has zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
 Use `projects/02_edge_offline_intelligence_device/README.md` for the current three-iteration direction: native macOS voice input with local transcription and text answers, iOS with the same selected model integration and TestFlight evaluation, then a self-contained NVIDIA Jetson prototype. Design the Apple apps around the target iPhone's constraints. Apple system models do not transfer to Jetson.
 

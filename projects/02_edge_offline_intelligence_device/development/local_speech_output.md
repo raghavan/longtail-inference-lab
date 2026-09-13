@@ -16,7 +16,7 @@ The app prefers Premium, then Enhanced, then Standard English voices, with an En
 
 The initial installed compact voice produced audio and the owner confirmed playback, but found the speech mechanical. A subsequent development check used `com.apple.voice.premium.en-US.Ava`, quality Premium. The system settings displayed a 280.2 MB download and 323 MB installed storage for this voice on the development Mac. These are Mac setup observations, not app download size, peak RAM, or an iPhone storage measurement. No paid subscription was added. System voice downloads require internet once; app playback uses the installed voice.
 
-Voice availability belongs to each device. The shared API does not guarantee that a particular named Mac voice exists on every iPhone. Discover installed English voices at runtime and expose download guidance. The current source compiled and linked for both arm64 and x86_64 iOS Simulator with the iOS 26.5 SDK and an iOS 26 deployment target. This is a compilation check, not a packaged iPhone application, simulator execution, TestFlight upload, or physical-device result.
+Voice availability belongs to each device. The shared API does not guarantee that a particular named Mac voice exists on every iPhone. Discover installed English voices at runtime and expose download guidance. The source compiled and linked for both arm64 and x86_64 iOS Simulator with the iOS 26.5 SDK and an iOS 26 deployment target. The [iPhone delivery milestone](ios_testflight.md) also records a packaged app, manual playback and voice-control checks in the simulator, and owner TestFlight delivery. Physical iPhone voice availability and quality remain untested.
 
 ## Success and stop boundaries
 
@@ -28,13 +28,13 @@ Speech delegate callbacks bridge only a sendable closure to MainActor. They do n
 
 ## Controls and validation
 
-Fifteen automated tests cover the original input, generation, cancellation, and microphone-callback behavior plus manual playback, stop before recording, stale playback callbacks, clearing, missing voices, voice changes, removed assets, and quality-based voice selection. An authored English sentence produced non-silent audio and a completion marker with the installed Premium voice. Neither the test nor the Apple quality label is a human naturalness score.
+Seventeen shared automated tests cover input, generation, cancellation, and microphone-callback behavior plus manual playback, stop before recording, stale playback callbacks, clearing, missing voices, voice changes, removed assets, quality-based voice selection, and audio interruptions. An authored English sentence produced non-silent audio and a completion marker with the installed Premium voice on the Mac. Neither the test nor the Apple quality label is a human naturalness score.
 
 Record app/source revision, OS/SDK, voice identifier, locale, and synthesis bounds. Apple manages the voice assets and does not expose a pinned weight revision or hash here. No private recordings, conversations, or screenshots enter the public record. A defined disconnected-network observation has not been performed.
 
 ## Completion and next question
 
-The [status record](../status.md) and [software guide](../software/README.md) hold exact checks and reproduction steps. Continue with a listening check of the Premium voice and identify the target physical iPhone/OS. Test local playback, stop/record transitions, interruptions, storage, memory, startup delay, and usefulness there before TestFlight or performance claims. Apple voices do not transfer to the later Jetson device; its local output backend remains a separate implementation decision.
+The [status record](../status.md) and [software guide](../software/README.md) hold exact checks and reproduction steps. Identify the target physical iPhone/OS and install the delivered TestFlight beta. Evaluate installed English voice quality, local playback, stop/record transitions, interruptions, storage, memory, startup delay, and usefulness there before making phone quality or performance claims. Apple voices do not transfer to the later Jetson device; its local output backend remains a separate implementation decision.
 
 ## Primary references
 

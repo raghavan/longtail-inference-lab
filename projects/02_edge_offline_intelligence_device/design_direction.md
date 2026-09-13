@@ -3,7 +3,7 @@
 **Status:** Proposed architecture; platform sequence and $1,000 first-year total ceiling agreed
 **Date:** September 12, 2026
 **Decider:** Project owner
-**Evidence:** Mac development checks in [status](status.md); zero published comparative quality or performance measurements for Mac, iPhone, or Jetson
+**Evidence:** Mac and simulator development checks, plus owner TestFlight delivery, in [status](status.md); zero published comparative quality or performance measurements for Mac, iPhone, or Jetson
 
 ## Context
 
