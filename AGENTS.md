@@ -7,12 +7,16 @@ These instructions are for all AI coding assistants working in this repository, 
 1. Use this file (`AGENTS.md`) for repository level agent guidance.
 2. Do not create model specific instruction files such as `CLAUDE.md`, `CODEX.md`, or similar unless the user explicitly asks for one.
 3. Add tool or model specific guidance here under a clearly labeled section.
+4. Use GitHub as durable technical project memory: keep decisions, current status, reproducible evidence, limitations, and open questions in the project documents; use issues and pull requests to track execution and link to those records. Read the current records before resuming work.
+5. The owner authorizes publishing real, sanitized experimental and engineering updates while building in public. Keep personal and emotional information out of repository files, issues, pull requests, comments, screenshots, and logs. Do not copy private conversation or microphone content into public memory; publish only deliberately authored technical records and approved evaluation examples.
 
 ## Repository intent
 
-Long Tail Inference Lab currently focuses on one active experiment: whether executable-verifier-passing public terminal work from a fixed cloud teacher can become approved Markdown memory that improves a fixed local student on disjoint held-out tasks.
+Long Tail Inference Lab studies where useful intelligence can move closer to the person: onto local models, local evidence, and local hardware. The Edge Offline Intelligence Device is the active project. Its first Mac voice-to-text-answer development slice works; read `projects/02_edge_offline_intelligence_device/status.md` for checks and limitations. It has zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
-Use `projects/01_terminal_artifact_memory/README.md` as the active protocol overview. Keep the local student model, prompt, runtime, and hardware fixed during the core learning curve unless a documented experiment phase explicitly changes one of those controls.
+Use `projects/02_edge_offline_intelligence_device/README.md` for the current three-iteration direction: native macOS voice input with local transcription and text answers, iOS with the same selected model integration and TestFlight evaluation, then a self-contained NVIDIA Jetson prototype. Design the Apple apps around the target iPhone's constraints. Apple system models do not transfer to Jetson.
+
+The confirmed first-year total ceiling is $1,000, including all new hardware for the end product, required subscriptions and software/distribution fees, tax, and shipping. Orin Nano Super 8 GB is a candidate; higher memory means evaluating the Orin NX tier and the complete remaining budget. Use the architecture decision and `resources/project_proposals/apple_local_voice_intake.md` before implementation. Keep proposed thresholds, development checks, and measured results distinct, and never pool platform measurements.
 
 ## Naming and branding
 
@@ -44,9 +48,12 @@ Do not duplicate the template question set in this file. Update the template whe
 ## Focus discipline
 
 1. Keep `projects/` limited to work receiving active attention.
-2. Do not add another active experiment until the current project has a published baseline and at least one measured memory checkpoint, unless the user explicitly changes that rule.
-3. Move superseded specifications into `archives/` without carrying their narrative into active surfaces.
-4. Never present synthetic seed data or illustrative diagrams as measured results.
+2. There is no cap on the number of concurrent active experiments. The former single-active-experiment rule was removed on August 9 2026 at the user's explicit request.
+3. Because concurrency is now allowed, each active project carries the burden alone: a bounded question, a measurement plan, a stop boundary, and a completion condition before it enters `projects/`.
+4. State measurement status honestly on every surface. A project with zero measurements must say so wherever it is listed, and must never borrow credibility from another project's results.
+5. Move superseded specifications into `archives/` without carrying their narrative into active surfaces.
+6. Never present synthetic seed data or illustrative diagrams as measured results.
+7. Closed work belongs in `archives/` with a conclusion and explicit missing evidence. Closing a project does not satisfy its original measurement completion condition.
 
 ## Repository organization
 

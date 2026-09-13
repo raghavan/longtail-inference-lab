@@ -1,23 +1,7 @@
 # Long Tail Lab Briefs
 
-This folder contains the biweekly reading brief for Long Tail Inference Lab.
+New reading briefs support the active Edge Offline Intelligence Device project: macOS local voice and text answers, iOS/TestFlight, then a self-contained Jetson prototype. The first Mac development slice works; it has zero published comparative quality or performance measurements for these iterations.
 
-Each edition curates a small set of papers, engineering notes, and adjacent systems ideas that connect directly to the lab's active experiments and project proposals.
+Curate primary papers and engineering documentation about local speech, compact-model usefulness, mobile memory and storage, latency, offline operation, and device energy and thermals. Each edition should name the decision its sources inform and distinguish reported findings from proposed measurements. Use the naming convention `Month D YYYY Long Tail Lab Brief.md`.
 
-Files use a human readable date in the naming convention:
-
-```text
-Month D YYYY Long Tail Lab Brief.md
-```
-
-Example:
-
-```text
-July 12 2026 Long Tail Lab Brief.md
-```
-
-## Editions
-
-[July 12 2026](July%2012%202026%20Long%20Tail%20Lab%20Brief.md)
-
-The brief favors primary sources, measurable questions, and small experiments over general artificial intelligence news.
+No edition for this application-to-device sequence has been published yet.

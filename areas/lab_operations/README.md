@@ -6,6 +6,7 @@ This Area contains the practices and shared tools that apply to every Long Tail 
 
 1. [`safety_scan.py`](safety_scan.py) provides the lightweight repository safety scanner.
 2. [`safety_scan.md`](safety_scan.md) explains how to run and interpret the scanner.
+3. [`public_research_memory.md`](public_research_memory.md) defines the GitHub technical record and the boundary that excludes personal and emotional information.
 
 ## Experiment discipline
 
@@ -31,10 +32,13 @@ Specified
 Running
 Analyzing
 Complete
+Closed
 Paused
 ```
 
-Only Specified, Running, and Analyzing work belongs in `projects/`. Complete and Paused work moves to `archives/`.
+Only Specified, Running, and Analyzing work belongs in `projects/`. Complete, Closed, and Paused work moves to `archives/`.
+
+Closed means active work has ended with a conclusion and an explicit account of missing evidence. It does not mean the original measurement completion condition was met. A closed project retains its frozen controls and results and states what would justify reopening it.
 
 ## Issue discipline
 

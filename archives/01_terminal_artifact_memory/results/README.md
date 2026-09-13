@@ -1,6 +1,8 @@
 # Terminal Artifact Memory results
 
-**Status:** No teacher/student measured result exists.
+**Status:** Closed — no teacher/student measured result exists.
+
+The project closed on September 12, 2026. The [conclusion](../conclusion.md) interprets the archived record and explains the decision. Requirements below describe the uncompleted protocol; no further measured run is scheduled.
 
 The [2026-07-31 measured pilot](2026-07-31-measured-pilot/summary.md) remains intact and visible. Its first local Qwen M0 attempt exceeded the frozen 16,384-token context before executable verification. It produced no scored pair and no memory contribution. It must never be relabeled, repaired, or pooled with the current preregistered teacher/student protocol.
 
@@ -44,7 +46,7 @@ The analyzer refuses non-measured and incomplete records by default and rejects 
 
 ## Illustrative planning figure
 
-![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../../resources/assets/terminal_artifact_memory_learning_curve.svg)
+![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../resources/assets/terminal_artifact_memory_learning_curve.svg)
 
 Every point in this figure is illustrative. The halted pilot contributes no point, and no teacher/student point exists yet.
 

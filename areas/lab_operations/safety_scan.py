@@ -22,6 +22,8 @@ MAX_FILE_BYTES = 2_000_000
 
 SKIP_DIRS = {
     ".git",
+    ".build",
+    ".swiftpm",
     ".hg",
     ".svn",
     ".mypy_cache",

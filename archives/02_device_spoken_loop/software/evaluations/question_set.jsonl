@@ -1,0 +1,40 @@
+{"id": "s01", "stratum": "short", "question": "What is a tide?"}
+{"id": "s02", "stratum": "short", "question": "What does GDP measure?"}
+{"id": "s03", "stratum": "short", "question": "How do vaccines work?"}
+{"id": "s04", "stratum": "short", "question": "What is inflation?"}
+{"id": "s05", "stratum": "short", "question": "Why is the sky blue?"}
+{"id": "s06", "stratum": "short", "question": "What is a black hole?"}
+{"id": "s07", "stratum": "short", "question": "What causes thunder?"}
+{"id": "s08", "stratum": "short", "question": "How does a fever help the body?"}
+{"id": "s09", "stratum": "short", "question": "What is compound interest?"}
+{"id": "s10", "stratum": "short", "question": "Why do leaves change colour in autumn?"}
+{"id": "m01", "stratum": "medium", "question": "What is the difference between weather and climate?"}
+{"id": "m02", "stratum": "medium", "question": "How is a virus different from a bacterium?"}
+{"id": "m03", "stratum": "medium", "question": "What is the difference between latitude and longitude?"}
+{"id": "m04", "stratum": "medium", "question": "How does a refrigerator make things cold?"}
+{"id": "m05", "stratum": "medium", "question": "What is the difference between a debit card and a credit card?"}
+{"id": "m06", "stratum": "medium", "question": "How do noise cancelling headphones work?"}
+{"id": "m07", "stratum": "medium", "question": "Why does bread rise when you bake it?"}
+{"id": "m08", "stratum": "medium", "question": "What is the difference between memory and storage in a computer?"}
+{"id": "m09", "stratum": "medium", "question": "Why is it colder at the top of a mountain?"}
+{"id": "m10", "stratum": "medium", "question": "How does a solar panel turn light into electricity?"}
+{"id": "l01", "stratum": "long", "question": "I am deciding whether to walk or take the bus to a meeting that starts in twenty minutes and is about a mile away. Which should I choose, and why?"}
+{"id": "l02", "stratum": "long", "question": "Explain what changed during the industrial revolution and why it mattered for ordinary working people."}
+{"id": "l03", "stratum": "long", "question": "I have three free hours this evening and I want to feel rested tomorrow. Suggest a simple routine and explain the reasoning behind it."}
+{"id": "l04", "stratum": "long", "question": "Explain how a proposed law becomes an actual law, from the first proposal through to final approval."}
+{"id": "l05", "stratum": "long", "question": "My tomato plants have yellow leaves near the bottom but the top looks healthy. What are the likely causes, and what should I check first?"}
+{"id": "l06", "stratum": "long", "question": "Explain the difference between how a petrol engine and an electric motor deliver power, and say which suits short city trips better."}
+{"id": "l07", "stratum": "long", "question": "I want to start running but I have not exercised in two years. Describe a cautious first month."}
+{"id": "l08", "stratum": "long", "question": "Explain why raising interest rates tends to slow an economy down, in a way a teenager could follow."}
+{"id": "l09", "stratum": "long", "question": "Summarise the main arguments for and against working from home, and say which side you find stronger."}
+{"id": "l10", "stratum": "long", "question": "Explain how a compass works, why it points north, and why that direction is not exactly true north."}
+{"id": "p01", "stratum": "proper_noun", "question": "Who was Ada Lovelace, and why is she remembered?"}
+{"id": "p02", "stratum": "proper_noun", "question": "What happened at Krakatoa in 1883?"}
+{"id": "p03", "stratum": "proper_noun", "question": "What was the significance of the Treaty of Westphalia?"}
+{"id": "p04", "stratum": "proper_noun", "question": "Who was Srinivasa Ramanujan?"}
+{"id": "p05", "stratum": "proper_noun", "question": "What is the Antikythera mechanism?"}
+{"id": "p06", "stratum": "proper_noun", "question": "Where is Tierra del Fuego, and what is it like?"}
+{"id": "p07", "stratum": "proper_noun", "question": "What did Rosalind Franklin contribute to the discovery of the structure of DNA?"}
+{"id": "p08", "stratum": "proper_noun", "question": "What is the Rijksmuseum known for?"}
+{"id": "p09", "stratum": "proper_noun", "question": "Who was Sejong the Great?"}
+{"id": "p10", "stratum": "proper_noun", "question": "What happened during the Tunguska event?"}

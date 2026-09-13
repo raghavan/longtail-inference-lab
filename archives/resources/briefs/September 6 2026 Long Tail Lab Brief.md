@@ -1,12 +1,12 @@
 # Long Tail Lab Brief
 
-**Edition:** September 6 2026  
-**Reading time:** About 40 minutes  
+**Edition:** September 6 2026\
+**Reading time:** About 40 minutes\
 **Focus:** Operational knowledge, execution continuity, trust boundary closure, frozen memory snapshots, and efficient open weight architecture
 
 ## Why these readings now
 
-The laboratory still has one active experiment: [Terminal Artifact Memory](../../projects/01_terminal_artifact_memory/README.md).
+The laboratory still has one active experiment: [Terminal Artifact Memory](../../01_terminal_artifact_memory/README.md).
 
 Its causal question remains clean and valuable. A fixed cloud teacher produces work on preregistered public memory build tasks. Only executable verifier passing evidence may proceed through local sanitization and approval into compact Markdown memory. A fixed local Qwen student is then evaluated on disjoint held out tasks under M0 with no memory and M2 with approved retrieved memory. The retrieved memory block is the intended student context intervention, while model weights and the rest of the execution condition stay fixed.
 
@@ -83,7 +83,7 @@ The paper is valuable for the longer horizon because it provides a vocabulary fo
 2. Active computation per token.
 3. Context processing cost.
 
-That distinction matters directly to the [Edge Offline Intelligence Device](../project_proposals/edge_offline_intelligence_device.md) proposal and to the wider long tail thesis. A local system may benefit more from sparse activation, host memory capacity, or selective context processing than from merely choosing a smaller dense checkpoint.
+That distinction matters directly to the [Edge Offline Intelligence Device](../../02_device_spoken_loop/README.md) proposal and to the wider long tail thesis. A local system may benefit more from sparse activation, host memory capacity, or selective context processing than from merely choosing a smaller dense checkpoint.
 
 It also reinforces a discipline already present in the lab: optimize what measurement proves is limiting. A model with fewer active parameters is not automatically faster on a particular laptop if memory movement, prompt processing, runtime kernels, or thermal constraints dominate.
 
@@ -172,7 +172,7 @@ cloud teacher
 
 Different components hold different authority. Different payloads are permitted to cross different boundaries. That is exactly why the active protocol specifies what the cloud may see, what may be committed, and what evidence establishes eligibility.
 
-The paper suggests a stronger way to reason about the [Privacy Aware Inference Boundary](../project_proposals/privacy_aware_inference_boundary.md). A detector's precision or a sanitizer's pass rate is not the full privacy claim. The relevant question is whether every path that could carry a denied information class across the boundary is closed.
+The paper suggests a stronger way to reason about the [Privacy Aware Inference Boundary](../../../resources/project_proposals/privacy_aware_inference_boundary.md). A detector's precision or a sanitizer's pass rate is not the full privacy claim. The relevant question is whether every path that could carry a denied information class across the boundary is closed.
 
 This is especially important as systems gain memory and recovery. A value removed from the primary prompt can still leak through a tool result, opaque state, retry record, retrieval index, or later restoration path.
 

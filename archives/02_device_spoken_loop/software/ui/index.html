@@ -1,0 +1,1057 @@
+<title>Longtail Model One — Interface Prototype</title>
+<style>
+  /* ------------------------------------------------------------------
+     A single committed look: a 1950s tabletop set in pistachio and
+     cream. The page paints its own ground in either host theme, because
+     an object does not repaint itself when the room lights change.
+     ------------------------------------------------------------------ */
+  :root {
+    --mint:       #a9dca4;
+    --mint-lit:   #c9ebc2;
+    --mint-deep:  #77b872;
+    --mint-shade: #5f9c5d;
+    --cream:      #f3efe1;
+    --cream-deep: #ddd7c2;
+    --ink:        #2e4535;
+    --ink-soft:   #6b8271;
+
+    --chrome-hi:  #ffffff;
+    --chrome:     #d7dcdb;
+    --chrome-mid: #a9b1af;
+    --chrome-lo:  #767d7b;
+
+    --glass:      #eff6e4;
+    --glass-edge: #cfdcc0;
+
+    --standby:    #7d9686;
+    --listen:     #2f8b52;
+    --working:    #c7943a;
+    --speak:      #e0662f;
+    --fault:      #c0392b;
+
+    --ground-1:   #e8e3d4;
+    --ground-2:   #cdc9ba;
+
+    --script: "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive;
+    --panel:  "Avenir Next", Avenir, Futura, "Century Gothic", ui-rounded, system-ui, sans-serif;
+    --data:   ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: clamp(1.25rem, 5vw, 3.5rem) 1rem clamp(2rem, 5vw, 4rem);
+    background:
+      radial-gradient(120% 100% at 50% 0%, var(--ground-1) 0%, var(--ground-2) 100%);
+    color: var(--ink);
+    font-family: var(--panel);
+    font-size: 15px;
+    line-height: 1.55;
+    display: flex;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .bench {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  /* ------------------------------------------------------- handle + antenna */
+
+  .set { position: relative; padding-top: 74px; }
+
+  .handle {
+    position: absolute;
+    top: 6px;
+    left: 12%;
+    width: 46%;
+    height: 88px;
+    border: 13px solid var(--cream);
+    border-bottom: 0;
+    border-radius: 46% 46% 0 0 / 90% 90% 0 0;
+    box-shadow:
+      inset 0 3px 0 rgba(255,255,255,0.75),
+      0 3px 5px rgba(0,0,0,0.16);
+  }
+  .handle::after {
+    content: "";
+    position: absolute;
+    inset: -13px -13px 0;
+    border: 13px solid transparent;
+    border-bottom: 0;
+    border-radius: 46% 46% 0 0 / 90% 90% 0 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), transparent 60%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .antenna {
+    position: absolute;
+    top: 8px;
+    right: 16%;
+    width: 46%;
+    height: 5px;
+    transform: rotate(-27deg);
+    transform-origin: 100% 100%;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #fdfdfd, var(--chrome-mid) 45%, var(--chrome-lo));
+    box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  }
+  .antenna::after {
+    content: "";
+    position: absolute;
+    left: -7px; top: -3px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff, var(--chrome-mid) 60%, var(--chrome-lo));
+  }
+
+  /* ----------------------------------------------------------------- cabinet */
+
+  .cabinet {
+    position: relative;
+    border-radius: 26px 26px 20px 20px;
+    padding: clamp(1.1rem, 2.6vw, 1.9rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr) 128px;
+    gap: clamp(0.9rem, 2vw, 1.6rem);
+    align-items: stretch;
+    background:
+      linear-gradient(158deg,
+        var(--mint-lit) 0%,
+        var(--mint) 26%,
+        var(--mint) 62%,
+        var(--mint-deep) 100%);
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,0.65),
+      inset 0 -10px 22px rgba(95,156,93,0.45),
+      inset 6px 0 18px rgba(255,255,255,0.28),
+      0 26px 44px -18px rgba(60,80,58,0.55),
+      0 3px 0 var(--mint-shade);
+  }
+
+  /* Cream shoulder along the top edge, as on the reference cabinet. */
+  .cabinet::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 22px;
+    border-radius: 26px 26px 0 0;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 70%, rgba(221,215,194,0) 100%);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .foot {
+    position: absolute;
+    bottom: -9px;
+    width: 58px;
+    height: 12px;
+    border-radius: 0 0 7px 7px;
+    background: linear-gradient(180deg, var(--cream-deep), #b9b3a0);
+  }
+  .foot--l { left: 9%; }
+  .foot--r { right: 9%; }
+
+  /* ------------------------------------------------------------- left column */
+
+  .left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    min-width: 0;
+  }
+
+  .lamps {
+    display: flex;
+    gap: clamp(0.8rem, 2vw, 1.5rem);
+    padding-left: 4px;
+  }
+  .lamp-cell {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 5px;
+  }
+  .lamp {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #8fae8e;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.45);
+    transition: background 180ms linear, box-shadow 180ms linear;
+  }
+  .lamp[data-on="power"]  { background: #d94f3d; box-shadow: 0 0 9px 2px rgba(217,79,61,0.55); }
+  .lamp[data-on="mic"]    { background: #3aa7e0; box-shadow: 0 0 9px 2px rgba(58,167,224,0.6); }
+  .lamp[data-on="speak"]  { background: #46c25f; box-shadow: 0 0 9px 2px rgba(70,194,95,0.6); }
+  .lamp[data-on="fault"]  { background: var(--fault); box-shadow: 0 0 9px 2px rgba(192,57,43,0.6); }
+
+  .lamp-label {
+    font-size: 0.53rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.72;
+  }
+
+  .badge {
+    font-family: var(--script);
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    line-height: 1;
+    padding: 0 2px 4px;
+    color: #f7fbf6;
+    text-shadow:
+      0 1px 0 var(--chrome-mid),
+      0 2px 1px rgba(0,0,0,0.35),
+      0 -1px 0 rgba(255,255,255,0.9);
+    position: relative;
+  }
+  /* The chrome underscore bar that runs off the script on period sets. */
+  .badge::after {
+    content: "";
+    position: absolute;
+    left: 4px; right: 0;
+    bottom: 2px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--chrome-hi), var(--chrome-mid) 40%, var(--chrome-lo));
+    box-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  }
+
+  .grille {
+    flex: 1;
+    min-height: 172px;
+    border-radius: 10px;
+    padding: 12px 10px;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        rgba(0,0,0,0.42) 0px,
+        rgba(0,0,0,0.42) 9px,
+        rgba(255,255,255,0.30) 10px,
+        var(--mint-lit) 11px,
+        var(--mint) 20px,
+        rgba(0,0,0,0) 21px
+      );
+    background-clip: padding-box;
+    box-shadow:
+      inset 0 0 0 1px rgba(95,156,93,0.35),
+      inset 0 2px 6px rgba(0,0,0,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Slots stop short of the edges, so the grille reads as moulded. */
+  .grille::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, var(--mint) 0 6%, rgba(169,220,164,0) 12% 88%, var(--mint) 94% 100%),
+      linear-gradient(180deg, rgba(255,255,255,0.20), rgba(0,0,0,0.08));
+    pointer-events: none;
+  }
+
+  /* ----------------------------------------------------------------- the dial */
+
+  .dial-bay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .dial {
+    position: relative;
+    width: min(100%, 268px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 32% 26%, #ffffff 0%, var(--chrome) 38%, var(--chrome-mid) 62%, var(--chrome-lo) 100%);
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.28),
+      inset 0 2px 3px rgba(255,255,255,0.9);
+    padding: 9px;
+  }
+
+  .dial__face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--cream);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .dial__scale { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .dial__scale text {
+    font-family: var(--data);
+    font-size: 7.2px;
+    fill: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .dial__scale .band-label { font-size: 7.5px; font-weight: 700; }
+
+  .dial__glass {
+    position: relative;
+    width: 68%;
+    height: 68%;
+    border-radius: 50%;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 45%, var(--glass) 0%, #e3ecd6 72%, var(--glass-edge) 100%);
+    box-shadow:
+      inset 0 0 0 2px rgba(255,255,255,0.85),
+      inset 0 0 14px rgba(95,120,90,0.30);
+    transition: box-shadow 300ms linear;
+  }
+  .dial__glass[data-state="transmitting"] {
+    box-shadow:
+      inset 0 0 0 2px rgba(255,255,255,0.85),
+      inset 0 0 18px rgba(224,102,47,0.35);
+  }
+  .dial__glass[data-state="muted"] {
+    box-shadow:
+      inset 0 0 0 2px rgba(255,255,255,0.85),
+      inset 0 0 18px rgba(192,57,43,0.28);
+  }
+
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* Curved highlight across the lens. */
+  .dial__shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    background:
+      radial-gradient(120% 90% at 32% 12%, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0) 46%);
+  }
+
+  .readout {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-family: var(--data);
+    font-variant-numeric: tabular-nums;
+  }
+  .readout__state {
+    font-family: var(--panel);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.55);
+    box-shadow: inset 0 0 0 1px rgba(95,156,93,0.4);
+    transition: background 200ms linear, color 200ms linear;
+  }
+  .readout__state[data-state="listening"]    { background: rgba(47,139,82,0.16); color: #1f5f37; }
+  .readout__state[data-state="thinking"]     { background: rgba(199,148,58,0.18); color: #7c5c15; }
+  .readout__state[data-state="transmitting"] { background: rgba(224,102,47,0.18); color: #94411a; }
+  .readout__state[data-state="muted"]        { background: rgba(192,57,43,0.16); color: #8d2a20; }
+
+  .readout__freq { font-size: 0.78rem; color: var(--ink-soft); }
+
+  /* ------------------------------------------------------------ right column */
+
+  .right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.4rem 0;
+  }
+
+  .knob {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    position: relative;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 34% 26%, #ffffff 0%, var(--chrome) 42%, var(--chrome-mid) 70%, var(--chrome-lo) 100%);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.32), inset 0 1px 2px rgba(255,255,255,0.9);
+  }
+  .knob::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: repeating-conic-gradient(var(--chrome-mid) 0deg 4deg, var(--chrome-lo) 4deg 8deg);
+    z-index: -1;
+  }
+  .knob__cap {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--cream), var(--cream-deep));
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+  }
+  .knob__mark {
+    position: absolute;
+    top: 5px;
+    width: 3px; height: 12px;
+    border-radius: 2px;
+    background: var(--ink);
+    opacity: 0.65;
+  }
+
+  .cap-label {
+    margin: 0;
+    font-size: 0.54rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.75;
+    text-align: center;
+  }
+
+  .toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    padding: 4px;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  .toggle__track {
+    width: 34px; height: 52px;
+    border-radius: 17px;
+    background: linear-gradient(180deg, var(--cream-deep), #b7b2a0);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.35);
+    position: relative;
+  }
+  .toggle__lever {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 28%, #fff, var(--chrome) 45%, var(--chrome-mid) 100%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.35);
+    transition: top 150ms cubic-bezier(.3,1.5,.5,1), background 150ms linear;
+  }
+  .toggle[aria-pressed="true"] .toggle__lever {
+    top: 22px;
+    background: radial-gradient(circle at 34% 28%, #f7b2ab, var(--fault) 70%);
+  }
+  .toggle[aria-pressed="true"] + .cap-label { color: var(--fault); opacity: 1; }
+
+  /* -------------------------------------------------------------------- talk */
+
+  .talk-row { display: flex; flex-direction: column; gap: 0.6rem; align-items: center; }
+
+  .talk {
+    width: 100%;
+    max-width: 420px;
+    padding: 1rem 1.4rem;
+    border: 0;
+    border-radius: 999px;
+    font-family: var(--panel);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ink);
+    cursor: pointer;
+    background: linear-gradient(180deg, #ffffff 0%, var(--cream) 40%, var(--cream-deep) 100%);
+    box-shadow:
+      0 5px 0 #b3ad9b,
+      0 10px 18px rgba(60,80,58,0.35),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    transition: transform 80ms linear, box-shadow 80ms linear, color 160ms linear;
+    touch-action: none;
+    user-select: none;
+  }
+  .talk:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+  .talk[data-held="true"] {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #b3ad9b, inset 0 3px 7px rgba(0,0,0,0.28);
+    color: var(--listen);
+  }
+  .talk:disabled {
+    cursor: not-allowed;
+    color: #9a9585;
+    background: linear-gradient(180deg, #e7e2d3, #cfc9b8);
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.2);
+  }
+
+  .hint {
+    margin: 0;
+    font-size: 0.63rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  kbd {
+    font-family: var(--data);
+    font-size: 0.95em;
+    padding: 0.08em 0.4em;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.7);
+    box-shadow: inset 0 0 0 1px rgba(46,69,53,0.25);
+  }
+
+  /* ------------------------------------------------------------- service card */
+
+  .card {
+    border-radius: 12px;
+    padding: 1.05rem 1.2rem;
+    background: linear-gradient(180deg, #fbf9f0, var(--cream));
+    box-shadow: 0 2px 0 var(--cream-deep), 0 12px 24px -14px rgba(60,80,58,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .card__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--cream-deep);
+  }
+  .card__title {
+    margin: 0;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .card__total {
+    font-family: var(--data);
+    font-variant-numeric: tabular-nums;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .stages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: 5px;
+    margin: 0; padding: 0;
+    list-style: none;
+  }
+  .stage {
+    padding: 0.45rem 0.55rem;
+    border-radius: 6px;
+    background: rgba(46,69,53,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    opacity: 0.45;
+    transition: opacity 160ms linear, background 160ms linear;
+  }
+  .stage[data-lit="true"] {
+    opacity: 1;
+    background: rgba(47,139,82,0.13);
+  }
+  .stage__name {
+    font-size: 0.53rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .stage__ms {
+    font-family: var(--data);
+    font-size: 0.74rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .note {
+    margin: 0;
+    font-size: 0.68rem;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    max-width: 66ch;
+  }
+  .note strong { color: var(--ink); font-weight: 600; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 760px) {
+    .cabinet { grid-template-columns: 1fr; }
+    .right { flex-direction: row; justify-content: space-around; align-items: flex-end; }
+    .handle { left: 18%; width: 52%; }
+    .dial { width: min(100%, 232px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toggle__lever, .talk, .lamp { transition: none; }
+  }
+</style>
+
+<div class="bench">
+  <div class="set">
+    <span class="antenna" aria-hidden="true"></span>
+    <span class="handle" aria-hidden="true"></span>
+
+    <div class="cabinet">
+      <span class="foot foot--l" aria-hidden="true"></span>
+      <span class="foot foot--r" aria-hidden="true"></span>
+
+      <div class="left">
+        <div class="lamps">
+          <span class="lamp-cell">
+            <span class="lamp-label">Power</span>
+            <span class="lamp" id="lampPower" data-on="power"></span>
+          </span>
+          <span class="lamp-cell">
+            <span class="lamp-label">Mic</span>
+            <span class="lamp" id="lampMic"></span>
+          </span>
+          <span class="lamp-cell">
+            <span class="lamp-label">Speak</span>
+            <span class="lamp" id="lampSpeak"></span>
+          </span>
+        </div>
+
+        <p class="badge">Longtail</p>
+
+        <div class="grille" role="presentation"></div>
+      </div>
+
+      <section class="dial-bay" aria-label="Signal display">
+        <div class="dial">
+          <div class="dial__face">
+            <svg class="dial__scale" viewBox="0 0 100 100" aria-hidden="true">
+              <g id="ticks"></g>
+              <text class="band-label" x="12" y="53" text-anchor="middle">AM</text>
+              <text class="band-label" x="88" y="53" text-anchor="middle">FM</text>
+              <text x="21" y="34" text-anchor="middle">520</text>
+              <text x="34" y="22" text-anchor="middle">600</text>
+              <text x="50" y="17" text-anchor="middle">800</text>
+              <text x="66" y="22" text-anchor="middle">1000</text>
+              <text x="79" y="34" text-anchor="middle">1200</text>
+              <text x="21" y="72" text-anchor="middle">88</text>
+              <text x="34" y="83" text-anchor="middle">92</text>
+              <text x="50" y="88" text-anchor="middle">96</text>
+              <text x="66" y="83" text-anchor="middle">100</text>
+              <text x="79" y="72" text-anchor="middle">108</text>
+            </svg>
+
+            <div class="dial__glass" id="glass" data-state="standby">
+              <canvas id="scope"></canvas>
+              <span class="dial__shine"></span>
+            </div>
+          </div>
+        </div>
+
+        <p class="readout">
+          <span class="readout__state" id="stateChip" data-state="standby">Standby</span>
+          <span class="readout__freq"><span id="freq">96.4</span> MHz</span>
+        </p>
+      </section>
+
+      <div class="right">
+        <div>
+          <span class="knob"><span class="knob__mark"></span><span class="knob__cap"></span></span>
+          <p class="cap-label">Volume</p>
+        </div>
+        <div>
+          <span class="knob"><span class="knob__mark" style="transform: rotate(142deg); transform-origin: 1.5px 26px;"></span><span class="knob__cap"></span></span>
+          <p class="cap-label">Tune</p>
+        </div>
+        <div>
+          <button class="toggle" id="mute" type="button" aria-pressed="false">
+            <span class="toggle__track"><span class="toggle__lever"></span></span>
+          </button>
+          <p class="cap-label" id="muteText">Mic on</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="talk-row">
+    <button class="talk" id="talk" type="button" data-held="false">Hold to speak</button>
+    <p class="hint">Hold the bar or <kbd>Space</kbd> &middot; <kbd>M</kbd> cuts the microphone</p>
+  </div>
+
+  <section class="card" aria-label="Stage telemetry">
+    <div class="card__head">
+      <p class="card__title">Latency ledger &middot; release to first spoken word</p>
+      <span class="card__total"><span id="total">0.00</span> s</span>
+    </div>
+    <ul class="stages" id="stages"></ul>
+  </section>
+
+  <p class="note">
+    <strong>Interface prototype.</strong> The traces are generated &mdash; there is no microphone, no
+    speech recognition and no model behind this page. It exists to test one thing: whether listening,
+    working and speaking read at a glance on a set with no screen. Stage names match the frozen ledger
+    schema in <em>experiments/01_spoken_latency_and_residency.md</em>, and cutting the microphone
+    overrides every other state, which is the one behaviour the finished device must guarantee in
+    hardware rather than software.
+  </p>
+
+  <p class="sr-only" role="status" aria-live="polite" id="live">Standby.</p>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const STAGES = [
+    { label: "Endpoint",  range: [40, 90] },
+    { label: "Listen",    range: [380, 760] },
+    { label: "Prefill",   range: [260, 620] },
+    { label: "1st sent.", range: [190, 480] },
+    { label: "Voice",     range: [150, 340] },
+    { label: "Audio out", range: [8, 22] }
+  ];
+
+  const COLOR = {
+    standby:      "#7d9686",
+    listening:    "#2f8b52",
+    thinking:     "#c7943a",
+    transmitting: "#e0662f",
+    muted:        "#c0392b"
+  };
+
+  const LABEL = {
+    standby:      "Standby",
+    listening:    "Listening",
+    thinking:     "Working",
+    transmitting: "Speaking",
+    muted:        "Mic cut"
+  };
+
+  const el = {
+    scope:     document.getElementById("scope"),
+    glass:     document.getElementById("glass"),
+    chip:      document.getElementById("stateChip"),
+    talk:      document.getElementById("talk"),
+    mute:      document.getElementById("mute"),
+    muteText:  document.getElementById("muteText"),
+    lampMic:   document.getElementById("lampMic"),
+    lampSpeak: document.getElementById("lampSpeak"),
+    lampPower: document.getElementById("lampPower"),
+    stages:    document.getElementById("stages"),
+    total:     document.getElementById("total"),
+    freq:      document.getElementById("freq"),
+    live:      document.getElementById("live"),
+    ticks:     document.getElementById("ticks")
+  };
+
+  let state = "standby";
+  let muted = false;
+  let timers = [];
+
+  // ------------------------------------------------------------- dial ticks
+
+  (function drawTicks() {
+    const parts = [];
+    for (let i = 0; i <= 44; i++) {
+      const angle = (-100 + (i / 44) * 200) * Math.PI / 180;
+      const long = i % 5 === 0;
+      const r1 = 44;
+      const r2 = long ? 39 : 41.5;
+      const cx = 50 + Math.sin(angle) * r1;
+      const cy = 50 - Math.cos(angle) * r1;
+      const dx = 50 + Math.sin(angle) * r2;
+      const dy = 50 - Math.cos(angle) * r2;
+      parts.push(
+        '<line x1="' + cx.toFixed(2) + '" y1="' + cy.toFixed(2) +
+        '" x2="' + dx.toFixed(2) + '" y2="' + dy.toFixed(2) +
+        '" stroke="#2e4535" stroke-opacity="' + (long ? 0.75 : 0.4) +
+        '" stroke-width="' + (long ? 0.9 : 0.5) + '" />'
+      );
+    }
+    el.ticks.innerHTML = parts.join("");
+  })();
+
+  // -------------------------------------------------------------- telemetry
+
+  const stageEls = STAGES.map((stage) => {
+    const li = document.createElement("li");
+    li.className = "stage";
+    li.dataset.lit = "false";
+    li.innerHTML = '<span class="stage__name"></span><span class="stage__ms">&mdash;</span>';
+    li.querySelector(".stage__name").textContent = stage.label;
+    el.stages.appendChild(li);
+    return li;
+  });
+
+  function resetLedger() {
+    stageEls.forEach((li) => {
+      li.dataset.lit = "false";
+      li.querySelector(".stage__ms").innerHTML = "&mdash;";
+    });
+    el.total.textContent = "0.00";
+  }
+
+  function runLedger() {
+    let cumulative = 0;
+    STAGES.forEach((stage, i) => {
+      const ms = Math.round(stage.range[0] + Math.random() * (stage.range[1] - stage.range[0]));
+      cumulative += ms;
+      const at = cumulative;
+      timers.push(setTimeout(() => {
+        stageEls[i].dataset.lit = "true";
+        stageEls[i].querySelector(".stage__ms").textContent = ms + " ms";
+        el.total.textContent = (at / 1000).toFixed(2);
+      }, REDUCED ? i * 90 : at));
+    });
+    return cumulative;
+  }
+
+  // ------------------------------------------------------------------ state
+
+  function clearTimers() {
+    timers.forEach(clearTimeout);
+    timers = [];
+  }
+
+  function setState(next) {
+    state = next;
+    el.chip.textContent = LABEL[next];
+    el.chip.dataset.state = next;
+    el.glass.dataset.state = next;
+    el.live.textContent = LABEL[next] + ".";
+
+    el.lampMic.removeAttribute("data-on");
+    el.lampSpeak.removeAttribute("data-on");
+    if (next === "listening") el.lampMic.dataset.on = "mic";
+    if (next === "transmitting") el.lampSpeak.dataset.on = "speak";
+    if (next === "muted") el.lampMic.dataset.on = "fault";
+    el.lampPower.dataset.on = "power";
+  }
+
+  function beginListening() {
+    if (muted || state !== "standby") return;
+    clearTimers();
+    resetLedger();
+    setState("listening");
+    el.talk.dataset.held = "true";
+  }
+
+  function endListening() {
+    if (state !== "listening") return;
+    el.talk.dataset.held = "false";
+    setState("thinking");
+
+    const ledgerMs = runLedger();
+    timers.push(setTimeout(() => {
+      if (state !== "thinking") return;
+      setState("transmitting");
+      timers.push(setTimeout(() => {
+        if (state === "transmitting") setState("standby");
+      }, 3200 + Math.random() * 2200));
+    }, REDUCED ? 700 : ledgerMs));
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    el.mute.setAttribute("aria-pressed", String(muted));
+    el.muteText.textContent = muted ? "Mic cut" : "Mic on";
+    el.talk.disabled = muted;
+    clearTimers();
+    el.talk.dataset.held = "false";
+    if (muted) { resetLedger(); setState("muted"); } else { setState("standby"); }
+  }
+
+  // --------------------------------------------------------------- controls
+
+  el.talk.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    el.talk.setPointerCapture(event.pointerId);
+    beginListening();
+  });
+  el.talk.addEventListener("pointerup", endListening);
+  el.talk.addEventListener("pointercancel", endListening);
+  el.mute.addEventListener("click", toggleMute);
+
+  let spaceDown = false;
+  document.addEventListener("keydown", (event) => {
+    if (event.code === "Space" && !spaceDown) {
+      if (event.target === el.mute) return;
+      event.preventDefault();
+      spaceDown = true;
+      beginListening();
+    } else if (event.key === "m" || event.key === "M") {
+      toggleMute();
+    }
+  });
+  document.addEventListener("keyup", (event) => {
+    if (event.code === "Space") { spaceDown = false; endListening(); }
+  });
+
+  // ----------------------------------------------------------------- canvas
+
+  const ctx = el.scope.getContext("2d");
+  const BINS = 56;
+  let trace = [];
+  let bins = new Array(BINS).fill(0.04);
+  let size = 0;
+  let sweep = 0;
+
+  function resize() {
+    const rect = el.scope.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    size = Math.max(1, Math.round(Math.min(rect.width, rect.height)));
+    el.scope.width = Math.round(rect.width * dpr);
+    el.scope.height = Math.round(rect.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const want = Math.max(24, Math.round(rect.width / 2.2));
+    if (trace.length !== want) trace = new Array(want).fill(0);
+  }
+
+  if (typeof ResizeObserver !== "undefined") new ResizeObserver(resize).observe(el.scope);
+  window.addEventListener("resize", resize);
+
+  /** Envelope shaped by state: speech is bursty, synthesis is smoother. */
+  function sample(t) {
+    switch (state) {
+      case "listening": {
+        const burst = Math.sin(t * 0.011) * 0.5 + 0.5;
+        const syllable = Math.sin(t * 0.05) * 0.35 + 0.65;
+        return (Math.random() * 2 - 1) * (0.26 + burst * syllable * 0.68);
+      }
+      case "thinking":
+        return Math.sin(t * 0.03) * 0.11 + (Math.random() * 2 - 1) * 0.03;
+      case "transmitting": {
+        const carrier = Math.sin(t * 0.09) * 0.42 + Math.sin(t * 0.031) * 0.26;
+        return carrier * (Math.sin(t * 0.007) * 0.3 + 0.7) + (Math.random() * 2 - 1) * 0.06;
+      }
+      case "muted":
+        return (Math.random() * 2 - 1) * 0.01;
+      default:
+        return (Math.random() * 2 - 1) * 0.04 + Math.sin(t * 0.006) * 0.03;
+    }
+  }
+
+  function targetBin(i, t) {
+    const tilt = 1 - Math.abs(i - BINS / 2) / (BINS / 2);
+    switch (state) {
+      case "listening":    return Math.random() * (0.22 + tilt * tilt * 0.9);
+      case "thinking":     return 0.05 + Math.max(0, Math.sin(t * 0.02 - i * 0.28)) * 0.24;
+      case "transmitting": return Math.random() * (0.18 + tilt * 0.62) + 0.12;
+      case "muted":        return 0.015;
+      default:             return Math.random() * 0.08;
+    }
+  }
+
+  function draw(now) {
+    const t = now / 10;
+    const rect = el.scope.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    if (!w || !h) { requestAnimationFrame(draw); return; }
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const radius = Math.min(w, h) / 2;
+    const hot = COLOR[state];
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Faint horizon on the glass.
+    ctx.strokeStyle = "rgba(46,69,53,0.13)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, Math.round(cy) + 0.5);
+    ctx.lineTo(w, Math.round(cy) + 0.5);
+    ctx.stroke();
+
+    // ---- radial spectrum around the rim
+    for (let i = 0; i < BINS; i++) {
+      const target = targetBin(i, t);
+      bins[i] += (target - bins[i]) * (state === "listening" ? 0.32 : 0.15);
+      const angle = (i / BINS) * Math.PI * 2 - Math.PI / 2;
+      const inner = radius * 0.70;
+      const outer = inner + bins[i] * radius * 0.24;
+      ctx.strokeStyle = hot;
+      ctx.globalAlpha = 0.25 + bins[i] * 0.65;
+      ctx.lineWidth = Math.max(1.4, (radius * 2 * Math.PI) / BINS * 0.42);
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
+      ctx.lineTo(cx + Math.cos(angle) * outer, cy + Math.sin(angle) * outer);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // ---- envelope trace through the centre
+    trace.push(sample(t));
+    const want = Math.max(24, Math.round(w / 2.2));
+    while (trace.length > want) trace.shift();
+
+    const amp = radius * 0.42;
+    ctx.strokeStyle = hot;
+    ctx.lineWidth = 1.8;
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    for (let i = 0; i < trace.length; i++) {
+      const x = (i / (trace.length - 1 || 1)) * w;
+      // Taper the trace toward the lens edges so it sits inside the circle.
+      const edge = Math.max(0, 1 - Math.pow((x - cx) / (radius * 0.98), 2));
+      const y = cy - trace[i] * amp * Math.sqrt(edge);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // ---- sweep while working
+    if (state === "thinking") {
+      sweep = (sweep + 0.022) % (Math.PI * 2);
+      const grad = ctx.createLinearGradient(
+        cx + Math.cos(sweep - 0.5) * radius, cy + Math.sin(sweep - 0.5) * radius,
+        cx + Math.cos(sweep) * radius, cy + Math.sin(sweep) * radius
+      );
+      grad.addColorStop(0, "rgba(199,148,58,0)");
+      grad.addColorStop(1, "rgba(199,148,58,0.32)");
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(sweep) * radius * 0.68, cy + Math.sin(sweep) * radius * 0.68);
+      ctx.stroke();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  setInterval(() => {
+    if (state === "standby") el.freq.textContent = (95.9 + Math.random() * 0.9).toFixed(1);
+  }, 3400);
+
+  setState("standby");
+  resize();
+  requestAnimationFrame(draw);
+})();
+</script>

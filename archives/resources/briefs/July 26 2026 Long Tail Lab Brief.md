@@ -6,7 +6,7 @@
 
 ## Why these readings now
 
-The laboratory has one active experiment: [Terminal Artifact Memory](../../projects/01_terminal_artifact_memory/README.md).
+The laboratory has one active experiment: [Terminal Artifact Memory](../../01_terminal_artifact_memory/README.md).
 
 The experiment keeps the local model fixed while verified memory grows. It compares a no memory condition with a distilled Markdown memory condition, uses executable verifiers as ground truth, and reports both positive and negative transfer. The current implementation work begins with a sanitizer and contamination gate before any benchmark artifacts enter searchable memory.
 
@@ -130,7 +130,7 @@ The reported gains come from coordinating placement and execution while accounti
 
 ### Why it matters to this lab
 
-This is relevant to both the fixed local model experiment and the [Edge Offline Intelligence Device](../project_proposals/edge_offline_intelligence_device.md) proposal.
+This is relevant to both the fixed local model experiment and the [Edge Offline Intelligence Device](../../../projects/02_edge_offline_intelligence_device/design_direction.md) proposal.
 
 The practical lesson is that hardware capability cannot be inferred from nominal accelerator throughput. A small model may run worse when an NPU adds conversion and scheduling overhead, while a coordinated CPU and GPU path may outperform a supposedly more specialized device.
 

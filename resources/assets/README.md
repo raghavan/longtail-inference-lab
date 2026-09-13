@@ -1,10 +1,5 @@
 # Assets
 
-This folder contains reusable media for the Long Tail Inference Lab.
+This folder holds reusable media for the laboratory's current work.
 
-## Files
-
-1. `longtail-inference-lab-hero.png` is the repository hero image.
-2. `wiki-cache-distillation-index.jpeg` illustrates the hypothesis that reviewed knowledge can reduce repeated inference effort. It is conceptual background, not a measured result.
-
-Keep generated results and experiment specific figures inside the relevant project. Use this folder only for media reused across the lab.
+Keep experiment-specific figures beside the relevant project and label conceptual illustrations clearly. Published measurement figures must identify their source data and conditions.

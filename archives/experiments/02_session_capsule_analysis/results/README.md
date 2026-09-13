@@ -6,4 +6,4 @@ The specification was superseded before execution. No session dataset, size dist
 
 The planned outputs are preserved in the [original results document](original_results.md).
 
-Privacy safe artifact handling from this plan now informs [Terminal Artifact Memory](../../../../projects/01_terminal_artifact_memory/README.md).
+Privacy safe artifact handling from this plan now informs [Terminal Artifact Memory](../../../01_terminal_artifact_memory/README.md).

@@ -22,7 +22,7 @@ The active experiment retains privacy safe artifact extraction, provenance, dist
 
 ## Replacement
 
-Both specifications converged into [Terminal Artifact Memory](../../projects/01_terminal_artifact_memory/README.md).
+Both specifications converged into [Terminal Artifact Memory](../01_terminal_artifact_memory/README.md).
 
 The replacement asks one concrete question:
 

@@ -1,9 +1,5 @@
 # Learning
 
-This collection turns the lab into a learning platform for inference systems.
+Start with the [Field Guide to Local Voice Applications and Devices](field_guide.md). It follows local recognition and text answers from a Mac app to iPhone and Jetson, covering model eligibility, shared application design, answer usefulness, memory, storage, latency, and offline verification.
 
-## Start here
-
-[Field Guide to Learning LLM Inference](field_guide.md)
-
-The guide covers inference foundations, local execution, distributed inference, routing, memory, session state, and a suggested study path connected to the active experiments.
+The first Mac development slice works; the active project has zero published comparative quality or performance measurements for Mac, iPhone, or Jetson. Proposed thresholds and illustrative examples are learning material, not measured results.

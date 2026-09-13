@@ -1,12 +1,12 @@
 # Long Tail Lab Brief
 
-**Edition:** August 23 2026  
-**Reading time:** About 35 minutes  
+**Edition:** August 23 2026\
+**Reading time:** About 35 minutes\
 **Focus:** Verifier selected evidence, governed memory, context isolation, opaque state, local inference efficiency, and auditable provenance
 
 ## Why these readings now
 
-The laboratory still has one active experiment: [Terminal Artifact Memory](../../projects/01_terminal_artifact_memory/README.md).
+The laboratory still has one active experiment: [Terminal Artifact Memory](../../01_terminal_artifact_memory/README.md).
 
 Its core scientific control remains unusually valuable. A fixed cloud teacher produces work on preregistered public memory build tasks. Only verifier passing evidence may cross the local sanitization boundary for distillation. Exact hashes bind the evidence, draft, approval, and admitted Markdown. A fixed local Qwen student is then evaluated on disjoint held out tasks under M0 with no memory and M2 with approved retrieved memory. The executable task verifier alone decides the outcome.
 

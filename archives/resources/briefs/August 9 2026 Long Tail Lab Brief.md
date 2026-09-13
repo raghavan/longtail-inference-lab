@@ -6,7 +6,7 @@
 
 ## Why these readings now
 
-The laboratory now has one active experiment: [Terminal Artifact Memory](../../projects/01_terminal_artifact_memory/README.md).
+The laboratory now has one active experiment: [Terminal Artifact Memory](../../01_terminal_artifact_memory/README.md).
 
 Its scientific control is unusually clean. A fixed `gpt-5.6-sol` cloud teacher produces work on preregistered public memory build tasks. Only verifier passing evidence may move through the local sanitization boundary to a cloud distiller. A human approves exact hashes before distilled Markdown enters memory. A fixed local Qwen student is then measured on disjoint held out tasks under M0 with no memory and M2 with approved retrieved memory. The executable verifier alone determines the outcome.
 
@@ -199,7 +199,7 @@ That distinction is important.
 
 ### Why it matters to this lab
 
-The active experiment already has a strict disclosure boundary between raw local teacher evidence and the allowlisted sanitized evidence packet sent to the cloud distiller. The separate [Privacy Aware Inference Boundary](../project_proposals/privacy_aware_inference_boundary.md) proposal also recognizes that placeholders are not anonymous when surrounding context identifies the hidden entity.
+The active experiment already has a strict disclosure boundary between raw local teacher evidence and the allowlisted sanitized evidence packet sent to the cloud distiller. The separate [Privacy Aware Inference Boundary](../../../resources/project_proposals/privacy_aware_inference_boundary.md) proposal also recognizes that placeholders are not anonymous when surrounding context identifies the hidden entity.
 
 PromptGraph provides a sharper way to reason about that risk.
 
