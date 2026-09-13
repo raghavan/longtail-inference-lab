@@ -1,12 +1,12 @@
 # Current technical status
 
 **Updated:** September 12, 2026
-**App:** Local Voice 0.1.1 (build 2), source in this revision
-**Tracking:** [GitHub issue 40](https://github.com/raghavan/longtail-inference-lab/issues/40)
+**App:** Local Voice 0.2.0 (build 4), source in this revision
+**Tracking:** [GitHub issue 42](https://github.com/raghavan/longtail-inference-lab/issues/42); [initial voice-input milestone](https://github.com/raghavan/longtail-inference-lab/issues/40)
 
 ## Current milestone
 
-The [macOS local voice development slice](development/README.md) is complete: local speech transcription, an editable visible transcript, and a streamed local text answer. The owner confirmed successful live voice input and visible text answers after the crash repair. The initial workload is general conversation in English (United States), one question at a time. No web, document, or vector retrieval is included.
+The [macOS local voice development slice](development/README.md) is complete: local speech transcription, an editable visible transcript, and a streamed local text answer. The owner confirmed successful live voice input and visible text answers after the crash repair. The app now includes [local speech output](development/local_speech_output.md): manual **Read aloud** and **Stop speaking**, installed-voice selection, and a synthetic preview. Automatic selection prefers Premium, then Enhanced, then Standard English voices. The owner confirmed that initial read-aloud worked and found the compact voice mechanical; the updated app uses an installed Premium voice when available. The current workload is English general conversation, one question at a time. Additional languages are deferred. No web, document, or vector retrieval is included.
 
 No public app release, TestFlight upload, or hardware purchase has been performed in this milestone. Zero published comparative quality or performance measurements exist for Mac, iPhone, or Jetson. The first-year ceiling remains $1,000 across all required new hardware, subscriptions/software/distribution fees, tax, and shipping.
 
@@ -16,13 +16,18 @@ The development configuration was an M2 Pro with 16 GB memory, macOS 26.6 (25G70
 
 | Check | Observed outcome | Limit |
 | --- | --- | --- |
-| Native build | Debug build, seven automated tests, and release app packaging passed | Build success does not establish model usefulness |
-| Readiness | Local answer model available; English speech assets prepared and reported ready | One development Mac only |
+| Native build | Debug build, fifteen automated tests, release app packaging, and signature verification passed | Build success does not establish model usefulness |
+| Readiness | Local answer model available; English input speech assets and installed speech output reported ready | One development Mac only |
 | Typed synthetic prompt | A real on-device answer was returned | Nonempty-output smoke check, no quality score or latency claim |
 | Authored synthetic speech | A generated English audio fixture produced the expected transcript and a local text answer | File input bypasses microphone capture; no spontaneous-speech claim |
 | Audio callback regression | A callback created from MainActor executed on a background executor, converted 48 kHz float audio to 16 kHz integer audio, and retained output after input reuse | Synthetic buffer test, not a transcription benchmark |
 | App controls after repair | Microphone capture entered Listening; Cancel returned to idle; a completed question and visible answer were observed | Brief interactive check, not a reliability measurement |
+| Local speech output | An authored English sentence produced 72,849 audio frames with non-silent samples and completion using `com.apple.voice.premium.en-US.Ava` | Buffer synthesis check, no human naturalness score; Apple manages asset revision and hash |
+| Speech controls | Premium voice displayed and selected; Preview, Stop speaking, restart, and completion exercised in the packaged app | Brief interactive development check; no long-session reliability claim |
+| iOS SDK compatibility | Shared core and SwiftUI source compiled and linked for arm64 and x86_64 iOS Simulator, SDK 26.5, deployment target iOS 26 | Compile/link only; no simulator execution, signed iOS app, TestFlight, or physical iPhone test |
 | Manual voice check | Owner confirmed voice input through visible text response in version 0.1.1 | No scored corpus, timing, private transcript, or recording retained in the public record |
+
+The Premium voice setup displayed a 280.2 MB download and 323 MB installed storage on this Mac. These figures are OS voice-asset observations, not app size, peak RAM, or iPhone measurements. Only the voice preference is saved by the app; no conversation or audio is retained.
 
 The [software guide](software/README.md) provides reproduction commands. Development checks are separate from the proposed platform evaluation. No latency distribution, memory-pressure result, disconnected-network test, iPhone run, or Jetson run was collected.
 
@@ -36,9 +41,10 @@ The original crash report and personal screenshots remain private. This record c
 
 ## Open validation
 
+- Evaluate the Premium voice through listening checks; the Apple quality tier is not a conversational-naturalness score.
 - Evaluate ordinary spoken questions, repeated record/stop/cancel cycles, permission denial, input-device changes, interruptions, and long sessions. A successful manual check does not establish reliability.
 - Confirm offline operation after setup with a defined network-observation boundary.
-- Identify the physical iPhone/OS and requested language support; build and test that target before expanding the Mac feature set.
+- Identify the physical iPhone/OS and test English voice availability, naturalness, startup delay, memory/storage, recording-to-playback transitions, and audio interruptions. API compilation is insufficient for this gate.
 - Freeze representative conversation cases and usefulness/resource gates before comparative measurements. The current single-turn prototype is not conversational memory.
 
 ## Durable record

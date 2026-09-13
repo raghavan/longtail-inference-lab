@@ -6,11 +6,11 @@ Projects contain the laboratory's active, bounded research. Each needs a questio
 
 ### [02 Edge Offline Intelligence Device](02_edge_offline_intelligence_device/README.md)
 
-**Status:** First native Mac voice-to-text-answer slice works; model-selection intake remains open. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
+**Status:** Native Mac voice input, text answers, and optional local read-aloud work; model-selection intake remains open. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
 Build a local voice-input and text-answer experience in three iterations: a native Mac app, an iPhone app through TestFlight with conditional launch, and a self-contained NVIDIA Jetson prototype. The first-year total ceiling is $1,000, covering all new hardware for the end product, required subscriptions and software/distribution fees, tax, and shipping.
 
-The [architecture](02_edge_offline_intelligence_device/design_direction.md) selects the Mac's model integration around the iPhone's constraints. The [technical status](02_edge_offline_intelligence_device/status.md) records the working Mac slice, development checks, and limitations. The [intake draft](../resources/project_proposals/apple_local_voice_intake.md) proposes an Apple on-device model evaluation and a compact open-model fallback. It needs the target phone, requested languages, and representative general-conversation cases before comparative model selection.
+The [architecture](02_edge_offline_intelligence_device/design_direction.md) selects the Mac's model integration around the iPhone's constraints. The [technical status](02_edge_offline_intelligence_device/status.md) records the working Mac slice with manual English read-aloud, development checks, and limitations. The [intake draft](../resources/project_proposals/apple_local_voice_intake.md) proposes an Apple on-device model evaluation and a compact open-model fallback. It needs the target phone and representative English general-conversation cases before comparative model selection.
 
 ## Status meanings
 

@@ -2,7 +2,7 @@
 
 **Zero published comparative quality or performance measurements for the macOS, iOS, or Jetson iterations.**
 
-The September 12 [development status](../status.md) records a working Mac voice-to-text-answer slice, seven automated checks, real local answer and synthetic speech checks, and owner confirmation of live voice input and visible text responses. These are implementation checks; they do not establish model quality, tail latency, phone memory fitness, or Jetson performance.
+The September 12 [development status](../status.md) records a working Mac voice-to-text-answer slice with manual English read-aloud, fifteen automated tests, real local answer and synthetic input/output speech checks, and owner confirmation of live voice input and visible text responses. These are implementation checks; they do not establish model quality, tail latency, phone memory fitness, or Jetson performance.
 
 Each platform's measured evaluation should publish:
 

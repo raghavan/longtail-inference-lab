@@ -43,22 +43,98 @@ public enum VoiceError: LocalizedError {
     public private(set) var notice = "Speak or type a question."
     public private(set) var speechReadiness: Readiness = .unavailable("Checking speech…")
     public private(set) var answerReadiness: Readiness = .unavailable("Checking answers…")
+    public private(set) var outputReadiness: Readiness = .unavailable("Checking voices…")
+    public private(set) var isSpeaking = false
+    public private(set) var availableVoices: [SpeechVoice] = []
+    public private(set) var selectedVoiceIdentifier = ""
+    public private(set) var selectedVoice: SpeechVoice?
     public var isBusy: Bool { phase != .idle }
     public static let maximumInputCharacters = 1_200
     private let answers: any AnswerEngine
     private let speech: any SpeechInput
+    private let output: (any SpeechOutput)?
+    private var playbackRevision = 0
+    private var playbackDeadline: Task<Void, Never>?
     private var operation: Task<Void, Never>?
     private var deadline: Task<Void, Never>?
     private var revision = 0
 
-    public init(answers: any AnswerEngine, speech: any SpeechInput) {
+    public init(answers: any AnswerEngine, speech: any SpeechInput, output: (any SpeechOutput)? = nil) {
         self.answers = answers
         self.speech = speech
+        self.output = output
     }
 
     public func refresh() async {
+        let current = revision
         answerReadiness = answers.readiness
-        speechReadiness = await speech.readiness()
+        refreshVoices()
+        let readiness = await speech.readiness()
+        guard current == revision else { return }
+        speechReadiness = readiness
+    }
+
+    public func readAloud() {
+        play(answer)
+    }
+
+    public func previewVoice() {
+        play("Hello. I can read your answers aloud. Everything you hear is generated on this device.")
+    }
+
+    public func refreshVoices() {
+        availableVoices = output?.voices ?? []
+        if let preferred = output?.preferredVoiceIdentifier, !availableVoices.contains(where: { $0.id == preferred }) {
+            stopSpeaking(updateNotice: false)
+            output?.selectVoice(nil)
+        }
+        selectedVoiceIdentifier = output?.preferredVoiceIdentifier ?? ""
+        selectedVoice = output?.selectedVoice
+        outputReadiness = output?.readiness ?? .unavailable("Speech output is unavailable.")
+    }
+
+    public func selectVoice(_ identifier: String) {
+        guard !isBusy else { return }
+        stopSpeaking()
+        output?.selectVoice(identifier.isEmpty ? nil : identifier)
+        refreshVoices()
+    }
+
+    private func play(_ text: String) {
+        guard !isBusy, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, let output else { return }
+        stopSpeaking(updateNotice: false)
+        refreshVoices()
+        guard outputReadiness.isReady else { notice = outputReadiness.message; return }
+        let current = playbackRevision
+        do {
+            isSpeaking = true
+            notice = "Reading aloud on this device…"
+            try output.speak(text) { [weak self] in
+                guard let self, current == self.playbackRevision else { return }
+                self.isSpeaking = false
+                self.playbackDeadline?.cancel()
+                self.notice = "Reading complete."
+            }
+            guard isSpeaking else { return }
+            playbackDeadline = Task { [weak self] in
+                do { try await Task.sleep(for: .seconds(120)) } catch { return }
+                guard let self, current == self.playbackRevision else { return }
+                self.stopSpeaking()
+                self.notice = "Speech took too long and was stopped."
+            }
+        } catch {
+            stopSpeaking(updateNotice: false)
+            notice = (error as? VoiceError)?.localizedDescription ?? "Speech output could not start."
+        }
+    }
+
+    public func stopSpeaking(updateNotice: Bool = true) {
+        playbackRevision += 1
+        playbackDeadline?.cancel()
+        output?.stop()
+        let wasSpeaking = isSpeaking
+        isSpeaking = false
+        if updateNotice, wasSpeaking { notice = "Speech stopped." }
     }
 
     public func prepareSpeech() {
@@ -117,6 +193,7 @@ public enum VoiceError: LocalizedError {
     }
 
     public func cancel() async {
+        stopSpeaking(updateNotice: false)
         revision += 1
         let current = revision
         operation?.cancel()
@@ -136,6 +213,7 @@ public enum VoiceError: LocalizedError {
     }
 
     private func begin(_ phase: Phase, notice: String) -> Int {
+        stopSpeaking(updateNotice: false)
         revision += 1
         deadline?.cancel()
         answer = ""

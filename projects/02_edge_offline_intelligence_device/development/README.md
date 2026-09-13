@@ -10,7 +10,7 @@ This record applies the relevant sections of the [experiment template](../../../
 
 **Decision:** Build the smallest native interaction and use its observed failures to determine the next implementation step. Keep the model backend replaceable.
 
-**Workload:** General offline conversation without web, document, or vector retrieval. English (United States) is the initial development control. Additional languages and the physical iPhone target remain open for later validation; they do not establish claims about this Mac slice.
+**Workload:** General offline conversation without web, document, or vector retrieval. English (United States) is the initial development control. Additional languages are deferred. The physical iPhone target remains open for later validation; this Mac slice establishes no phone compatibility claim.
 
 **Success boundary:** A reproducible native Mac build; a real local answer smoke check; local transcription of a deliberately authored synthetic recording; explicit model-readiness and cancellation behavior. Live microphone usability requires a manual check by the operator.
 
@@ -20,7 +20,7 @@ This record applies the relevant sections of the [experiment template](../../../
 
 The owner requested implementation to start. The first deliverable accepts voice and returns visible transcript and text answer. The later iPhone app should share application logic and model integration; the final Jetson device requires its own supported model backend. The confirmed first-year ceiling is $1,000 for hardware, required subscriptions/software/distribution fees, tax, and shipping.
 
-The known development condition is Apple silicon with 16 GB memory, macOS 26.6, and Xcode 26.6. English is a reversible development default, not a final language-support promise. The target iPhone/OS and requested languages have been asked for; phone-specific model selection and release decisions remain pending those answers and device tests.
+The known development condition is Apple silicon with 16 GB memory, macOS 26.6, and Xcode 26.6. English is the agreed scope for the current iteration; language expansion is deferred. The target iPhone/OS is still needed; phone-specific model selection and release decisions remain pending that answer and device tests.
 
 ## Measurement objective, variables, and controls
 
@@ -47,7 +47,7 @@ Typed input removes recognition from the path to locate failures. Controlled fak
 
 ## Reproduce, results, and interpretation
 
-The [software guide](../software/README.md) holds build and run commands. The [status record](../status.md) reports seven passing automated checks, real local answer and synthetic speech checks, the microphone crash and repair, and owner-confirmed live voice input and visible text answers. [GitHub issue 40](https://github.com/raghavan/longtail-inference-lab/issues/40) tracks this slice. Zero published comparative quality or performance measurements exist for Mac, iPhone, or Jetson.
+The [software guide](../software/README.md) holds build and run commands. The [status record](../status.md) reports the current fifteen passing automated tests, optional [local speech output](local_speech_output.md), real local answer and synthetic speech checks, the microphone crash and repair, and owner-confirmed live voice input and visible text answers. [GitHub issue 40](https://github.com/raghavan/longtail-inference-lab/issues/40) tracks this slice. Zero published comparative quality or performance measurements exist for Mac, iPhone, or Jetson.
 
 A successful smoke check establishes only that the named local path executed. It cannot establish broad conversational usefulness, stable tail latency, phone memory fitness, or device-level offline integrity. Synthetic speech is not equivalent to the owner's microphone, accent, room, or spontaneous utterances.
 

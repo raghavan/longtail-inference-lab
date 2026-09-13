@@ -1,6 +1,6 @@
 # 02 Edge Offline Intelligence Device
 
-**Status:** Active project; first native Mac development slice works, model-selection intake open.
+**Status:** Active project; native English Mac app includes manual local read-aloud, model-selection intake open.
 **Evidence:** Development checks and owner-confirmed voice input/text response; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 **Track:** Local inference and device systems
 **Last updated:** September 12, 2026
@@ -11,7 +11,7 @@
 
 **Decision:** Build in three iterations: macOS, iOS with TestFlight, then Jetson. Choose the Apple app model against the target iPhone's constraints from the start. The project has a **$1,000 total ceiling for its first year**, including all new hardware for the end product and required subscriptions, software/distribution fees, tax, and shipping.
 
-**First interaction:** Speak into the Mac, see the transcript, and read a locally generated answer. Both recognition and answer generation run on the user's device. Text is the first iteration's output.
+**First interaction:** Speak into the Mac, see the transcript, and read a locally generated answer. Recognition, answer generation, and optional English speech synthesis run on the device. A completed answer remains visible and plays only after pressing **Read aloud**.
 
 **Next bounded question:** Which local answer backend meets the selected workload on both the Mac and the target iPhone with acceptable quality, latency, memory, and storage? The [intake draft](../../resources/project_proposals/apple_local_voice_intake.md) records the agreed scope, proposed comparisons, and material questions still open. It is not a frozen experiment or an implementation claim.
 
@@ -19,7 +19,7 @@
 
 | Iteration | Deliverable | Evidence needed to advance |
 | --- | --- | --- |
-| 1. macOS | Native app: record speech, display transcript, generate and display a text answer locally; visible cancel and error states | Real speech and model runs on the selected workload; a small early compatibility check on the target iPhone; measured quality, text latency, memory, storage, and offline operation |
+| 1. macOS | Native app: record speech, display transcript, generate and display a text answer locally, with optional English read-aloud and visible stop, cancel, and error states | Real speech and model runs on the selected workload; a small early compatibility check on the target iPhone; measured quality, text latency, memory, storage, and offline operation |
 | 2. iOS | Native iPhone app using the same selected answer backend, prompt policy, and shared application logic; distribution through the owner's TestFlight | Physical-device tests under memory pressure, cold start, interruptions, thermal load, and loss of connectivity; beta feedback against agreed usefulness criteria |
 | 3. Jetson | Self-contained NVIDIA device running recognition and answers locally, with its own input, output, storage, and power | A complete parts quote within the remaining budget and measured Jetson latency, memory, energy, thermals, and offline integrity |
 
@@ -27,7 +27,7 @@ A successful TestFlight beta supports a launch decision; launch remains conditio
 
 ## Agreed requirements and proposed defaults
 
-The September 12 direction fixes the platform sequence, local recognition and answering, text output on the Mac, Mac/iPhone model continuity, conditional iOS launch, NVIDIA as the physical prototype target, and the $1,000 first-year total ceiling.
+The September 12 direction fixes the platform sequence, local recognition and answering, visible text and optional manual English speech output on the Mac, Mac/iPhone model continuity, conditional iOS launch, NVIDIA as the physical prototype target, and the $1,000 first-year total ceiling.
 
 The [architecture decision](design_direction.md) proposes SwiftUI with a shared Swift application core, Apple on-device speech recognition, and evaluation of Apple's on-device Foundation Models backend first. If it cannot serve the chosen workload or target phone, evaluate a small quantized open model in an embedded runtime. These are recommendations awaiting the model-selection experiment, not measured winners.
 
@@ -51,9 +51,9 @@ The project can be marked complete when the three iterations have dated, reprodu
 
 ## Current implementation state
 
-Local Voice 0.1.1 (build 2) implements the [specified Mac development slice](development/README.md). Seven automated checks passed; the on-device model returned a real answer; an authored synthetic audio fixture transcribed and produced an answer; and the owner confirmed live voice input and visible text responses. An initial microphone callback crash was repaired and covered by a background-callback regression test. The [technical status](status.md) records the configuration and evidence limits.
+Local Voice 0.2.0 (build 4) extends the [specified Mac development slice](development/README.md) with [manual local speech output](development/local_speech_output.md). Fifteen automated tests passed; installed English text-to-audio synthesis produced non-silent samples; the on-device model returned a real answer; an authored synthetic audio fixture transcribed and produced an answer; and the owner confirmed live voice input and visible text responses. An initial microphone callback crash was repaired and covered by a background-callback regression test. The [technical status](status.md) records the configuration and evidence limits.
 
-The app handles one question at a time, with no conversation history. English is the initial speech locale; general conversation is the task family. The target iPhone/OS, requested languages, and representative evaluation cases remain open. No physical iPhone or Jetson test has run.
+The app handles one question at a time, with no conversation history. English is the current language scope; additional languages are deferred. General conversation is the task family. The target iPhone/OS and representative evaluation cases remain open. No physical iPhone or Jetson test has run.
 
 Read the [software guide](software/README.md), [intake](../../resources/project_proposals/apple_local_voice_intake.md), and [results policy](results/README.md) before expanding the implementation. The intake records proposed gates; no latency or quality threshold is a measured result.
 
