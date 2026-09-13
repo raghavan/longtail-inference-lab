@@ -1,6 +1,6 @@
 # 02 Edge Offline Intelligence Device
 
-**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. The first Jetson shopping list is recorded; ordering is on hold until the next owner session. No hardware order is placed. Detailed device evaluation and model-selection intake remain open.
+**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. Hardware ordering resumed: the owner confirmed the six-item DigiKey accessory order, while Jetson kit and storage card orders remain unconfirmed. Detailed device evaluation and model-selection intake remain open.
 **Evidence:** Development checks, owner-confirmed Mac voice input/text response, and an owner report of basic iOS operation; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 **Track:** Local inference and device systems
 **Last updated:** September 13, 2026
@@ -37,7 +37,7 @@ Apple's model is an Apple-platform dependency. Jetson requires a local open-mode
 
 ## Budget and hardware
 
-The [shopping list and restart checklist](hardware/portable_procurement.md) contains eight exact items from Arrow, DigiKey, and B&H, totaling $487.55 before checkout charges at the September 13 checkpoint. It records dated stock observations, setup dependencies, and the proposed device acceptance steps. Purchasing is on hold until the next owner session; no order or reservation has been placed.
+The [shopping list and restart checklist](hardware/portable_procurement.md) contains eight exact items from Arrow, DigiKey, and Newegg. It records dated stock observations, setup dependencies, and the proposed device acceptance steps. The owner confirmed ordering all six DigiKey accessories on September 13; the export confirms $48.30 in parts, with the final delivered total pending. The Jetson kit and storage card orders remain unconfirmed. Do not repurchase the six accessories.
 
 The [budget](hardware/bill_of_materials.md) records the confirmed $1,000 first-year ceiling: all new hardware needed for the end product, required subscriptions and software/distribution fees, tax, and shipping. Reuse the already-owned Mac and iPhone; any new development or test hardware and required renewals during the first year also count toward the ceiling.
 
