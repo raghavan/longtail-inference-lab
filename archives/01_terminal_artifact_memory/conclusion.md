@@ -1,7 +1,9 @@
 # Conclusion: Terminal Artifact Memory
 
-**Status:** Closed — inconclusive on the local transfer hypothesis  
-**Closed:** September 12, 2026  
+**Status:** Closed — inconclusive on the local transfer hypothesis
+
+**Closed:** September 12, 2026
+
 **Basis:** Repository evidence, two established research papers, and current first-party product documentation
 
 ## Decision
