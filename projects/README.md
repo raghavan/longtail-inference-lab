@@ -1,38 +1,27 @@
 # Projects
 
-Projects are the active, bounded experiments of the Long Tail Inference Lab.
+Projects contain the laboratory's active, bounded research. Each needs a question, a measurement plan, a success boundary, a stop boundary, and a completion condition.
 
-A folder enters Projects only when it has a research question, a measurement plan, a success boundary, a stop boundary, and a completion condition.
-
-## Active projects
-
-Two projects are active. Neither has published a measurement. They share the lab's method — fixed controls, an authoritative measurement named in advance, published negative results — but no evidence passes between them.
-
-### [01 Terminal Artifact Memory](01_terminal_artifact_memory/README.md)
-
-**Status:** Corrective preregistration awaiting merge (zero measured attempts and zero ledger slots consumed)
-
-Can verifier-passing public terminal work from a fixed `gpt-5.6-sol` cloud teacher become approved Markdown memory that improves the exact fixed local Qwen student on disjoint held-out tasks?
-
-The [corrective preregistered protocol](01_terminal_artifact_memory/preregistrations/2026-08-01-gpt56-qwen32k-teacher-student-corrective.md) freezes the qualified split, 32,768-token context policy, exact host-Codex boundaries, separately validated Docker and Compose pins, local sanitization, disclosure inventories, approval, ordering, and student-only executable-verifier M0/M2 scoring. The prior 16,384-token pilot remains visible and halted without a pair; no transfer efficacy is claimed.
+## Active project
 
 ### [02 Edge Offline Intelligence Device](02_edge_offline_intelligence_device/README.md)
 
-**Status:** Specified — hardware not ordered, zero measurements taken
+**Status:** First native Mac voice-to-text-answer slice works; model-selection intake remains open. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
-How much useful spoken intelligence fits inside one self-contained device that keeps working when the network disappears?
+Build a local voice-input and text-answer experience in three iterations: a native Mac app, an iPhone app through TestFlight with conditional launch, and a self-contained NVIDIA Jetson prototype. The first-year total ceiling is $1,000, covering all new hardware for the end product, required subscriptions and software/distribution fees, tax, and shipping.
 
-The first bounded question is [Experiment 02.1](02_edge_offline_intelligence_device/experiments/01_spoken_latency_and_residency.md): on a fixed Jetson Orin Nano Super 8 GB running a fixed modular pipeline of local speech recognition, a four-bit quantized compact instruct model, and local speech synthesis, how is button-release-to-first-spoken-word latency distributed, can all three models be held resident within 8 GB, and does residency justify its complexity against sequential loading? It runs fully offline with a packet-counter assertion and decomposes every interaction into a per-stage latency ledger.
-
-The complete loop runs first as a [laptop pilot](02_edge_offline_intelligence_device/software/README.md) on general-purpose hardware, so the controller and analysis exist before any hardware is bought. Pilot output is never pooled with device runs.
+The [architecture](02_edge_offline_intelligence_device/design_direction.md) selects the Mac's model integration around the iPhone's constraints. The [technical status](02_edge_offline_intelligence_device/status.md) records the working Mac slice, development checks, and limitations. The [intake draft](../resources/project_proposals/apple_local_voice_intake.md) proposes an Apple on-device model evaluation and a compact open-model fallback. It needs the target phone, requested languages, and representative general-conversation cases before comparative model selection.
 
 ## Status meanings
 
-```text
-Idea
-Specified
-Running
-Analyzing
-Complete
-Paused
-```
+| Status | Meaning |
+| --- | --- |
+| Idea | The question still needs intake. |
+| Specified | The bounded question and measurement plan are documented. |
+| Running | Measured execution has begun. |
+| Analyzing | Collected results are being interpreted. |
+| Complete | The declared measurement and publication condition has been met. |
+| Closed | Active work has ended with a conclusion, including any unmet evidence requirements. |
+| Paused | Work is suspended with explicit conditions for resuming. |
+
+An active project's next experiment can be in intake; its draft stays in resources until specified. Complete, Closed, and Paused work belongs in the archive.

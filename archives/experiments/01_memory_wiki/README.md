@@ -3,7 +3,7 @@
 **Archive status:** Superseded  
 **Archived:** July 12 2026  
 **Runs recorded:** None  
-**Replacement:** [Terminal Artifact Memory](../../../projects/01_terminal_artifact_memory/README.md)
+**Replacement:** [Terminal Artifact Memory](../../01_terminal_artifact_memory/README.md)
 
 This experiment specification explored whether a human readable Markdown cache could move recurring questions from frontier inference to reliable local inference.
 

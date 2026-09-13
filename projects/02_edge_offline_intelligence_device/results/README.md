@@ -1,23 +1,18 @@
 # Results
 
-**No measurements exist for this project.**
+**Zero published comparative quality or performance measurements for the macOS, iOS, or Jetson iterations.**
 
-No hardware has been ordered and no interaction has been recorded. Every number in this project is a target, a budget, or a threshold until a dated results folder appears here.
+The September 12 [development status](../status.md) records a working Mac voice-to-text-answer slice, seven automated checks, real local answer and synthetic speech checks, and owner confirmation of live voice input and visible text responses. These are implementation checks; they do not establish model quality, tail latency, phone memory fitness, or Jetson performance.
 
-## What will be published
+Each platform's measured evaluation should publish:
 
-Each measured run gets a dated folder containing:
+1. A dated summary with the frozen question, workload, scoring rubric, thresholds, and decision.
+2. Sanitized provenance: hardware class, OS/build, runtime, available model identity, open-model revision/hash/quantization where applicable, prompts, context/output controls, speech locale/assets, and workload revision.
+3. Attempt accounting, including failures, cancellations, timeouts, exclusions, and reasons.
+4. Answer usefulness and transcription errors, with approved examples of failure.
+5. End-of-recording to first visible answer and final-answer latency distributions; separate cold starts and model-only timings; report sample counts with p50, p95, maximum, and p99 only with an explicit small-sample caveat when appropriate.
+6. App footprint and peak memory, shared system asset requirements where observable, thermal/battery observations on iPhone, and instrumented device energy/thermals on Jetson.
+7. The offline test method and its limits. Setup downloads, OS background traffic, and app inference traffic are distinct categories.
+8. At least one stress or removal comparison and a clear continue, narrow, switch, or stop decision.
 
-1. `provenance.json` — hardware, JetPack version, power mode, model identities with revisions and file hashes, runtime versions, prompt hash, question set hash, ambient conditions, and condition and block order.
-2. `interactions.jsonl` — one line per interaction with the full per-stage latency ledger.
-3. `resources.csv` — the 100 ms sampling of memory, temperature, and input power.
-4. `offline-assertion.log` — interface packet counter deltas per interaction.
-5. `summary.md` — distributions with p50, p95, p99, and maximum, the per-stage breakdown at p50 and p95, stress curves, removal analysis, and the operational conclusion.
-
-## Publication rules
-
-1. Negative, halted, and inconclusive results are published with the same prominence as positive ones. A device that is unusably slow is a result.
-2. Discarded blocks are listed with the reason for discarding them.
-3. A block with a nonzero offline packet delta is not published as a result until the cause is explained.
-4. No raw audio is committed. Only synthetic or explicitly approved recordings may appear here.
-5. No illustrative chart is presented as a measurement.
+Do not pool platform results. A successful simulator run or Mac benchmark does not establish physical iPhone or Jetson behavior. Publish negative and inconclusive findings; never count missing runs as passes or omit slow failures from attempt accounting. Commit only synthetic or explicitly approved content and sanitized measurements.

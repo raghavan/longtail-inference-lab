@@ -6,4 +6,4 @@ The specification was superseded before execution. No frontier baseline, routed 
 
 The planned outputs are preserved in the [original results document](original_results.md).
 
-Ideas from this plan now inform [Terminal Artifact Memory](../../../../projects/01_terminal_artifact_memory/README.md).
+Ideas from this plan now inform [Terminal Artifact Memory](../../../01_terminal_artifact_memory/README.md).

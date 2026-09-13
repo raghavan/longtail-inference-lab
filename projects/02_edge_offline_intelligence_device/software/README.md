@@ -1,157 +1,62 @@
-# Laptop pilot for the local voice loop
+# Local Voice for macOS
 
-**Status:** runnable. Dry run verified; the real-backend path has not been run against models or an audio device.
+**Status:** Native development app, version 0.1.1 (build 2). Real local answer and synthetic speech checks passed; the owner confirmed live voice input and visible text answers. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
-This is the complete conversation controller from the design direction — capture, speech recognition, answer generation, speech synthesis, playback — written to run on an ordinary laptop before any hardware is bought.
+Speak one question, see its transcript, and read a locally generated text answer. The app also accepts typed input so recognition errors can be corrected. The current prototype uses Apple's on-device `SystemLanguageModel.default` and `SpeechTranscriber`; it has no web, document, or vector retrieval, conversation history, voice playback, or app-owned recording/transcript persistence.
 
-## What this is, and what it is not
+## Requirements and setup
 
-It **is** a pilot: enough of the real system to learn whether the loop is worth building on dedicated hardware, and to develop the software that will later run on that hardware unchanged.
+- Apple silicon Mac running macOS 26 or later, with a compatible Xcode installation and Swift 6.
+- Apple Intelligence enabled and its on-device model available. The app shows readiness and unavailable states.
+- English (United States) speech assets. **Prepare local speech** downloads them if needed; initial setup may require internet.
+- Microphone permission for Local Voice when recording.
 
-It **is not** Experiment 02.1, and its output is never pooled with device measurements. A laptop is a different hardware condition, so its numbers answer different questions. `analyze.py` prints a warning when a ledger contains dry-run data, and every ledger records `is_measurement` in its provenance line.
-
-### What transfers to the device
-
-| Carries over unchanged | Does not carry over |
-| --- | --- |
-| Controller state machine and residency policy | Absolute latency — a laptop CPU or GPU is not an Orin |
-| Ledger schema and stage boundaries | Peak memory under an 8 GB ceiling |
-| Analysis script and percentile reporting | Energy per interaction and idle power |
-| Question set and strata | Thermals, throttling, and fan behaviour |
-| Prompt and spoken-response style policy | Audio path characteristics |
-| Sentence-streaming logic | Anything about battery life |
-
-The point of running it here is that the left column is most of the software work, and it is free to do now.
-
-## Install
-
-Three runtimes, all of which work on macOS, Windows, and Linux.
+From the repository root:
 
 ```bash
-# 1. Answer model, through Ollama
-#    https://ollama.com/download
-ollama pull qwen3:4b
-
-# 2. Speech recognition and audio capture
-pip install faster-whisper sounddevice
-
-# 3. Speech synthesis
-#    https://github.com/rhasspy/piper  (binary + one voice file)
-#    Place the voice next to this README, e.g. software/voices/en_US-lessac-medium.onnx
+cd projects/02_edge_offline_intelligence_device/software/apple
+./build-macos.sh
+open "build/Local Voice.app"
 ```
 
-Nothing is required for the dry run. It uses only the standard library.
+The script creates an ad hoc signed local app bundle. This is a development build, not a notarized distribution or TestFlight upload. Build products and caches are ignored by Git. No external package dependencies or separately bundled model weights are required for this Apple backend.
 
-### Choosing model sizes for your machine
+Use **Record**, then **Stop and answer**. **Cancel** stops the active operation; **Clear** resets the visible text. Recording ends automatically after 30 seconds. Input is limited to 1,200 characters and generated output to 384 model tokens. Typed generation has a 60-second cancellation deadline; the complete recording workflow has a 90-second deadline. Framework cancellation is cooperative. Each question creates a fresh answer session.
 
-| Machine | Speech recognition | Answer model |
-| --- | --- | --- |
-| Apple Silicon, 16 GB+ | `small.en` | `qwen3:4b` |
-| NVIDIA GPU laptop, 8 GB+ VRAM | `small.en` | `qwen3:4b` |
-| CPU only, 16 GB | `base.en` | `qwen3:4b`, expect slow generation |
-| CPU only, 8 GB | `tiny.en` | a 1–2 B model; 4 B will thrash |
+## Development checks
 
-The device target is a four-bit 4 B model, so matching that on the laptop keeps the comparison meaningful even though absolute timings will not match.
-
-## Run
-
-Start with the dry run. It needs no models, no microphone, and no speaker, and it verifies the state machine and the ledger.
+From the `software/apple` directory:
 
 ```bash
-cd projects/02_edge_offline_intelligence_device/software
-python3 controller/main.py --mode dry-run --limit 6 --out runs/dry.jsonl
-python3 analyze.py runs/dry.jsonl
+swift test
+swift run LocalVoiceCheck --readiness
+swift run LocalVoiceCheck --check-answer
 ```
 
-Then the real loop. Press Enter, speak, press Enter again, and listen.
+If speech assets need setup, use the app's preparation button or:
 
 ```bash
-python3 controller/main.py \
-  --mode interactive \
-  --residency resident \
-  --synthesis streamed \
-  --limit 10 \
-  --llm-model qwen3:4b \
-  --stt-model base.en \
-  --piper-voice voices/en_US-lessac-medium.onnx \
-  --out runs/pilot-resident-streamed.jsonl
+swift run LocalVoiceCheck --prepare-speech
 ```
 
-Run all four conditions into one ledger to reproduce the 2×2, then analyze:
+To exercise an authored synthetic audio file without microphone capture:
 
 ```bash
-python3 analyze.py runs/pilot.jsonl --target-s 8.0 --offset-ms 0
+say -v Samantha -r 155 -o /tmp/longtail-synthetic-voice.aiff \
+  'Explain why leaves change color in autumn.'
+swift run LocalVoiceCheck --check-voice /tmp/longtail-synthetic-voice.aiff
 ```
 
-## Testing the offline claim on a laptop
+The command prints the fixture's transcript and answer. Use deliberately authored test material for shared logs. `--transcribe AUDIO_FILE` also exists for local debugging; its output may be private and must not be published without permission.
 
-Turn off WiFi and unplug Ethernet before an interactive block. That is a weaker assertion than the device experiment's packet-counter check, and it is deliberately not automated here — a laptop has too many background processes for a zero-packet claim to mean anything. Treat "it still worked with the radio off" as the only offline claim the pilot supports.
+The seven automated tests cover input bounds, unavailable models, streamed state, stale results after cancellation, final-transcript handoff, recoverable errors, and the actual audio callback on a background executor. The callback test also checks conversion and buffer ownership. Fake-backend tests do not measure model quality. An audio-file smoke check bypasses microphone capture; it cannot establish recording usability.
 
-## Known measurement limits
+App inference and speech services need normal local framework access. A restricted development-tool sandbox may deny that access even when the desktop app works. Report such a failure separately from a model failure; do not add a cloud fallback to work around it.
 
-These are why the pilot informs the device build rather than substituting for it.
+## Code and next platform gate
 
-1. **Press-to-start and press-to-stop, not press-and-hold.** A terminal cannot observe a held key portably. This changes what `capture` means but not the primary metric, which begins when recording stops.
-2. **Playback submission is approximated by process start.** `SubprocessPlayer` shells out to `afplay`, `aplay`, or PowerShell and returns once the process has launched. The gap between that and audible sound is unmeasured here.
-3. **No acoustic offset calibration.** Pass `--offset-ms` to `analyze.py` if you measure it.
-4. **Piper runs as a subprocess,** so it has no resident state. The residency arm therefore tests speech recognition and answer model residency only, and `tts_load` will read near zero in both conditions. On the device this is worth revisiting with a library binding.
-5. **Ollama manages its own memory.** `load` and `unload` request residency rather than commanding it, so the sequential condition is a request the runtime may not honour exactly.
-6. **A laptop is thermally and electrically unconstrained** compared with the target device, and it is doing other work at the same time.
+[`apple/Package.swift`](apple/Package.swift) defines the reusable `LocalVoiceCore`, SwiftUI app, command-line checks, and tests. The answer and speech interfaces keep providers replaceable. The nonisolated, sendable audio callback converts hardware buffers before the asynchronous analyzer consumes them; UI state stays on the main actor.
 
-Limits 4 and 5 are worth knowing before reading any result: they mean the pilot's residency arm is softer than the device experiment's, so a null result on residency here is weak evidence, while a large effect would be notable.
+The [development record](../development/README.md) scopes this Mac slice, and [current status](../status.md) records its checks and known limits. The target iPhone/OS and requested languages are still needed before phone-specific model selection. Shared Swift source and declared iOS availability are not a signed iOS application or proof of physical-device compatibility.
 
-## Files
-
-```text
-software/
-  controller/
-    ledger.py      frozen stage schema, timing, JSONL writer
-    backends.py    speech, language, synthesis behind one interface, plus stubs
-    audio.py       capture and playback
-    pipeline.py    the interaction, and the two policies under test
-    main.py        command line
-  evaluations/
-    question_set.jsonl   40 questions in four strata
-  analyze.py       distributions, per-stage breakdown, dominant stage at p95
-```
-
-## Publication rules
-
-Ledgers from your own machine may contain host details, so they are not committed by default. If you want to publish a pilot result, put it under `results/` with a dated folder, strip host identifiers, and run `python3 areas/lab_operations/safety_scan.py` first. Label it a pilot, on general-purpose hardware, in the summary's first line.
-
-## End-to-end app
-
-`app/` is the whole loop behind a single **Ask** button: a browser page shaped like the device,
-served by a local Python server that runs the same pipeline, the same models, and writes the same
-ledger. It is the rehearsal for the Jetson build.
-
-```bash
-python3 app/server.py --stub      # no models, verifies the whole path
-python3 app/server.py             # real models
-```
-
-See [`app/README.md`](app/README.md) for setup and for which of its numbers mean anything.
-
-## Interface prototype
-
-`ui/index.html` is a front-end mockup of the finished object: a mid-century tabletop set in
-pistachio and cream, with the frequency graphs living inside the tuning dial. Open it directly in a
-browser, or serve it:
-
-```bash
-python3 -m http.server 8000 --directory ui
-# then open http://localhost:8000
-```
-
-Hold the bar or the space key to speak; `M` cuts the microphone. The traces are generated, not
-measured — there is no microphone, recognition, or model behind the page. It exists to test whether
-listening, working, and speaking read at a glance without a screen full of text, which is the
-interaction question the design direction raises and no amount of prose settles.
-
-Two details are deliberate rather than decorative. The stage names in the telemetry strip are the
-frozen ledger schema from the experiment spec, so the mock and a real ledger line describe the same
-thing. And cutting the microphone overrides every other state, because that is the one behaviour the
-finished device must guarantee in hardware rather than software.
-
-Wiring it to the real controller is a later step: the controller already knows its state at every
-moment, so a small local event stream could drive the panel instead of the random generator.
+If an embedded open model is needed, freeze the same model artifact, quantization, prompt policy, and context budget for Mac and iPhone, then measure the actual phone. Jetson needs a separate local backend. Follow the [architecture](../design_direction.md), [model-selection intake](../../../resources/project_proposals/apple_local_voice_intake.md), and [results policy](../results/README.md) before expanding scope or claiming performance.

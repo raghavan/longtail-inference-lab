@@ -1,9 +1,17 @@
 # 01 Terminal Artifact Memory
 
-**Status:** Corrective preregistration awaiting merge — zero measured attempts and zero ledger slots consumed
+**Status:** Closed — inconclusive; zero completed M0/M2 pairs
 **Track:** `artifact_memory` and local inference
 **Difficulty:** Intermediate  
-**Last updated:** August 1 2026
+**Last updated:** September 12 2026
+
+## Closure record
+
+This project closed on September 12, 2026. Read [conclusion.md](conclusion.md) for the evidence, lessons from Reflexion and ExpeL, the Perplexity Computer comparison, and the decision to focus on the device project.
+
+The July 31 pilot consumed one invalid measured attempt before verification. The later corrective teacher/student protocol consumed zero measured attempts and zero ledger slots. Neither produced a paired transfer result or admitted memory. Closure does not mark the original measurement completion condition as satisfied.
+
+The protocol below is retained as historical documentation. Its run instructions do not authorize further execution. Source code, prompts, frozen manifests, and the dated pilot evidence are preserved; historical commands refer to the original `projects/01_terminal_artifact_memory` layout available at repository commit `7118c70`.
 
 ## One minute summary
 
@@ -192,7 +200,7 @@ The [2026-07-31 measured pilot](results/2026-07-31-measured-pilot/summary.md) re
 
 No teacher/student measured run has been executed. The pilot is awaiting the corrective preregistration merge and fresh hash-bound authorization; no efficacy claim, baseline, checkpoint, or learning-curve point exists. The planning figure below remains illustrative only.
 
-![Illustrative learning curve showing a fixed local model improving as verified memory grows](../../resources/assets/terminal_artifact_memory_learning_curve.svg)
+![Illustrative learning curve showing a fixed local model improving as verified memory grows](../resources/assets/terminal_artifact_memory_learning_curve.svg)
 
 ## Completion condition
 

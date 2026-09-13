@@ -1,10 +1,12 @@
 # Experiment 02.1 — Spoken response latency and residency policy
 
-**Status:** Specified — hardware not ordered, zero measurements taken
+**Status:** Specified — active focus; zero published device measurements
 **Track:** Edge inference and device systems
 **Difficulty:** Advanced
 **Owner:** Long Tail Inference Lab
-**Last updated:** August 9 2026
+**Last updated:** September 12 2026
+
+The existing protocol remains the first bounded device experiment. The laptop prototype precedes hardware purchase, and its results stay separate. The [project charter](../README.md) records the September 12 activation decision and the controls still to freeze before measured Jetson runs.
 
 ## One minute summary
 

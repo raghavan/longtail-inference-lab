@@ -8,9 +8,9 @@
 
 The lab currently has two active experiments and one larger project direction:
 
-1. [Memory Wiki](../../projects/01_memory_wiki/README.md) asks whether reviewed markdown knowledge can increase reliable local answer rate while reducing frontier inference.
-2. [Session Capsule Analysis](../../projects/02_session_capsule_analysis/README.md) asks what coding agent sessions contain and when replay, compression, or portable state becomes worthwhile.
-3. [Privacy Aware Inference Boundary](../project_proposals/privacy_aware_inference_boundary.md) asks what information may safely cross from local systems to remote models and tools.
+1. [Memory Wiki](../../experiments/01_memory_wiki/README.md) asks whether reviewed markdown knowledge can increase reliable local answer rate while reducing frontier inference.
+2. [Session Capsule Analysis](../../experiments/02_session_capsule_analysis/README.md) asks what coding agent sessions contain and when replay, compression, or portable state becomes worthwhile.
+3. [Privacy Aware Inference Boundary](../../../resources/project_proposals/privacy_aware_inference_boundary.md) asks what information may safely cross from local systems to remote models and tools.
 
 The repository has also adopted a more pragmatic and risk aware experiment template. That makes the most useful readings those that expose costs by phase, identify tail behavior, define failure boundaries, and suggest measurements that can prevent premature systems work.
 
