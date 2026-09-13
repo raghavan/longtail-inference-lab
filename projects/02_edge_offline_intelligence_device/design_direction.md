@@ -7,15 +7,15 @@
 
 ## Context
 
-The first deliverable is a Mac app that transcribes speech locally, generates a local answer, and displays text. The second is an iPhone app tested through TestFlight, with launch conditional on usefulness. The final prototype is a self-contained NVIDIA Jetson device. The Mac must exercise an answer model that the iPhone can actually use.
+The first deliverable is a Mac app that transcribes speech locally, generates a local answer, displays text, and reads the completed answer aloud on request. The second is an iPhone app tested through TestFlight, with launch conditional on usefulness. The final prototype is a self-contained NVIDIA Jetson device. The Mac must exercise an answer model that the iPhone can actually use.
 
-The development Mac runs macOS 26.6 on an M2 Pro with 16 GB memory; Xcode 26.6 is installed. General conversation is the task family. The target iPhone/OS, requested languages, and representative cases are not yet specified. This prevents a final model choice. The [experiment intake](../../resources/project_proposals/apple_local_voice_intake.md) holds the proposed measurement plan. The separately specified [Mac development slice](development/README.md) implements the first Apple backend and has passed its development checks.
+The development Mac runs macOS 26.6 on an M2 Pro with 16 GB memory; Xcode 26.6 is installed. English general conversation is the current workload; additional languages are deferred. The target iPhone/OS and representative cases are not yet specified. This prevents a final model choice. The [experiment intake](../../resources/project_proposals/apple_local_voice_intake.md) holds the proposed measurement plan. The separately specified [Mac development slice](development/README.md) implements the first Apple backend and has passed its development checks.
 
 ## Decision proposed
 
 Use SwiftUI and a shared Swift core for the Mac and iPhone. Keep microphone capture, speech transcription, answer generation, and platform resource reporting behind small interfaces. Evaluate Apple's on-device speech and answer models first, then a small embedded open model if eligibility or quality requires it.
 
-The first app needs a record/stop control, visible transcript, streamed text answer where supported, cancel, and clear model-readiness and failure states. A single-turn interaction is the proposed baseline; conversation history and voice playback can be evaluated separately if they become requirements.
+The first app needs a record/stop control, visible transcript, streamed text answer where supported, cancel, and clear model-readiness and failure states. The current app handles one question at a time. Installed Apple voices provide optional English read-aloud through `AVSpeechSynthesizer`, with explicit stop, preview, installed-voice selection, and no autoplay. Prefer Premium or Enhanced quality when installed; voice assets and storage are device specific. The shared source compiled for the iOS Simulator SDK, with physical-phone behavior still untested. Playback stops before a new recording or answer begins. Conversation history and additional languages remain outside this iteration.
 
 ```text
 Mac / iPhone UI
@@ -62,8 +62,8 @@ Model file size, app download size, persistent storage, and peak runtime memory 
 
 ## Consequences and action items
 
-1. Confirm the target iPhone/OS and languages, and choose representative general-conversation cases. Agree on usefulness and acceptable wait time in the intake. The $1,000 first-year budget scope is confirmed and includes all required hardware, subscriptions, software/distribution fees, tax, and shipping.
-2. The authorized Mac development slice now works. Identify and test the physical iPhone before expanding the Mac feature set, then complete the comparative intake. The product iteration order remains Mac then iOS; compatibility is checked early.
+1. Confirm the target iPhone/OS and choose representative English general-conversation cases. Agree on usefulness and acceptable wait time in the intake. The $1,000 first-year budget scope is confirmed and includes all required hardware, subscriptions, software/distribution fees, tax, and shipping.
+2. The authorized Mac development slice, including optional English speech output, now works. Identify and test the physical iPhone before expanding the Mac feature set, then complete the comparative intake. The product iteration order remains Mac then iOS; compatibility is checked early.
 3. Compare answers on correct typed transcripts first, then the complete spoken interaction. This separates answer-model limitations from speech-recognition errors.
 4. Keep the selected backend and prompt policy aligned across Mac and iPhone. Ship a small capability surface with explicit unsupported/unavailable states and no automatic cloud fallback.
 5. Test offline after initial assets are installed. TestFlight delivery and model downloads belong to setup, not measured offline inference. Clear or asset-missing states must fail visibly rather than silently use a server.

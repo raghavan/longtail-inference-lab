@@ -24,15 +24,36 @@ import Testing
 @MainActor private final class ControlledSpeech: SpeechInput {
     var text = "A synthetic spoken question."
     var cancelled = 0
+    var beforeRecording: (() -> Void)?
     func readiness() async -> Readiness { .ready }
     func prepare() async throws {}
     func record(update: @escaping @MainActor (String) -> Void, started: @escaping @MainActor () -> Void) async throws -> String {
+        beforeRecording?()
         started()
         update(text)
         return text
     }
     func stop() {}
     func cancel() async { cancelled += 1 }
+}
+
+@MainActor private final class ControlledOutput: SpeechOutput {
+    var state = Readiness.ready
+    var spoken: [String] = []
+    var completions: [@MainActor () -> Void] = []
+    var active = false
+    var voices = [SpeechVoice(id: "test-standard", name: "Test voice", language: "en-US", quality: .standard),
+                  SpeechVoice(id: "test-premium", name: "Test voice", language: "en-US", quality: .premium)]
+    var preferredVoiceIdentifier: String?
+    var selectedVoice: SpeechVoice? { SpeechVoice.preferred(in: voices, identifier: preferredVoiceIdentifier) }
+    func selectVoice(_ identifier: String?) { preferredVoiceIdentifier = identifier }
+    var readiness: Readiness { state }
+    func speak(_ text: String, finished: @escaping @MainActor () -> Void) throws {
+        active = true
+        spoken.append(text)
+        completions.append(finished)
+    }
+    func stop() { active = false }
 }
 
 @Suite @MainActor struct ConversationTests {
@@ -131,4 +152,127 @@ import Testing
         #expect(model.notice == "Local test failure")
         #expect(model.transcript == "A question")
     }
+
+    @Test func completedAnswerIsSilentUntilExplicitReadAloud() async {
+        let answers = ControlledAnswers()
+        let output = ControlledOutput()
+        let model = Conversation(answers: answers, speech: ControlledSpeech(), output: output)
+        model.transcript = "A question"
+        model.ask()
+        await eventually { answers.requests.count == 1 }
+        model.readAloud()
+        #expect(output.spoken.isEmpty)
+        answers.complete(0, text: "A completed answer.")
+        await eventually { model.phase == .idle }
+        #expect(output.spoken.isEmpty)
+        model.readAloud()
+        #expect(output.spoken.first == model.answer)
+        #expect(model.isSpeaking)
+        output.completions[0]()
+        #expect(!model.isSpeaking)
+        #expect(model.answer == "A completed answer.")
+    }
+
+    @Test func recordingStopsPlaybackBeforeOpeningTheMicrophone() async {
+        let answers = ControlledAnswers()
+        let output = ControlledOutput()
+        let speech = ControlledSpeech()
+        let model = Conversation(answers: answers, speech: speech, output: output)
+        speech.beforeRecording = { #expect(!output.active); #expect(!model.isSpeaking) }
+        await model.refresh()
+        await completeAnswer(model, answers: answers)
+        model.readAloud()
+        #expect(output.active)
+        model.record()
+        await eventually { answers.requests.count == 2 }
+        #expect(!output.active)
+        answers.complete(1, text: "A completed answer.")
+        await eventually { model.phase == .idle }
+    }
+
+    private func completeAnswer(_ model: Conversation, answers: ControlledAnswers) async {
+        let index = answers.requests.count
+        model.transcript = "A synthetic question."
+        model.ask()
+        await eventually { answers.requests.count == index + 1 }
+        answers.complete(index, text: "A completed synthetic answer.")
+        await eventually { model.phase == .idle }
+    }
+
+    @Test func oldPlaybackCompletionCannotFinishNewPlayback() async {
+        let answers = ControlledAnswers()
+        let output = ControlledOutput()
+        let model = Conversation(answers: answers, speech: ControlledSpeech(), output: output)
+        await completeAnswer(model, answers: answers)
+        model.readAloud()
+        model.stopSpeaking()
+        model.readAloud()
+        output.completions[0]()
+        #expect(model.isSpeaking)
+        output.completions[1]()
+        #expect(!model.isSpeaking)
+    }
+
+    @Test func clearingDuringPlaybackStopsSpeechAndDiscardsText() async {
+        let answers = ControlledAnswers()
+        let output = ControlledOutput()
+        let model = Conversation(answers: answers, speech: ControlledSpeech(), output: output)
+        await completeAnswer(model, answers: answers)
+        model.readAloud()
+        #expect(output.active)
+        await model.clear()
+        #expect(!output.active)
+        #expect(!model.isSpeaking)
+        #expect(model.transcript.isEmpty)
+        #expect(model.answer.isEmpty)
+        output.completions[0]()
+        #expect(model.notice == "Speak or type a question.")
+    }
+
+    @Test func missingVoiceDoesNotEraseTheAnswer() async {
+        let answers = ControlledAnswers()
+        let output = ControlledOutput()
+        output.state = .unavailable("Missing voice")
+        let model = Conversation(answers: answers, speech: ControlledSpeech(), output: output)
+        await completeAnswer(model, answers: answers)
+        let answer = model.answer
+        model.readAloud()
+        #expect(output.spoken.isEmpty)
+        #expect(!model.isSpeaking)
+        #expect(model.answer == answer)
+        #expect(model.notice == "Missing voice")
+    }
+    @Test func changingVoiceStopsPlaybackAndPreservesTheAnswer() async {
+        let answers = ControlledAnswers()
+        let output = ControlledOutput()
+        let model = Conversation(answers: answers, speech: ControlledSpeech(), output: output)
+        await completeAnswer(model, answers: answers)
+        model.readAloud()
+        let answer = model.answer
+        model.selectVoice("test-standard")
+        #expect(!model.isSpeaking)
+        #expect(!output.active)
+        #expect(model.answer == answer)
+        #expect(model.selectedVoice?.id == "test-standard")
+        #expect(output.preferredVoiceIdentifier == "test-standard")
+        output.completions[0]()
+        #expect(!model.isSpeaking)
+        model.previewVoice()
+        #expect(model.answer == answer)
+        #expect(model.isSpeaking)
+        #expect(output.spoken.last?.contains("Everything you hear") == true)
+    }
+
+    @Test func removedVoiceReturnsToTheBestInstalledVoice() async {
+        let output = ControlledOutput()
+        let model = Conversation(answers: ControlledAnswers(), speech: ControlledSpeech(), output: output)
+        model.selectVoice("test-premium")
+        model.previewVoice()
+        output.voices.removeAll { $0.id == "test-premium" }
+        model.refreshVoices()
+        #expect(!model.isSpeaking)
+        #expect(model.selectedVoiceIdentifier.isEmpty)
+        #expect(model.selectedVoice?.id == "test-standard")
+    }
+
 }

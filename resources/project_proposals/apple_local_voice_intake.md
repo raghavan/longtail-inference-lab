@@ -32,7 +32,7 @@ The iPhone is the first constrained deployment target. A Mac-only success can co
 
 The owner wants to speak a request, see what was understood, and read a local answer. The agreed sequence is a macOS app, an iOS app distributed through the owner's TestFlight, a conditional launch decision, and a self-contained NVIDIA prototype. The Mac and iPhone should share their selected model integration. The confirmed first-year total ceiling is $1,000, including all new hardware for the end product and required subscriptions, software/distribution fees, tax, and shipping.
 
-The Mac has an M2 Pro, 16 GB memory, macOS 26.6, and Xcode 26.6. A separately specified [development slice](../../projects/02_edge_offline_intelligence_device/development/README.md) has a working local voice-to-text-answer interaction and passing implementation checks. The target iPhone/OS, requested languages, and representative conversation cases remain material gaps for this comparison. The spending scope is confirmed: all required new hardware and first-year subscriptions/software/distribution fees share the $1,000 ceiling, including tax and shipping. The [architecture research](../../projects/02_edge_offline_intelligence_device/design_direction.md) records the primary sources and API limitations.
+The Mac has an M2 Pro, 16 GB memory, macOS 26.6, and Xcode 26.6. A separately specified [development slice](../../projects/02_edge_offline_intelligence_device/development/README.md) has a working local voice-to-text-answer interaction and passing implementation checks. English is the current agreed language scope; additional languages are deferred. The target iPhone/OS and representative conversation cases remain material gaps for this comparison. The spending scope is confirmed: all required new hardware and first-year subscriptions/software/distribution fees share the $1,000 ceiling, including tax and shipping. The [architecture research](../../projects/02_edge_offline_intelligence_device/design_direction.md) records the primary sources and API limitations.
 
 ## Decision being informed
 
@@ -86,7 +86,7 @@ For open models, also freeze source revision, conversion, quantization, file has
 
 ## Workload and evidence source
 
-The initial task family is general offline conversation, with no web or document/artifact retrieval. Select the languages and representative cases for that family. Use 20 sanitized cases reflecting that answer, including a few deliberately difficult cases. Record the source, expected useful behavior, reference transcript, and a scoring rubric before testing.
+The initial task family is general offline conversation, with no web or document/artifact retrieval. Use English for this iteration and select representative cases for that family. Use 20 sanitized cases reflecting that answer, including a few deliberately difficult cases. Record the source, expected useful behavior, reference transcript, and a scoring rubric before testing.
 
 Label authored or synthetic material explicitly. Do not use it to claim success on private notes, spontaneous conversations, or broader populations that were not tested. Keep scoring references outside model inputs unless supplying source text is part of the task itself.
 
@@ -156,7 +156,7 @@ The Apple path can share native integration with less app-managed model packagin
 
 ## Limitations and open evidence
 
-Material intake still needed: target iPhone and OS; languages and representative general-conversation cases. The first-year spending scope is confirmed. Agree the provisional usefulness, latency, transcription, and resource gates once those answers make them concrete. The separate Mac slice prepared local speech assets and implemented the initial app; no TestFlight upload, purchase, or comparative measured execution has occurred.
+Material intake still needed: target iPhone and OS; representative English general-conversation cases. The first-year spending scope is confirmed. Agree the provisional usefulness, latency, transcription, and resource gates once those answers make them concrete. The separate Mac slice prepared local speech assets and implemented the initial app; no TestFlight upload, purchase, or comparative measured execution has occurred.
 
 Exact Apple model weights and some system resource costs may remain unobservable. One owner, one phone, and a small scripted workload do not establish general usability. Jetson and a launch-quality iOS beta require independent evaluation.
 

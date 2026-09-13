@@ -5,7 +5,8 @@ import AppKit
 #endif
 
 @main struct LocalVoiceApp: App {
-    @State private var conversation = Conversation(answers: AppleAnswerEngine(), speech: AppleSpeechInput())
+    @State private var conversation = Conversation(answers: AppleAnswerEngine(), speech: AppleSpeechInput(),
+        output: AppleSpeechOutput(preferredVoiceIdentifier: UserDefaults.standard.string(forKey: "speechVoiceIdentifier")))
     var body: some Scene {
         WindowGroup("Local Voice") {
             ConversationView(conversation: conversation)
@@ -33,7 +34,7 @@ struct ConversationView: View {
                 HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 7) {
                         Text("Local Voice").font(.largeTitle.weight(.semibold))
-                        Text("Speak a question. Read an answer.").foregroundStyle(.secondary)
+                        Text("Speak a question. Read or listen to an answer.").foregroundStyle(.secondary)
                     }
                     Spacer()
                     Label("On this device", systemImage: "desktopcomputer")
@@ -42,20 +43,43 @@ struct ConversationView: View {
                 }
                 VStack(alignment: .leading, spacing: 10) {
                     readinessRow("Answers", state: conversation.answerReadiness)
-                    readinessRow("Speech", state: conversation.speechReadiness)
+                    readinessRow("Voice input", state: conversation.speechReadiness)
+                    readinessRow("Read aloud", state: conversation.outputReadiness)
                     if case .setupNeeded = conversation.speechReadiness {
                         Button("Prepare local speech") { conversation.prepareSpeech() }
                             .disabled(conversation.isBusy)
                         Text("One-time setup downloads English speech assets. Your questions are processed locally.")
                             .font(.caption).foregroundStyle(.secondary)
                     }
-                    if !conversation.answerReadiness.isReady {
+                    if !conversation.answerReadiness.isReady || !conversation.speechReadiness.isReady || !conversation.outputReadiness.isReady {
                         Button("Check again") { Task { await conversation.refresh() } }
                             .disabled(conversation.isBusy)
                     }
                 }
                 .padding(16).frame(maxWidth: .infinity, alignment: .leading)
                 .background(.quaternary.opacity(0.45), in: RoundedRectangle(cornerRadius: 14))
+
+                DisclosureGroup("Voice: \(conversation.selectedVoice?.label ?? "Unavailable")") {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Picker("Reading voice", selection: Binding(get: { conversation.selectedVoiceIdentifier }, set: { identifier in
+                            conversation.selectVoice(identifier)
+                            UserDefaults.standard.set(conversation.selectedVoiceIdentifier, forKey: "speechVoiceIdentifier")
+                        })) {
+                            Text("Automatic — best installed English voice").tag("")
+                            ForEach(conversation.availableVoices) { Text($0.label).tag($0.id) }
+                        }.disabled(conversation.isBusy)
+                        HStack {
+                            if conversation.isSpeaking {
+                                Button("Stop speaking", systemImage: "stop.fill") { conversation.stopSpeaking() }
+                            } else {
+                                Button("Preview voice", systemImage: "speaker.wave.2") { conversation.previewVoice() }
+                                    .disabled(conversation.isBusy || !conversation.outputReadiness.isReady)
+                            }
+                            Button("Refresh voices") { conversation.refreshVoices() }.disabled(conversation.isBusy)
+                        }
+                        Text(voiceSetupHelp).font(.caption).foregroundStyle(.secondary)
+                    }.padding(.top, 10)
+                }
 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
@@ -97,7 +121,16 @@ struct ConversationView: View {
                         .accessibilityLabel("Status: \(conversation.notice)")
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Answer").font(.headline)
+                    HStack {
+                        Text("Answer").font(.headline)
+                        Spacer()
+                        if conversation.isSpeaking {
+                            Button("Stop speaking", systemImage: "stop.fill") { conversation.stopSpeaking() }
+                        } else {
+                            Button("Read aloud", systemImage: "speaker.wave.2.fill") { conversation.readAloud() }
+                                .disabled(conversation.isBusy || conversation.answer.isEmpty || !conversation.outputReadiness.isReady)
+                        }
+                    }
                     Text(conversation.answer.isEmpty ? "Your answer will appear here." : conversation.answer)
                         .foregroundStyle(conversation.answer.isEmpty ? .secondary : .primary)
                         .textSelection(.enabled)
@@ -113,7 +146,16 @@ struct ConversationView: View {
         .onDisappear { Task { await conversation.cancel() } }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { Task { await conversation.cancel() } }
+            if phase == .active { conversation.refreshVoices() }
         }
+    }
+
+    private var voiceSetupHelp: String {
+        #if os(macOS)
+        "For higher-quality speech, download an Enhanced or Premium English voice in System Settings → Accessibility → Read & Speak → System voice (info button). Then refresh voices. The download uses device storage; playback is local."
+        #else
+        "For higher-quality speech, download an Enhanced or Premium English voice in Settings → Accessibility → Read & Speak → Voices → English. Then refresh voices. The download uses device storage; playback is local."
+        #endif
     }
 
     private func readinessRow(_ title: String, state: Readiness) -> some View {
