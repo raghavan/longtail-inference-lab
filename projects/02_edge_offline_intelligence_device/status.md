@@ -1,14 +1,16 @@
 # Current technical status
 
 **Updated:** September 12, 2026
-**App:** Mac Local Voice 0.2.0 (build 4); iPhone Local Voice Lab 0.3.0 (build 5), Ready to Test in the owner's internal TestFlight group; owner Invited
+**App:** Mac Local Voice 0.2.0 (build 4); iPhone Local Voice Lab 0.3.0 (build 5), delivered through TestFlight, with basic iOS operation confirmed by the owner
 **Tracking:** [iPhone/TestFlight issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44); [speech-output milestone](https://github.com/raghavan/longtail-inference-lab/issues/42); [initial voice-input milestone](https://github.com/raghavan/longtail-inference-lab/issues/40)
 
 ## Current milestone
 
 The [macOS local voice development slice](development/README.md) is complete: local speech transcription, an editable visible transcript, and a streamed local text answer. The owner confirmed successful live voice input and visible text answers after the crash repair. The app now includes [local speech output](development/local_speech_output.md): manual **Read aloud** and **Stop speaking**, installed-voice selection, and a synthetic preview. Automatic selection prefers Premium, then Enhanced, then Standard English voices. The owner confirmed that initial read-aloud worked and found the compact voice mechanical; the updated app uses an installed Premium voice when available. The current workload is English general conversation, one question at a time. Additional languages are deferred. No web, document, or vector retrieval is included.
 
-The [iPhone app and TestFlight delivery milestone](development/ios_testflight.md) is complete. The native target shares the Mac core and SwiftUI source; its typed-answer, manual speech, voice selection, and keyboard paths were exercised in the simulator. The arm64 archive passed signature verification, and App Store distribution signing and upload succeeded. Apple finished processing **0.3.0 (build 5)** and reports **Ready to Test** in the internal **Owner testing** group. The group has one build and one authorized owner tester with status **Invited**. The TestFlight listing is **Local Voice Lab**; the installed app name remains **Local Voice**. Invitation acceptance, installation, and physical-phone behavior have not been verified.
+The [iPhone app and TestFlight delivery milestone](development/ios_testflight.md) is complete. The native target shares the Mac core and SwiftUI source; its typed-answer, manual speech, voice selection, and keyboard paths were exercised in the simulator. The arm64 archive passed signature verification, and App Store distribution signing and upload succeeded. Apple processed **0.3.0 (build 5)** and made it available in the internal **Owner testing** group. The TestFlight listing is **Local Voice Lab**; the installed app name remains **Local Voice**.
+
+Following delivery on September 12, the owner confirmed that the beta works on their iOS device. This establishes owner-reported installation and basic operation on a physical iOS device. The report does not identify the device model, iOS version, or which individual voice-input, answer, and read-aloud paths were exercised. Those details, offline behavior, quality, and resource measurements remain open.
 
 Delivery used existing Apple developer access and added no purchase or subscription. Distribution is limited to the authorized owner's internal TestFlight group; no public App Store release has occurred. Zero published comparative quality or performance measurements exist for Mac, iPhone, or Jetson. The first-year ceiling remains $1,000 across all required new hardware, subscriptions/software/distribution fees, tax, and shipping.
 
@@ -30,13 +32,14 @@ The development configuration was an M2 Pro with 16 GB memory, macOS 26.6 (25G70
 | iOS simulator interaction | iPhone 17 Pro simulator completed an authored typed question and manual read-aloud; voice selection, preview, explicit stop, and keyboard Done were exercised | Local transcription unavailable; Standard voices only; no physical-phone inference, audio, or performance claim |
 | iPhone release archive | Xcode archive succeeded for 0.3.0 (build 5); arm64 binary, development signature, icon, privacy manifest, and iOS 26 minimum checked | Archive validation is separate from runtime behavior on a phone |
 | App Store upload and processing | Distribution export and upload succeeded; Apple reports 0.3.0 (build 5) Complete in Build Uploads | Processing success does not establish app usefulness or public-release approval |
-| Owner TestFlight access | Internal group contains one build, Ready to Test, and one authorized owner tester, Invited | Invitation acceptance, installation, and physical-phone checks remain unverified; future builds require deliberate group assignment |
+| Owner TestFlight access | At delivery, the internal group contained one build, Ready to Test, and one authorized owner tester, Invited | Distribution observation; future builds require deliberate group assignment |
+| Physical iOS device basic use | Owner confirmed the delivered beta works on their iOS device | Owner report only; device/OS, individual feature paths, quality, offline behavior, and resource use are not yet recorded |
 | Audio interruptions | Two controlled-backend regressions verify stopping playback preserves completed text and cancellation discards partial/late output | Physical calls, audio routes, and recording interruptions remain untested |
 | Manual voice check | Owner confirmed voice input through visible text response in version 0.1.1 | No scored corpus, timing, private transcript, or recording retained in the public record |
 
 The Premium voice setup displayed a 280.2 MB download and 323 MB installed storage on this Mac. These figures are OS voice-asset observations, not app size, peak RAM, or iPhone measurements. Only the voice preference is saved by the app; no conversation or audio is retained.
 
-The [software guide](software/README.md) provides reproduction commands. Development checks are separate from the proposed platform evaluation. No latency distribution, memory-pressure result, disconnected-network test, physical iPhone run, or Jetson run was collected.
+The [software guide](software/README.md) provides reproduction commands. Development checks and owner-reported basic iOS use are separate from the proposed platform evaluation. No latency distribution, memory-pressure result, disconnected-network test, structured iPhone evaluation, or Jetson run was collected.
 
 ## Failure and repair
 
@@ -51,7 +54,7 @@ The original crash report and personal screenshots remain private. This record c
 - Evaluate the Premium voice through listening checks; the Apple quality tier is not a conversational-naturalness score.
 - Evaluate ordinary spoken questions, repeated record/stop/cancel cycles, permission denial, input-device changes, interruptions, and long sessions. A successful manual check does not establish reliability.
 - Confirm offline operation after setup with a defined network-observation boundary.
-- Install the delivered beta and identify the physical iPhone/OS. Test English voice availability, naturalness, startup delay, memory/storage, recording-to-playback transitions, and audio interruptions. Simulator checks are insufficient for this gate.
+- Record the tested iPhone/OS and confirm the individual voice-input, answer, and read-aloud paths. Test English voice availability, naturalness, startup delay, memory/storage, recording-to-playback transitions, and audio interruptions. Basic operation does not complete this gate.
 - Freeze representative conversation cases and usefulness/resource gates before comparative measurements. The current single-turn prototype is not conversational memory.
 
 ## Durable record

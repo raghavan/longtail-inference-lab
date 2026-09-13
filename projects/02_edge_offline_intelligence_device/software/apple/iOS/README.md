@@ -6,7 +6,7 @@ Use an Apple Intelligence–capable iPhone running iOS 26 or later. Enable Apple
 
 ## Install the owner beta
 
-Apple processed build 0.3.0 (5) on September 12, 2026. The internal **Owner testing** group contains the build as **Ready to Test** and the authorized owner as **Invited**. Installation and physical-device evaluation remain unverified.
+Apple processed build 0.3.0 (5) on September 12, 2026 and made it available through the internal **Owner testing** group. The owner subsequently confirmed that the beta works on their iOS device. This is a report of basic operation; the tested device/OS and individual feature paths remain to be recorded. Detailed physical-device evaluation is still open.
 
 1. Open Apple's TestFlight invitation on the iPhone and follow it into the TestFlight app.
 2. Accept the invitation and install **Local Voice Lab**. Open **Local Voice** from the home screen.

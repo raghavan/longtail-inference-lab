@@ -3,7 +3,7 @@
 **Status:** Proposed architecture; platform sequence and $1,000 first-year total ceiling agreed
 **Date:** September 12, 2026
 **Decider:** Project owner
-**Evidence:** Mac and simulator development checks, plus owner TestFlight delivery, in [status](status.md); zero published comparative quality or performance measurements for Mac, iPhone, or Jetson
+**Evidence:** Mac and simulator development checks, TestFlight delivery, and owner-confirmed basic iOS operation in [status](status.md); zero published comparative quality or performance measurements for Mac, iPhone, or Jetson
 
 ## Context
 
@@ -15,7 +15,7 @@ The development Mac runs macOS 26.6 on an M2 Pro with 16 GB memory; Xcode 26.6 i
 
 Use SwiftUI and a shared Swift core for the Mac and iPhone. Keep microphone capture, speech transcription, answer generation, and platform resource reporting behind small interfaces. Evaluate Apple's on-device speech and answer models first, then a small embedded open model if eligibility or quality requires it.
 
-The first app needs a record/stop control, visible transcript, streamed text answer where supported, cancel, and clear model-readiness and failure states. The current app handles one question at a time. Installed Apple voices provide optional English read-aloud through `AVSpeechSynthesizer`, with explicit stop, preview, installed-voice selection, and no autoplay. Prefer Premium or Enhanced quality when installed; voice assets and storage are device specific. The native iPhone target shares the core and SwiftUI source; typed-answer and manual-speech simulator checks passed, while physical-phone behavior remains untested. Playback stops before a new recording or answer begins. Conversation history and additional languages remain outside this iteration.
+The first app needs a record/stop control, visible transcript, streamed text answer where supported, cancel, and clear model-readiness and failure states. The current app handles one question at a time. Installed Apple voices provide optional English read-aloud through `AVSpeechSynthesizer`, with explicit stop, preview, installed-voice selection, and no autoplay. Prefer Premium or Enhanced quality when installed; voice assets and storage are device specific. The native iPhone target shares the core and SwiftUI source; typed-answer and manual-speech simulator checks passed, and the owner confirmed basic iOS operation after TestFlight delivery. Detailed device and feature checks remain open. Playback stops before a new recording or answer begins. Conversation history and additional languages remain outside this iteration.
 
 ```text
 Mac / iPhone UI

@@ -138,7 +138,7 @@ Zero measured comparative results for this intake. The [development checks and o
 
 ## Operational conclusion
 
-**Evidence observed:** Primary documentation supports candidate local Apple APIs and an embedded open-model alternative. The Mac development slice works, including owner-confirmed voice input and text answers. The native iPhone app completed simulator checks and owner TestFlight delivery; physical iPhone compatibility and workload quality remain untested.
+**Evidence observed:** Primary documentation supports candidate local Apple APIs and an embedded open-model alternative. The Mac development slice works, including owner-confirmed voice input and text answers. The native iPhone app completed simulator checks and TestFlight delivery, after which the owner confirmed basic iOS operation. Device/OS details, individual feature checks, and workload quality remain open.
 
 **Decision supported:** Record the three-iteration direction and prepare the bounded model-selection test.
 
@@ -156,7 +156,7 @@ The Apple path can share native integration with less app-managed model packagin
 
 ## Limitations and open evidence
 
-Material intake still needed: target iPhone and OS; representative English general-conversation cases. The first-year spending scope is confirmed. Agree the provisional usefulness, latency, transcription, and resource gates once those answers make them concrete. Separate development milestones implemented the Mac app and delivered Local Voice Lab 0.3.0 (build 5) through the owner's internal TestFlight group. No new purchase or comparative measured execution has occurred; physical iPhone installation and evaluation remain unverified.
+Material intake still needed: tested iPhone and OS; representative English general-conversation cases. The first-year spending scope is confirmed. Agree the provisional usefulness, latency, transcription, and resource gates once those answers make them concrete. Separate development milestones implemented the Mac app and delivered Local Voice Lab 0.3.0 (build 5) through the owner's internal TestFlight group. The owner confirmed that the beta works on their iOS device; detailed feature, quality, offline, and resource checks remain open. No new purchase or comparative measured execution has occurred.
 
 Exact Apple model weights and some system resource costs may remain unobservable. One owner, one phone, and a small scripted workload do not establish general usability. Jetson and a launch-quality iOS beta require independent evaluation.
 
