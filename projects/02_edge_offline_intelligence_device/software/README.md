@@ -1,10 +1,10 @@
-# Local Voice for macOS
+# Local Voice for macOS and iPhone
 
-**Status:** Native development app, version 0.2.0 (build 4). Local answers, synthetic speech input/output, manual playback, and voice controls have development checks. The owner confirmed live voice input, visible text answers, and the initial read-aloud path. Shared app source also compiled for iOS Simulator. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
+**Status:** The Mac development app is version 0.2.0 (build 4). The native iPhone beta is **Local Voice Lab 0.3.0 (build 5)** in TestFlight, Ready to Test in the internal owner group, with the owner Invited. The installed app remains **Local Voice**. Simulator typed-answer and manual read-aloud checks passed; physical iPhone installation and evaluation remain unverified. The owner confirmed the Mac voice-input, text-answer, and read-aloud flow. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
 Speak one question, see its transcript, and read a locally generated text answer, or press **Read aloud** to hear it. The app also accepts typed input so recognition errors can be corrected. The current prototype uses Apple's on-device `SystemLanguageModel.default`, `SpeechTranscriber`, and installed English `AVSpeechSynthesizer` voices. It has no web, document, or vector retrieval, conversation history, or app-owned recording/transcript persistence. English is the current scope; additional languages are deferred.
 
-## Requirements and setup
+## Mac requirements and setup
 
 - Apple silicon Mac running macOS 26 or later, with a compatible Xcode installation and Swift 6.
 - Apple Intelligence enabled and its on-device model available. The app shows readiness and unavailable states.
@@ -57,21 +57,20 @@ swift run LocalVoiceCheck --check-voice /tmp/longtail-synthetic-voice.aiff
 
 The command prints the fixture's transcript and answer. Use deliberately authored test material for shared logs. `--transcribe AUDIO_FILE` also exists for local debugging; its output may be private and must not be published without permission.
 
-The fifteen automated tests cover input bounds, unavailable models, streamed state, stale results after cancellation, final-transcript handoff, recoverable errors, manual playback, stop before recording, stale playback callbacks, clearing, missing voices, voice changes, removed assets, quality selection, and the actual audio callback on a background executor. The callback test also checks conversion and buffer ownership. The text-to-audio check uses an authored sentence and requires non-silent samples plus a completion marker; it does not play through the speaker, record a person, or score naturalness. Fake-backend tests do not measure model quality. An audio-file smoke check bypasses microphone capture; it cannot establish recording usability.
+The seventeen automated tests cover input bounds, unavailable models, streamed state, stale results after cancellation, final-transcript handoff, recoverable errors, manual playback, stop before recording, stale playback callbacks, clearing, missing voices, voice changes, removed assets, quality selection, audio interruptions, and the actual audio callback on a background executor. Interruption tests check that playback stops while preserving completed text and that cancelled partial/late output is discarded. The callback test also checks conversion and buffer ownership. The text-to-audio check uses an authored sentence and requires non-silent samples plus a completion marker; it does not play through the speaker, record a person, or score naturalness. Fake-backend tests do not measure model quality. An audio-file smoke check bypasses microphone capture; it cannot establish recording usability.
 
 App inference and speech services need normal local framework access. A restricted development-tool sandbox may deny that access even when the desktop app works. Report such a failure separately from a model failure; do not add a cloud fallback to work around it.
 
-## Code and next platform gate
+## Shared code and the iPhone app
 
 [`apple/Package.swift`](apple/Package.swift) defines the reusable `LocalVoiceCore`, SwiftUI app, command-line checks, and tests. The answer, input speech, and output speech interfaces keep providers replaceable. Playback retains its synthesizer and delegate until completion; a sendable bridge moves only completion work to MainActor. The nonisolated, sendable audio callback converts hardware buffers before the asynchronous analyzer consumes them; UI state stays on the main actor.
 
-The [development record](../development/README.md) scopes this Mac slice, and [current status](../status.md) records its checks and known limits. English is the current language scope. The physical target iPhone/OS is still needed before phone-specific model selection. The shared core and SwiftUI source compiled and linked for arm64 and x86_64 iOS Simulator with the iOS 26.5 SDK. Reproduce from `software/apple`:
+The [development record](../development/README.md) scopes the Mac slice, and [current status](../status.md) records checks and known limits. The [iPhone project](apple/iOS/README.md) compiles the same SwiftUI source and links the same core. It adds an app icon, permission descriptions, privacy manifest, and distribution metadata. The phone layout has larger primary controls and a keyboard Done button; iOS audio interruptions and disconnected audio devices stop active work. English remains the language scope. Reproduce the real app build from `software/apple`:
 
 ```bash
-xcodebuild -scheme LocalVoice -destination 'generic/platform=iOS Simulator' \
-  -derivedDataPath /tmp/longtail-ios-speech-check CODE_SIGNING_ALLOWED=NO build
+./build-ios.sh simulator
 ```
 
-This checks source/API compatibility only. The Swift package produces an executable, not a signed iPhone app bundle. It does not run speech on an iPhone, verify audio-session interruptions, or establish TestFlight readiness. Each phone needs its own eligible model and installed voice. Keep the same public speech API and shared selection policy, then validate playback, recording transitions, storage, memory, and latency on the physical device.
+This produces a native iPhone app bundle. On the iOS 26.5 simulator, an authored typed question returned a local answer; manual read-aloud completed, voice selection/preview and explicit stop worked, and the software keyboard dismissed with Done. Local transcription was unavailable. The simulator had Standard English speaking voices; the Mac's Premium voice is not bundled with the app. Distribution signing, upload, Apple processing, and owner invitation are complete in the [delivery milestone](../development/ios_testflight.md). Use the [iPhone installation guide](apple/iOS/README.md) to accept the invitation and install the beta. The physical target iPhone/OS remains to be confirmed. Each phone needs its own eligible model and installed voice.
 
 If an embedded open model is needed, freeze the same model artifact, quantization, prompt policy, and context budget for Mac and iPhone, then measure the actual phone. Jetson needs a separate local backend. Follow the [architecture](../design_direction.md), [model-selection intake](../../../resources/project_proposals/apple_local_voice_intake.md), and [results policy](../results/README.md) before expanding scope or claiming performance.

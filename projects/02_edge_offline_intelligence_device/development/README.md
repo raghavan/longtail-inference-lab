@@ -47,7 +47,7 @@ Typed input removes recognition from the path to locate failures. Controlled fak
 
 ## Reproduce, results, and interpretation
 
-The [software guide](../software/README.md) holds build and run commands. The [status record](../status.md) reports the current fifteen passing automated tests, optional [local speech output](local_speech_output.md), real local answer and synthetic speech checks, the microphone crash and repair, and owner-confirmed live voice input and visible text answers. [GitHub issue 40](https://github.com/raghavan/longtail-inference-lab/issues/40) tracks this slice. Zero published comparative quality or performance measurements exist for Mac, iPhone, or Jetson.
+The [software guide](../software/README.md) holds build and run commands. The [status record](../status.md) reports seventeen passing shared automated tests, optional [local speech output](local_speech_output.md), real local answer and synthetic speech checks, the microphone crash and repair, and owner-confirmed live voice input and visible text answers. [GitHub issue 40](https://github.com/raghavan/longtail-inference-lab/issues/40) tracks this Mac slice; the [iPhone/TestFlight milestone](ios_testflight.md) records completed owner beta delivery and the remaining physical-phone evaluation. Zero published comparative quality or performance measurements exist for Mac, iPhone, or Jetson.
 
 A successful smoke check establishes only that the named local path executed. It cannot establish broad conversational usefulness, stable tail latency, phone memory fitness, or device-level offline integrity. Synthetic speech is not equivalent to the owner's microphone, accent, room, or spontaneous utterances.
 

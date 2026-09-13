@@ -2,7 +2,7 @@
 
 **Zero published comparative quality or performance measurements for the macOS, iOS, or Jetson iterations.**
 
-The September 12 [development status](../status.md) records a working Mac voice-to-text-answer slice with manual English read-aloud, fifteen automated tests, real local answer and synthetic input/output speech checks, and owner confirmation of live voice input and visible text responses. These are implementation checks; they do not establish model quality, tail latency, phone memory fitness, or Jetson performance.
+The September 12 [development status](../status.md) records the working Mac voice-to-text-answer slice with manual English read-aloud, seventeen shared automated tests, and a native iPhone app running typed-answer and manual-speech checks in the simulator. Apple accepted and processed Local Voice Lab 0.3.0 (build 5), which is Ready to Test in the internal owner group with the owner Invited. Physical iPhone installation and evaluation remain unverified. These are implementation and delivery checks; they do not establish model quality, tail latency, phone memory fitness, or Jetson performance.
 
 Each platform's measured evaluation should publish:
 

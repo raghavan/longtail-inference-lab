@@ -229,6 +229,44 @@ import Testing
         #expect(model.notice == "Speak or type a question.")
     }
 
+    @Test func audioInterruptionStopsPlaybackAndKeepsTheCompletedAnswer() async {
+        let answers = ControlledAnswers()
+        let output = ControlledOutput()
+        let model = Conversation(answers: answers, speech: ControlledSpeech(), output: output)
+        await completeAnswer(model, answers: answers)
+        let answer = model.answer
+        let question = model.transcript
+        model.readAloud()
+        await model.interruptAudio()
+        #expect(!output.active)
+        #expect(!model.isSpeaking)
+        #expect(model.answer == answer)
+        #expect(model.transcript == question)
+        let notice = model.notice
+        output.completions[0]()
+        await model.interruptAudio()
+        #expect(model.notice == notice)
+    }
+
+    @Test func audioInterruptionDiscardsPartialAndLateOutput() async {
+        let answers = ControlledAnswers()
+        let speech = ControlledSpeech()
+        let model = Conversation(answers: answers, speech: speech)
+        model.transcript = "A synthetic question."
+        model.ask()
+        await eventually { answers.requests.count == 1 }
+        answers.requests[0].update("A partial answer")
+        await model.interruptAudio()
+        #expect(model.phase == .idle)
+        #expect(speech.cancelled == 1)
+        #expect(model.answer.isEmpty)
+        #expect(model.transcript == "A synthetic question.")
+        answers.complete(0, text: "A late answer")
+        for _ in 0..<10 { await Task.yield() }
+        #expect(model.answer.isEmpty)
+        #expect(model.notice == "Audio was interrupted. You can start again.")
+    }
+
     @Test func missingVoiceDoesNotEraseTheAnswer() async {
         let answers = ControlledAnswers()
         let output = ControlledOutput()

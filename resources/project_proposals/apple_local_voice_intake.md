@@ -130,19 +130,19 @@ Report sample count, p50, p95, and maximum. Any p99 from this small pilot is exp
 
 ## Reproduce
 
-The [software guide](../../projects/02_edge_offline_intelligence_device/software/README.md) contains Mac build and development-check commands. Before measured execution, record the build revision, signed development configuration, OS and hardware class, model/runtime metadata, speech assets/locale, workload and prompt hashes, repetition order, power state, and measurement procedure. Use portable paths and sanitized identifiers. Keep initialization downloads separate from offline runs.
+The [software guide](../../projects/02_edge_offline_intelligence_device/software/README.md) contains Mac and iPhone build, delivery, and development-check commands. Before measured execution, record the build revision, signed development configuration, OS and hardware class, model/runtime metadata, speech assets/locale, workload and prompt hashes, repetition order, power state, and measurement procedure. Use portable paths and sanitized identifiers. Keep initialization downloads separate from offline runs.
 
 ## Results
 
-Zero measured comparative results for this intake. The Mac's [development checks](../../projects/02_edge_offline_intelligence_device/status.md) establish an implemented interaction, not answer quality or platform performance. Publish future results through the project's [results policy](../../projects/02_edge_offline_intelligence_device/results/README.md), including incomplete and failed conditions.
+Zero measured comparative results for this intake. The [development checks and owner TestFlight delivery](../../projects/02_edge_offline_intelligence_device/status.md) establish an implemented interaction and a beta available for physical-phone evaluation. They do not establish answer quality or platform performance. Publish future results through the project's [results policy](../../projects/02_edge_offline_intelligence_device/results/README.md), including incomplete and failed conditions.
 
 ## Operational conclusion
 
-**Evidence observed:** Primary documentation supports candidate local Apple APIs and an embedded open-model alternative. The Mac development slice works, including owner-confirmed voice input and text answers; target iPhone compatibility and workload quality remain untested.
+**Evidence observed:** Primary documentation supports candidate local Apple APIs and an embedded open-model alternative. The Mac development slice works, including owner-confirmed voice input and text answers. The native iPhone app completed simulator checks and owner TestFlight delivery; physical iPhone compatibility and workload quality remain untested.
 
 **Decision supported:** Record the three-iteration direction and prepare the bounded model-selection test.
 
-**Decision not supported:** A final model choice, broad conversational usefulness, beta or public release, or a claim that any model fits the Jetson's operating envelope.
+**Decision not supported:** A final model choice, broad conversational usefulness, a public release, or a claim that any model fits the Jetson's operating envelope. The separately authorized owner beta enables evaluation and is not evidence of readiness for a wider audience.
 
 **Safe operating region:** Not measured.
 
@@ -156,7 +156,7 @@ The Apple path can share native integration with less app-managed model packagin
 
 ## Limitations and open evidence
 
-Material intake still needed: target iPhone and OS; representative English general-conversation cases. The first-year spending scope is confirmed. Agree the provisional usefulness, latency, transcription, and resource gates once those answers make them concrete. The separate Mac slice prepared local speech assets and implemented the initial app; no TestFlight upload, purchase, or comparative measured execution has occurred.
+Material intake still needed: target iPhone and OS; representative English general-conversation cases. The first-year spending scope is confirmed. Agree the provisional usefulness, latency, transcription, and resource gates once those answers make them concrete. Separate development milestones implemented the Mac app and delivered Local Voice Lab 0.3.0 (build 5) through the owner's internal TestFlight group. No new purchase or comparative measured execution has occurred; physical iPhone installation and evaluation remain unverified.
 
 Exact Apple model weights and some system resource costs may remain unobservable. One owner, one phone, and a small scripted workload do not establish general usability. Jetson and a launch-quality iOS beta require independent evaluation.
 
