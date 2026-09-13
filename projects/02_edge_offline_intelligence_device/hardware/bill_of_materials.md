@@ -1,44 +1,41 @@
 # Project budget and Jetson selection
 
 **First-year total ceiling:** $1,000 USD, confirmed September 12, 2026.
-**Status:** Portable sourcing proposal dated September 13, 2026; no purchase placed or new spending recorded.
+
+**Checkpoint:** September 13, 2026; shopping list recorded, purchasing on hold until the next owner session. No order or new spending recorded.
+
 **Evidence:** Zero published Jetson measurements.
 
-The [portable procurement brief](portable_procurement.md) records the agreed carryable box, its own screen, and an approximately two-hour battery target. It contains dated supplier observations, the complete cost plan, compatibility checks, and the remaining purchase gates. The proposed $399 Orin Nano Super configuration totals $952.46 with allowances and the $99 distribution reserve; shipping stock, final accessory quotes, enclosure fit, and checkout charges remain unresolved. This is not a placed order or a guaranteed delivered price.
+The [shopping list](portable_procurement.md) contains eight exact items from Arrow, DigiKey, and B&H, with purchase links and dated supplier observations. The first hardware stage is a mains-powered Orin Nano Super 8 GB with USB microphone, USB speaker, physical button, 128 GB SanDisk card, reader, and two data cables. The listed parts subtotal is **$487.55 before tax, shipping, and tariffs**. It is not a guaranteed delivered price.
 
-## Cost scope
+## First-year allocation
 
-The confirmed ceiling covers the first 12 months of the project: all new hardware needed to build the end product and every required subscription, software/model license, and app-distribution fee. Include storage, audio, controls, output hardware, power, cooling, enclosure, assembly materials, tax, and shipping. Reuse the already-owned Mac and iPhone without counting their original purchase prices. Any new development or test hardware also consumes this budget.
-
-Count each required subscription over its expected use during the first year, including renewals due in that period; do not compare a monthly subscription price with a one-time hardware price as if they were the same cost. Existing equipment and prepaid services can reduce new spending but do not increase the ceiling. Costs after the first year must be reported separately.
-
-| Allocation | Maximum planned amount |
+| Allocation | Planned amount |
 | --- | ---: |
-| Jetson configuration and all physical/development accessories | $753.46 |
-| Required subscriptions, software, and app-distribution fees | $99.00 |
-| Tax and shipping reserve | $100 |
-| Contingency | $47.54 |
-| **Total** | **$1,000** |
+| Arrow: complete Orin Nano Super 8 GB developer kit | $399.00 |
+| DigiKey: microphone, speaker, button, reader, two data cables | $48.30 |
+| B&H: SanDisk Extreme 128 GB microSD card | $40.25 |
+| Apple Developer enrollment/renewal reserve, if due | $99.00 |
+| Provisional tax, shipping, and tariff allowance | $100.00 |
+| Unallocated for later hardware and contingency | $313.45 |
+| **First-year ceiling** | **$1,000.00** |
 
-These are provisional spending envelopes combining listed prices and allowances, not checkout quotes. The $1,000 total and its first-year scope are confirmed; the category allocations can move within that total. The hardware envelope covers the compute kit, cooling, storage, audio, display/controls, mains and battery power, packaging, and required development accessories. Battery work is now part of the agreed prototype. A parts list is viable only if its complete delivered cost fits; a module-only price cannot establish that.
+The first three rows total **$487.55**. Together with the $99 fee reserve and $100 checkout allowance, the provisional allocation is **$686.55**. These are planning amounts, not expenses already paid. New spending recorded at this checkpoint is **$0**; the prepared retailer cart is neither an order nor a reservation. Replace estimates with actual delivered costs after checkout and adjust the unallocated balance.
 
-The local-inference design plans for no paid cloud inference subscription. If a paid runtime, model license, or other subscription becomes necessary, its first-year cost must fit within the same ceiling by reallocating these envelopes.
+The ceiling covers all new hardware needed for the end product and required software, model licenses, subscriptions, and distribution fees during the first 12 months. Any new setup or test equipment also counts. Reuse the existing Mac and iPhone without counting their original prices. Existing equipment or prepaid services can reduce new spending but do not increase the ceiling. Count renewals due during the year; report later years separately.
 
-Apple lists membership at $99 per year. Reserve that cost if enrollment or renewal is needed for the project during the first year; an already-covered membership is not a new charge. [Apple Developer membership](https://developer.apple.com/programs/whats-included/).
+No paid cloud inference subscription is planned. Apple lists Developer membership at $99 per year; the reserve applies if enrollment or renewal is due during the project year. Existing TestFlight access does not establish a new charge. Any required paid runtime or model license must fit within the same total. [Apple Developer membership](https://developer.apple.com/programs/whats-included/).
 
-## Hardware candidates
+## Hardware boundary
 
-| Candidate | Role | Selection rule |
-| --- | --- | --- |
-| Jetson Orin Nano Super developer kit, 8 GB | Baseline physical prototype candidate | Prefer if the selected local pipeline fits with measured operating headroom and the full build meets the budget |
-| Jetson Orin NX, 16 GB, with compatible carrier and peripherals | Higher-memory alternative | Consider if workload/model needs justify the memory and a current complete quote fits the remaining ceiling |
+The selected first-batch compute target is the **complete Orin Nano Super 8 GB developer kit**, with its supplied cooling and mains power. Its working memory is included and shared; the separate 128 GB card stores the operating system, applications, and models. Model trials should start with a compact quantized answer model plus local transcription and synthesis. The complete software workload still needs qualification on the device.
 
-NVIDIA lists Orin Nano modules at 4 GB and 8 GB, and Orin NX at 8 GB and 16 GB. There is no 16 GB Orin Nano in that lineup. [NVIDIA module lineup](https://developer.nvidia.com/embedded/jetson-modules), [Nano Super developer kit](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/).
+Screen, battery, portable enclosure, NVMe storage, and extra development/test accessories are deferred. The later approximately two-hour battery target is unmeasured. The $313.45 planning balance does not establish that every later addition is affordable; quote the complete next stage against actual spending before committing to it.
 
-The larger budget gives the complete prototype more room; it does not establish that an NX 16 GB configuration is affordable or necessary. Obtain current supplier quotes at procurement time and record every included and missing component.
+A 16 GB Jetson configuration requires evaluating the Orin NX tier and its complete carrier, cooling, power, and storage cost. It is not an extra RAM stick for this kit or a selected purchase. [NVIDIA module lineup](https://developer.nvidia.com/embedded/jetson-modules).
 
-## Procurement gate
+## Before ordering
 
-The owner requested procurement after confirming basic iOS beta operation. The output and portability scope is now agreed: a carryable box with its own screen and about two hours per charge, retaining optional manual speech output. The [sourcing brief](portable_procurement.md) prepares the complete configuration while keeping the open Apple evaluation and Jetson model/software qualifications explicit. Before payment, resolve the listed procurement gates and record the complete delivered cost. Begin physical bring-up on mains power and qualify the microphone before enclosure integration.
+Resume from the [purchase and setup checklist](portable_procurement.md#resume-here-next-week). Recheck all stock and prices, the complete kit contents, checkout charges, and any setup equipment needed for the received firmware. Confirm that the delivered total plus all required first-year fees fits the ceiling. Keep private checkout details outside public records.
 
-Mac and iPhone measurements inform the workload and implementation. They cannot predict Jetson performance precisely, including CUDA memory behavior, energy, thermals, and model residency. Purchase decisions and later upgrades must state which assumptions remain unmeasured.
+Mac and iPhone checks cannot establish Jetson memory headroom, answer quality, speed, energy use, thermals, or offline integrity. Record the Jetson configuration and its results separately. Keep [issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47) open until sourcing and device acceptance are recorded.

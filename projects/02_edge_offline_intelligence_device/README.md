@@ -1,6 +1,6 @@
 # 02 Edge Offline Intelligence Device
 
-**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. Portable Jetson sourcing is in progress; no hardware order placed. Detailed device evaluation and model-selection intake remain open.
+**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. The first Jetson shopping list is recorded; ordering is on hold until the next owner session. No hardware order is placed. Detailed device evaluation and model-selection intake remain open.
 **Evidence:** Development checks, owner-confirmed Mac voice input/text response, and an owner report of basic iOS operation; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 **Track:** Local inference and device systems
 **Last updated:** September 13, 2026
@@ -23,7 +23,7 @@
 | 2. iOS | Native iPhone app using the same selected answer backend, prompt policy, and shared application logic; distribution through the owner's TestFlight | Physical-device tests under memory pressure, cold start, interruptions, thermal load, and loss of connectivity; beta feedback against agreed usefulness criteria |
 | 3. Jetson | Self-contained NVIDIA device running recognition and answers locally, with its own input, output, storage, and power | A complete parts quote within the remaining budget and measured Jetson latency, memory, energy, thermals, and offline integrity |
 
-A successful TestFlight beta supports a launch decision; launch remains conditional on the evidence and App Store review. The physical prototype is now specified as a small carryable box with its own screen and about two hours per charge. Enclosure fit and the battery operating envelope remain to be validated. Each platform publishes its own measurements.
+A successful TestFlight beta supports a launch decision; launch remains conditional on the evidence and App Store review. The first physical stage is a mains-powered Jetson: press a button to record, press again to finish, then receive a locally generated spoken reply. Screen, battery, and portable enclosure are later decisions. The eventual approximately two-hour battery target is unmeasured. Each platform publishes its own measurements.
 
 ## Agreed requirements and proposed defaults
 
@@ -37,11 +37,11 @@ Apple's model is an Apple-platform dependency. Jetson requires a local open-mode
 
 ## Budget and hardware
 
-The [portable procurement brief](hardware/portable_procurement.md) contains the current parts plan, supplier availability, electrical compatibility, and proposed device acceptance procedure. No order has been placed. The two-hour battery target is unmeasured.
+The [shopping list and restart checklist](hardware/portable_procurement.md) contains eight exact items from Arrow, DigiKey, and B&H, totaling $487.55 before checkout charges at the September 13 checkpoint. It records dated stock observations, setup dependencies, and the proposed device acceptance steps. Purchasing is on hold until the next owner session; no order or reservation has been placed.
 
 The [budget](hardware/bill_of_materials.md) records the confirmed $1,000 first-year ceiling: all new hardware needed for the end product, required subscriptions and software/distribution fees, tax, and shipping. Reuse the already-owned Mac and iPhone; any new development or test hardware and required renewals during the first year also count toward the ceiling.
 
-The Orin Nano Super developer kit is the 8 GB candidate. A 16 GB configuration belongs to the Orin NX family and requires a complete carrier, cooling, power, and storage quote. Additional RAM is an option to evaluate against workload needs and the total budget, rather than a selected purchase. See [NVIDIA's module lineup](https://developer.nvidia.com/embedded/jetson-modules).
+The selected first-batch compute target is the complete Orin Nano Super developer kit with 8 GB of included shared working memory. A separate 128 GB SanDisk microSD card supplies storage. A 16 GB configuration belongs to the Orin NX family and requires a complete quote; it is not an extra RAM stick for this kit. Exact local answer, transcription, and voice models still need selection and qualification. See [NVIDIA's module lineup](https://developer.nvidia.com/embedded/jetson-modules).
 
 ## Measurement and stop boundaries
 
