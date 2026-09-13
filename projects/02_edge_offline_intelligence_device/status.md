@@ -1,10 +1,12 @@
 # Current technical status
 
-**Updated:** September 12, 2026
+**Updated:** September 13, 2026
 **App:** Mac Local Voice 0.2.0 (build 4); iPhone Local Voice Lab 0.3.0 (build 5), delivered through TestFlight, with basic iOS operation confirmed by the owner
 **Tracking:** [iPhone/TestFlight issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44); [speech-output milestone](https://github.com/raghavan/longtail-inference-lab/issues/42); [initial voice-input milestone](https://github.com/raghavan/longtail-inference-lab/issues/40)
 
 ## Current milestone
+
+Portable hardware sourcing is the next active step. The owner specified a small carryable box with its own screen and an approximately two-hour battery target. The [procurement brief](hardware/portable_procurement.md) recommends the official Orin Nano Super 8 GB at $399 and records a $952.46 first-year plan including allowances and the $99 distribution reserve. Shipping stock, final accessory quotes, enclosure fit, and checkout charges remain open. No order or reservation has been placed. Battery life, Jetson software compatibility, and model quality are unmeasured.
 
 The [macOS local voice development slice](development/README.md) is complete: local speech transcription, an editable visible transcript, and a streamed local text answer. The owner confirmed successful live voice input and visible text answers after the crash repair. The app now includes [local speech output](development/local_speech_output.md): manual **Read aloud** and **Stop speaking**, installed-voice selection, and a synthetic preview. Automatic selection prefers Premium, then Enhanced, then Standard English voices. The owner confirmed that initial read-aloud worked and found the compact voice mechanical; the updated app uses an installed Premium voice when available. The current workload is English general conversation, one question at a time. Additional languages are deferred. No web, document, or vector retrieval is included.
 
