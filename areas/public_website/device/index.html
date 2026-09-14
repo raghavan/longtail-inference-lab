@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf8f3">
+  <meta name="description" content="Local Voice, piece by piece. An illustrated assembly of a small, local voice device from Long Tail Inference Lab.">
+  <title>Local Voice — A hardware study</title>
+  <link rel="canonical" href="https://lily.md/device/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="assembly.js?v=3" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#about">Skip the animation</a>
+  <main>
+    <section class="assembly-story" id="assembly" aria-label="Local Voice hardware assembly">
+      <div class="pin">
+        <header class="masthead">
+          <a class="lab-link" href="https://lily.md" aria-label="Long Tail Inference Lab home">
+            <svg viewBox="0 0 44 24" aria-hidden="true"><path d="M1 2C9 2 7 20 22 20H42"/><circle cx="42" cy="20" r="1.5"/></svg>
+            <span>Long Tail<br>Inference Lab</span>
+          </a>
+          <span class="edition">A hardware study <span class="edition-rule"></span> No. 02</span>
+          <a class="about-link" href="#about">About the build <span aria-hidden="true">↗</span></a>
+        </header>
+
+        <div class="story-layout">
+          <div class="story-copy">
+            <p class="project-name">Local Voice<span class="title-period">.</span></p>
+            <div class="chapters">
+              <article class="chapter is-active" data-chapter="0">
+                <p class="eyebrow"><span>01</span> The compute</p>
+                <h1>It starts<br>with a <em>brain.</em></h1>
+                <p class="chapter-body">A small computer. The beginning of a voice. Follow the pieces as they become a local companion.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>NVIDIA Jetson Orin Nano Super<small>8 GB · Developer kit</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="1" aria-hidden="true" inert>
+                <p class="eyebrow"><span>02</span> The storage</p>
+                <h2>A place for<br><em>possibility.</em></h2>
+                <p class="chapter-body">The system, the models, the voice. A tiny card makes room for everything the device will need to run locally.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>SanDisk Extreme microSD<small>128 GB · System &amp; model storage</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="2" aria-hidden="true" inert>
+                <p class="eyebrow"><span>03</span> The microphone</p>
+                <h2>A way<br>to <em>listen.</em></h2>
+                <p class="chapter-body">Small enough to almost disappear. A USB microphone brings your spoken question into the device.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>Adafruit Mini USB Microphone<small>3367 · Speech input</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="3" aria-hidden="true" inert>
+                <p class="eyebrow"><span>04</span> The speaker</p>
+                <h2>A voice<br>of <em>its own.</em></h2>
+                <p class="chapter-body">An answer finds its way back into the room. A small USB speaker completes the other half of the conversation.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>Tiny USB speaker<small>Compact form study · Audio output</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="4" aria-hidden="true" inert>
+                <p class="eyebrow"><span>05</span> The button</p>
+                <h2>You decide<br>when it <em>listens.</em></h2>
+                <p class="chapter-body">Press once to begin. Press again to finish. One physical button, with a light to make its state clear.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>M5Stack AtomS3-Lite<small>C124 · Button &amp; status light</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="5" aria-hidden="true" inert>
+                <p class="eyebrow"><span>06</span> The power</p>
+                <h2>A spark.<br><em>A connection.</em></h2>
+                <p class="chapter-body">Power from the wall. Connections between the pieces. The first build begins with a simple, mains-powered voice loop.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>Jetson mains adapter &amp; USB cables<small>Included supply · Connected peripherals</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="6" aria-hidden="true" inert>
+                <p class="eyebrow"><span>07</span> The whole</p>
+                <h2>Many parts.<br>One <em>Local Voice.</em></h2>
+                <p class="chapter-body">Listen. Think. Speak. A little intelligence, closer to you.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>A form to work toward<small>Illustrative enclosure concept</small></p></div>
+              </article>
+            </div>
+          </div>
+
+          <figure class="hardware" aria-labelledby="scene-caption">
+            <div class="figure-heading"><span id="figure-number">FIG. 01</span><span id="part-name">Jetson Orin Nano Super</span></div>
+            <svg class="hardware-scene" viewBox="0 0 820 720" role="img" aria-labelledby="hardware-title hardware-description">
+              <title id="hardware-title">Local Voice, piece by piece</title>
+              <desc id="hardware-description">A stylized Jetson board is joined by a microSD card, USB microphone, speaker, button and power supply as you scroll. The pieces gather inside an illustrative enclosure.</desc>
+              <defs>
+                <radialGradient id="ground"><stop stop-color="#76634a" stop-opacity=".15"/><stop offset="1" stop-color="#76634a" stop-opacity="0"/></radialGradient>
+              </defs>
+              <g class="construction" fill="none" stroke="#cfc6b5" stroke-width=".8">
+                <path d="M106 488 400 653 722 467 428 302Z" stroke-dasharray="3 7"/>
+                <path d="M400 653V614M106 488H143M722 467H685"/>
+                <path d="M410 151V180M395 166H425M733 330V346M725 338H741M125 342V358M117 350H133"/>
+              </g>
+              <ellipse id="scene-shadow" cx="418" cy="489" rx="290" ry="107" fill="url(#ground)"/>
+              <g id="wiring" class="wiring" fill="none" stroke-linecap="round">
+                <path class="cable-shadow" d="M380 431C286 525 197 396 272 354M490 411C542 518 598 431 582 380M483 458C574 482 556 572 660 537"/>
+                <path class="cable" d="M380 431C286 525 197 396 272 354M490 411C542 518 598 431 582 380M483 458C574 482 556 572 660 537"/>
+              </g>
+              <g id="enclosure-power" fill="none" stroke-linecap="round" opacity="0">
+                <path d="M596 383C644 402 687 350 755 361" stroke="#b1b5b6" stroke-width="3.5"/>
+                <path d="M596 382.3C644 401.3 687 349.3 755 360.3" stroke="#fbfbf7" stroke-width="1.2"/>
+              </g>
+              <g id="part-power" class="part" opacity="0" transform="translate(690 560) scale(.8)"><image href="assets/power.svg" x="-145" y="-110" width="290" height="220"/></g>
+              <g id="part-jetson" class="part" transform="translate(425 355)"><image href="assets/jetson.svg" x="-320" y="-260" width="640" height="520"/></g>
+              <g id="part-storage" class="part" opacity="0"><image href="assets/storage.svg" x="-100" y="-115" width="200" height="230"/></g>
+              <g id="part-microphone" class="part" opacity="0"><image href="assets/microphone.svg" x="-130" y="-110" width="260" height="220"/></g>
+              <g id="part-speaker" class="part" opacity="0"><image href="assets/speaker.svg?v=3" x="-130" y="-110" width="260" height="220"/></g>
+              <g id="part-button" class="part" opacity="0"><image href="assets/button.svg" x="-125" y="-125" width="250" height="250"/></g>
+              <g id="part-enclosure" class="part" opacity="0"><image href="assets/enclosure.svg?v=2" x="-320" y="-260" width="640" height="520"/></g>
+              <g id="callout" class="callout">
+                <path id="callout-line" d="M493 267 615 194H720"/>
+                <circle id="callout-dot" cx="493" cy="267" r="3"/>
+                <text id="callout-label" x="720" y="181" text-anchor="end">THE LOCAL BRAIN</text>
+              </g>
+            </svg>
+            <figcaption id="scene-caption"><span class="caption-line"></span><span id="figure-caption">A small beginning. Everything else follows.</span></figcaption>
+          </figure>
+        </div>
+
+        <footer class="assembly-footer">
+          <div class="journey-cue"><span class="scroll-stem" aria-hidden="true">↓</span><span id="scroll-instruction">Scroll to assemble</span></div>
+          <nav class="chapter-nav" aria-label="Assembly chapters">
+            <button data-go="0" aria-label="Chapter 1: Compute" aria-current="step"><span class="nav-track"></span><span class="nav-label">Compute</span><span class="nav-number" aria-hidden="true">01</span></button>
+            <button data-go="1" aria-label="Chapter 2: Storage"><span class="nav-track"></span><span class="nav-label">Storage</span><span class="nav-number" aria-hidden="true">02</span></button>
+            <button data-go="2" aria-label="Chapter 3: Microphone"><span class="nav-track"></span><span class="nav-label">Listen</span><span class="nav-number" aria-hidden="true">03</span></button>
+            <button data-go="3" aria-label="Chapter 4: Speaker"><span class="nav-track"></span><span class="nav-label">Speak</span><span class="nav-number" aria-hidden="true">04</span></button>
+            <button data-go="4" aria-label="Chapter 5: Button"><span class="nav-track"></span><span class="nav-label">Control</span><span class="nav-number" aria-hidden="true">05</span></button>
+            <button data-go="5" aria-label="Chapter 6: Power"><span class="nav-track"></span><span class="nav-label">Power</span><span class="nav-number" aria-hidden="true">06</span></button>
+            <button data-go="6" aria-label="Chapter 7: Complete assembly"><span class="nav-track"></span><span class="nav-label">Together</span><span class="nav-number" aria-hidden="true">07</span></button>
+          </nav>
+          <p class="chapter-count"><span id="chapter-number">01</span><span class="count-divider">/</span>07</p>
+        </footer>
+      </div>
+    </section>
+
+    <section class="afterword" id="about" aria-labelledby="afterword-title">
+      <div class="afterword-heading"><p class="eyebrow">A work in progress</p><h2 id="afterword-title">From an idea<br>to something <em>you can hold.</em></h2></div>
+      <div class="afterword-copy">
+        <p>This is a form study for Local Voice, a local speech-and-answer device from Long Tail Inference Lab.</p>
+        <p>The first build uses a Jetson Orin Nano Super, a USB microphone and speaker, a physical button, and mains power. The parts are ordered; hardware assembly and validation are next.</p>
+        <p class="study-note">The illustrations simplify the components. The final enclosure and cable routing are conceptual; a screen, battery, and portable enclosure are deferred. Zero comparative quality or performance measurements are published for Mac, iPhone, or Jetson.</p>
+        <a class="text-link" href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md">Follow the hardware build <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+    <footer class="colophon"><span>Local Voice · Long Tail Inference Lab</span><button id="replay">Back to the first piece <span aria-hidden="true">↑</span></button></footer>
+  </main>
+  <noscript><style>.assembly-story{height:auto}.pin{position:relative}.chapter-nav,.journey-cue{display:none}</style><p class="noscript-note">Turn on JavaScript to explore the animated assembly. The build notes above remain available.</p></noscript>
+</body>
+</html>
