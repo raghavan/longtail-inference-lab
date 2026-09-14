@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="290" height="220" viewBox="0 0 290 220" fill="none">
+<title>Power</title>
+<defs>
+<linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f1f0e8"/><stop offset=".35" stop-color="#b4b6ad"/><stop offset=".65" stop-color="#e2e2da"/><stop offset="1" stop-color="#858b83"/></linearGradient>
+<linearGradient id="dark" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#454a44"/><stop offset="1" stop-color="#1b211e"/></linearGradient>
+<radialGradient id="fan"><stop stop-color="#414740"/><stop offset=".52" stop-color="#171c18"/><stop offset="1" stop-color="#0d120e"/></radialGradient>
+<linearGradient id="bronze"><stop stop-color="#d2bc8e"/><stop offset=".5" stop-color="#a98c57"/><stop offset="1" stop-color="#756444"/></linearGradient>
+<pattern id="mesh" width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="#3b403b"/><circle cx="2.5" cy="2.5" r="1.3" fill="#141a15"/><path d="M1.2 2.5A1.3 1.3 0 0 1 3.8 2.5" stroke="#5c6258" stroke-width=".4"/></pattern>
+</defs>
+<path d="M197 106C253 126 248 174 201 175C173 175 196 140 228 146" stroke="#7b7c70" stroke-width="5"/><path d="M197 106C253 126 248 172 201 172C173 172 196 138 228 144" stroke="#343d31" stroke-width="3"/><polygon points="25.50,59.75 153.30,123.65 153.30,159.65 25.50,95.75" fill="#242e22" stroke="#68715d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="220.80,89.90 153.30,123.65 153.30,159.65 220.80,125.90" fill="#1c271c" stroke="#68715d" stroke-width="0.7" stroke-linejoin="round"/><polygon points="93.00,26.00 220.80,89.90 153.30,123.65 25.50,59.75" fill="#3f4839" stroke="#68715d" stroke-width="0.7" stroke-linejoin="round"/><g transform="matrix(0.9 0.45 -0.9 0.45 93 26)"><rect x="12" y="12" width="117" height="49" rx="4" fill="#35402e" stroke="#5b664f" stroke-width=".6"/><text x="71" y="33" text-anchor="middle" fill="#a3ae91" font-family="Arial,sans-serif" font-size="8" letter-spacing="1.5">POWER SUPPLY</text><path d="M46 44h48" stroke="#7e8b6b" stroke-width="1"/></g><path d="M228 144L246 153" stroke="#777f6c" stroke-width="9" stroke-linecap="round"/><path d="M244 152L259 160" stroke="#b7bdac" stroke-width="6"/><ellipse cx="260" cy="160" rx="3" ry="4" fill="#252e22"/>
+</svg>
