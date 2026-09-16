@@ -3,7 +3,7 @@
 **Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. All eight first-batch hardware items are ordered across Arrow, DigiKey, and Newegg; arrival, setup, and device acceptance remain open. Detailed device evaluation and model-selection intake remain open.
 **Evidence:** Development checks, owner-confirmed Mac voice input/text response, and an owner report of basic iOS operation; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 **Track:** Local inference and device systems
-**Last updated:** September 13, 2026
+**Last updated:** September 16, 2026
 
 ## One minute summary
 
@@ -52,6 +52,8 @@ Stop or narrow the approach if no local candidate meets the agreed workload with
 The project can be marked complete when the three iterations have dated, reproducible results; the iOS beta has a recorded launch or no-launch decision; and the Jetson prototype has a device-level operating envelope and total cost account. Closing early requires a conclusion that states the missing evidence.
 
 ## Current implementation state
+
+The [Linux voice application](software/jetson/README.md) has local ARM64 VM development evidence: 38 passing regressions, real offline model/speech integration, service checks, and compiled button firmware. See the [dated record](results/2026-09-15-linux-vm-development.md). Physical Jetson and CUDA validation are still open. VM observations are not Jetson measurements.
 
 Mac Local Voice 0.2.0 (build 4) extends the [specified Mac development slice](development/README.md) with [manual local speech output](development/local_speech_output.md). The owner confirmed voice input, text answers, and read-aloud. An initial microphone callback crash was repaired and covered by a background-callback regression test.
 

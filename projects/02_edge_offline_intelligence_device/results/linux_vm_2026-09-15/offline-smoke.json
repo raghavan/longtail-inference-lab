@@ -1,0 +1,75 @@
+{
+  "scope": "Linux ARM64 VM CPU development checks; not Jetson measurements",
+  "architecture": "aarch64",
+  "python": "3.10.12",
+  "kernel": "5.15.0-185-generic",
+  "network_interfaces": [
+    "lo"
+  ],
+  "readiness": {
+    "llama-server": true,
+    "whisper-cli": true,
+    "answer_model": true,
+    "speech_model": true,
+    "espeak-ng": true,
+    "transient_audio": true,
+    "answer_sha256": true,
+    "speech_sha256": true
+  },
+  "trials": [
+    {
+      "mode": "text",
+      "server": "cold",
+      "transcript": "Name two things to pack for a short walk.",
+      "answer": "Water and sunscreen.",
+      "seconds": {
+        "answer": 1.898,
+        "synthesis": 0.032
+      },
+      "total_seconds": 1.93
+    },
+    {
+      "mode": "synthetic_audio",
+      "server": "warm",
+      "authored_input": "What is the capital of France?",
+      "input_seconds": 2.220875,
+      "output_seconds": 2.087,
+      "transcript": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "seconds": {
+        "transcription": 0.546,
+        "answer": 1.4,
+        "synthesis": 0.033
+      },
+      "total_seconds": 1.979
+    },
+    {
+      "mode": "synthetic_audio",
+      "server": "warm",
+      "authored_input": "What is the capital of France?",
+      "input_seconds": 2.220875,
+      "output_seconds": 2.087,
+      "transcript": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "seconds": {
+        "transcription": 0.55,
+        "answer": 1.4,
+        "synthesis": 0.034
+      },
+      "total_seconds": 1.984
+    }
+  ],
+  "settings": {
+    "threads": 4,
+    "context_tokens": 2048,
+    "max_output_tokens": 128,
+    "temperature": 0,
+    "seed": 42,
+    "history": "none",
+    "retrieval": "none"
+  },
+  "temporary_audio_removed": true,
+  "max_reaped_child_rss_kib": 1221800,
+  "memory_limit": "Largest reaped child peak RSS, not simultaneous pipeline memory or Jetson RAM use",
+  "status": "passed"
+}

@@ -1,5 +1,7 @@
 # Local Voice for macOS and iPhone
 
+For the separate Linux implementation intended for Jetson, use the [Linux voice application guide](jetson/README.md). It has local ARM64 VM development checks; physical Jetson and CUDA validation remain open. The Apple implementation below is unchanged.
+
 **Status:** The Mac development app is version 0.2.0 (build 4). The native iPhone beta is **Local Voice Lab 0.3.0 (build 5)** in TestFlight; the installed app remains **Local Voice**. The owner confirmed that the delivered beta works on their iOS device. Device/OS details and individual feature checks remain to be recorded. Simulator typed-answer and manual read-aloud checks passed. The owner also confirmed the Mac voice-input, text-answer, and read-aloud flow. Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
 
 Speak one question, see its transcript, and read a locally generated text answer, or press **Read aloud** to hear it. The app also accepts typed input so recognition errors can be corrected. The current prototype uses Apple's on-device `SystemLanguageModel.default`, `SpeechTranscriber`, and installed English `AVSpeechSynthesizer` voices. It has no web, document, or vector retrieval, conversation history, or app-owned recording/transcript persistence. English is the current scope; additional languages are deferred.

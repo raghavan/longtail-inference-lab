@@ -1,10 +1,12 @@
 # Current technical status
 
-**Updated:** September 13, 2026
+**Updated:** September 16, 2026
 **App:** Mac Local Voice 0.2.0 (build 4); iPhone Local Voice Lab 0.3.0 (build 5), delivered through TestFlight, with basic iOS operation confirmed by the owner
 **Tracking:** [Jetson procurement issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47); [iPhone/TestFlight issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44); [speech-output milestone](https://github.com/raghavan/longtail-inference-lab/issues/42); [initial voice-input milestone](https://github.com/raghavan/longtail-inference-lab/issues/40)
 
 ## Current milestone
+
+The [Linux/Jetson development application](software/jetson/README.md) now has local Ubuntu 22.04 ARM64 VM validation: pinned CPU runtimes and model hashes, 38 regression tests, real transcription/answer/speech-file generation with only loopback networking, actual CLI failure/cancellation checks, a tested system service, and compiled AtomS3-Lite button firmware. The [dated development record](results/2026-09-15-linux-vm-development.md) separates this evidence from physical hardware acceptance. CUDA, real USB devices, voice quality, on-board resource limits, and boot behavior remain open; no Jetson run has occurred.
 
 All eight first-batch hardware items were ordered on September 13: the complete Orin Nano Super 8 GB kit from Arrow, six DigiKey audio/button/setup accessories, and the Newegg SanDisk Extreme 128 GB card. The supplied Arrow order confirmation matches the selected US-region kit at **$428.93 total**, comprising $399.00 in parts and $29.93 tax with free shipping. Arrow lists expected shipment September 14 and delivery September 21, 2026; actual dispatch, arrival, and device acceptance are not yet confirmed.
 
@@ -45,7 +47,7 @@ The development configuration was an M2 Pro with 16 GB memory, macOS 26.6 (25G70
 
 The Premium voice setup displayed a 280.2 MB download and 323 MB installed storage on this Mac. These figures are OS voice-asset observations, not app size, peak RAM, or iPhone measurements. Only the voice preference is saved by the app; no conversation or audio is retained.
 
-The [software guide](software/README.md) provides reproduction commands. Development checks and owner-reported basic iOS use are separate from the proposed platform evaluation. No latency distribution, memory-pressure result, disconnected-network test, structured iPhone evaluation, or Jetson run was collected.
+The [software guide](software/README.md) provides reproduction commands. Development checks and owner-reported basic iOS use are separate from the proposed platform evaluation. No latency distribution, memory-pressure result, disconnected-network test on Apple or Jetson hardware, structured iPhone evaluation, or Jetson run was collected. The separate Linux VM network-namespace check above applies only to that development environment.
 
 ## Failure and repair
 

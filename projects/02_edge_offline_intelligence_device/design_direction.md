@@ -38,6 +38,8 @@ Start Jetson trials around a 1–3B parameter answer model with 4-bit weights, a
 
 ## Options considered
 
+**September 15 implementation note:** The separate [Linux development slice](software/jetson/README.md) implements this Jetson interaction contract with Qwen2.5 1.5B Q4_K_M, Whisper tiny.en, and an eSpeak functional voice baseline. It passed local ARM64 CPU VM checks. The preceding architecture text does not itself establish implementation evidence; the [dated validation record](results/2026-09-15-linux-vm-development.md) does. Physical Jetson and CUDA checks remain open.
+
 | Option | Benefit | Cost or limitation | Disposition |
 | --- | --- | --- | --- |
 | Apple speech + Apple on-device answer model | Same native APIs on Mac and iPhone; no separately bundled answer weights | Eligible devices, supported languages, enabled/downloaded assets, OS-managed model versions; workload limitations; Apple-only backend | First candidate to evaluate |

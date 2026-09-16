@@ -1,0 +1,12 @@
+{
+  "scope": "Linux VM service and virtual serial checks; no physical microphone or button",
+  "service_start": "passed",
+  "service_network_interfaces": [
+    "lo"
+  ],
+  "capture_failure_and_retry": "passed",
+  "sanitized_error_visible": true,
+  "clean_stop": true,
+  "sandbox_real_inference_exit": 0,
+  "status": "passed"
+}

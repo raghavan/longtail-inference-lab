@@ -1,0 +1,11 @@
+{
+  "scope": "Linux CPU actual CLI failure handling; no physical device",
+  "missing_runtime": "passed",
+  "oversized_text": "passed",
+  "output_limit": "passed",
+  "silence": "passed",
+  "stdin_cancellation_before_eof": "passed",
+  "real_server_cancellation": "passed",
+  "cancellation_seconds": 0.009,
+  "status": "passed"
+}

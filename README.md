@@ -28,6 +28,8 @@ The [model-selection intake](resources/project_proposals/apple_local_voice_intak
 
 The first Jetson stage uses an Orin Nano Super 8 GB, mains power, a listening button, a microphone, and a speaker for local spoken replies. The [order record and arrival checklist](projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md) records eight items across three stores. All eight first-batch items are ordered across Arrow, DigiKey, and Newegg; arrival, setup, and device acceptance remain open. The [project budget](projects/02_edge_offline_intelligence_device/hardware/bill_of_materials.md) records known parts costs and pending final charges. Screen, battery, and portable enclosure are deferred within that same ceiling. Jetson operation and the future battery target remain unmeasured; Mac, iPhone, and Jetson results remain separate.
 
+The [Linux voice application for Jetson development](projects/02_edge_offline_intelligence_device/software/jetson/README.md) now includes an Ubuntu ARM64 VM workflow, pinned local speech/answer runtimes, button firmware, and on-board installation instructions. Its [development validation](projects/02_edge_offline_intelligence_device/results/2026-09-15-linux-vm-development.md) records 38 passing tests and real inference with external networking blocked. Physical Jetson, CUDA, and USB audio/button validation remain open; these VM checks are not Jetson measurements.
+
 ## PARA organization
 
 ```text

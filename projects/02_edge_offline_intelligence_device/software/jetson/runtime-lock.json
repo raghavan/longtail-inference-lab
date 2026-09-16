@@ -1,0 +1,37 @@
+{
+  "llama_cpp": {
+    "repository": "https://github.com/ggml-org/llama.cpp.git",
+    "commit": "930e2fa5995789efbf249a8bf61325bb626e417b",
+    "license": "MIT"
+  },
+  "whisper_cpp": {
+    "repository": "https://github.com/ggml-org/whisper.cpp.git",
+    "commit": "da54572229bcf64ba367d96c7ef15770376c4280",
+    "license": "MIT"
+  },
+  "answer_model": {
+    "repository": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+    "revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+    "file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+    "bytes": 1117320736,
+    "quantization": "Q4_K_M",
+    "license": "Apache-2.0"
+  },
+  "speech_model": {
+    "repository": "ggerganov/whisper.cpp",
+    "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+    "file": "ggml-tiny.en.bin",
+    "sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+    "bytes": 77704715,
+    "quantization": "F16",
+    "license": "MIT"
+  },
+  "speech_output": {
+    "runtime": "espeak-ng",
+    "voice": "en-us",
+    "words_per_minute": 165,
+    "license": "GPL-3.0-or-later",
+    "selection": "Functional offline baseline; naturalness not qualified"
+  }
+}

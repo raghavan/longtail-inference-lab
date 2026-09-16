@@ -1,0 +1,8 @@
+.runtime/
+.local-results/
+*.wav
+*.log
+*.egg-info/
+build/
+dist/
+.pio/

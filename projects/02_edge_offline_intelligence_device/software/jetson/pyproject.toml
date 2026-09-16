@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "longtail-local-voice"
+version = "0.1.0"
+description = "Offline, single-turn Linux voice application for Jetson development"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+local-voice = "local_voice.cli:main"
+
+[tool.setuptools]
+packages = ["local_voice"]

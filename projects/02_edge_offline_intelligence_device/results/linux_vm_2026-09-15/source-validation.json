@@ -1,0 +1,35 @@
+{
+  "scope": "Source validated in Linux ARM64; physical Jetson and CUDA acceptance remain open",
+  "regression_tests": {
+    "passed": 38,
+    "seconds": 5.329
+  },
+  "firmware": {
+    "compiled": true,
+    "flashed": false,
+    "sha256": "770da8ffac4bb28c991418566c4f4d7f429466d893309442f0ff6a6b19bbf85e",
+    "flash_bytes": 265197,
+    "static_ram_bytes": 18736
+  },
+  "source_sha256": {
+    "button/platformio.ini": "5233ca95528fc2b0f4e4989247e0f5710e5ccea1f6903e1f905035127a54407c",
+    "button/src/main.cpp": "9011f49a70515cf2c565f9711f49b8670ecf6aa29e1b80efb64e1e90d3531913",
+    "local_voice/__init__.py": "b9e01184594e4c3db4c8b5bd182f69cf6d18e69b57afbb90dac30bc7b0fdacf6",
+    "local_voice/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "local_voice/cli.py": "cae2805888093546ed32f719b2dccf6149aa5b80ebb664c1d990fb5fd2081ce8",
+    "local_voice/core.py": "60c274a459d1f2e91bcf64946e31c6595fd5688e6aae403ab2a5644176ee9b45",
+    "local_voice/device.py": "bab73a379e60df48c0fc0286084f3513fd9b6c843661eb21544ff297fac0cc4f",
+    "pyproject.toml": "9d48ca5229e60984ef793e230117cc56b9e0154cc42b6f424578390213649e13",
+    "runtime-lock.json": "88b4fe32a3e848c6ab68f032123256ffaa8ef90a01a6bf364b93fabda5282050",
+    "scripts/install_linux_deps.sh": "c05112b13d750e8765d355021e02f626d18e00dddba1237303bfceecfa904a32",
+    "scripts/offline_check.sh": "c2ada797d221cb6059adfbbfc149f965b1cf1fc73677b0f73ea710395d9b12c7",
+    "scripts/runtime_check.py": "9c7da5a0626104b650f197880fe0c66d95ba513dcb531e0f3ee6e9e194a58f77",
+    "scripts/service_check.py": "780f592e4d61cba950fc0cc6d32af820f890eeec4680cbc5526acc93a9efdec3",
+    "scripts/service_unit.py": "0c56428dc8b31cef41d4cf8b7ffcfd01abe24e64168e124130dd48c30d8bd8c7",
+    "scripts/setup_runtime.py": "d1468c92979f47ecf928ec85762281a10083413204c2ebbe7c9e153541f8e158",
+    "scripts/smoke.py": "ae7cfafe670a61bce5a5a7706367493f2af335a7d1772c87904137669a86d99d",
+    "scripts/vm.sh": "ddfae1e9f1307f3daee91a5f8e1d6bfd764c42b6f10abf327911d8dd6439bfab",
+    "tests/test_voice.py": "68dfef92a40f6dc3bef1002fb3189c06f3ca37a0e6e5c252e18790a91d2fd3cf",
+    "vm.yaml": "7d7faebc8768fb920dd91e50617947cc9e68cd7d0e708bd67a53e0a2901a8c26"
+  }
+}
