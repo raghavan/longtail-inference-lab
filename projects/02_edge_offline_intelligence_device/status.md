@@ -1,14 +1,14 @@
 # Current technical status
 
-**Updated:** September 16, 2026
+**Updated:** November 15, 2026
 **App:** Mac Local Voice 0.2.0 (build 4); iPhone Local Voice Lab 0.3.0 (build 5), delivered through TestFlight, with basic iOS operation confirmed by the owner
 **Tracking:** [Jetson procurement issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47); [iPhone/TestFlight issue 44](https://github.com/raghavan/longtail-inference-lab/issues/44); [speech-output milestone](https://github.com/raghavan/longtail-inference-lab/issues/42); [initial voice-input milestone](https://github.com/raghavan/longtail-inference-lab/issues/40)
 
 ## Current milestone
 
-The [Linux/Jetson development application](software/jetson/README.md) now has local Ubuntu 22.04 ARM64 VM validation: pinned CPU runtimes and model hashes, 38 regression tests, real transcription/answer/speech-file generation with only loopback networking, actual CLI failure/cancellation checks, a tested system service, and compiled AtomS3-Lite button firmware. The [dated development record](results/2026-09-15-linux-vm-development.md) separates this evidence from physical hardware acceptance. CUDA, real USB devices, voice quality, on-board resource limits, and boot behavior remain open; no Jetson run has occurred.
+The [Linux/Jetson development application](software/jetson/README.md) now has local Ubuntu 22.04 ARM64 VM validation: pinned CPU runtimes and model hashes, 38 regression tests, real transcription/answer/speech-file generation with only loopback networking, actual CLI failure/cancellation checks, a tested system service, and compiled AtomS3-Lite button firmware. The [dated development record](results/2026-09-15-linux-vm-development.md) separates this evidence from physical hardware acceptance. The subsequent [physical Jetson CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) passed model-hash readiness, all 38 regressions, authored text/synthetic-audio inference, and owner-confirmed USB speaker playback using the existing installation. Live microphone interaction, CUDA, button hardware, voice quality, on-board resource limits, and boot behavior remain open. No comparative platform measurement is claimed.
 
-All eight first-batch hardware items were ordered on September 13: the complete Orin Nano Super 8 GB kit from Arrow, six DigiKey audio/button/setup accessories, and the Newegg SanDisk Extreme 128 GB card. The supplied Arrow order confirmation matches the selected US-region kit at **$428.93 total**, comprising $399.00 in parts and $29.93 tax with free shipping. Arrow lists expected shipment September 14 and delivery September 21, 2026; actual dispatch, arrival, and device acceptance are not yet confirmed.
+All eight first-batch hardware items were ordered on September 13: the complete Orin Nano Super 8 GB kit from Arrow, six DigiKey audio/button/setup accessories, and the Newegg SanDisk Extreme 128 GB card. The supplied Arrow order confirmation matches the selected US-region kit at **$428.93 total**, comprising $399.00 in parts and $29.93 tax with free shipping. Arrow lists expected shipment September 14 and delivery September 21, 2026; full order fulfillment remains unverified. The Jetson board and USB audio hardware were observed during November 15 bring-up; complete device acceptance remains open.
 
 The [order record and arrival checklist](hardware/portable_procurement.md) preserves the exact eight parts and the next setup steps. DigiKey's $48.30 parts subtotal and Newegg's $42.99 card price are verified, while their final charges remain pending. The [budget](hardware/bill_of_materials.md) records $520.22 in known order costs so far, keeps the $1,000 first-year ceiling, and separates costs from remaining reserves. Do not repurchase any first-batch item. Public progress records omit all PII, order/tracking identifiers, private URLs, and raw purchase materials.
 
@@ -47,7 +47,7 @@ The development configuration was an M2 Pro with 16 GB memory, macOS 26.6 (25G70
 
 The Premium voice setup displayed a 280.2 MB download and 323 MB installed storage on this Mac. These figures are OS voice-asset observations, not app size, peak RAM, or iPhone measurements. Only the voice preference is saved by the app; no conversation or audio is retained.
 
-The [software guide](software/README.md) provides reproduction commands. Development checks and owner-reported basic iOS use are separate from the proposed platform evaluation. No latency distribution, memory-pressure result, disconnected-network test on Apple or Jetson hardware, structured iPhone evaluation, or Jetson run was collected. The separate Linux VM network-namespace check above applies only to that development environment.
+The [software guide](software/README.md) provides reproduction commands. Development checks and owner-reported basic iOS use are separate from the proposed platform evaluation. No latency distribution, memory-pressure result, disconnected-network test on Apple or Jetson hardware, or structured iPhone evaluation was collected for the comparative evaluation; the separate Jetson CPU smoke checks are linked above. The separate Linux VM network-namespace check above applies only to that development environment.
 
 ## Failure and repair
 

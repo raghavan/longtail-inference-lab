@@ -1,6 +1,6 @@
 # Local Voice for Linux and Jetson development
 
-**Version:** 0.1.0 development slice. **Status:** tested in an Ubuntu 22.04 ARM64 VM using CPU inference. Physical Jetson, CUDA, USB audio, button hardware, and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
+**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback; live microphone interaction, CUDA, button hardware, and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
 
 An offline, single-turn English voice application:
 
@@ -166,6 +166,14 @@ For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://d
    ```
 
    Enter starts recording; Enter again ends it and speaks the answer. Enter while busy cancels. `c` cancels explicitly; `q` quits. To select hardware, put `--capture-device` and `--playback-device` **before** `device`, using the ALSA names observed on your board. A `plughw:` device can perform sample-format conversion when the USB microphone's native rate differs. Missing/denied devices produce a visible error and allow retry.
+
+   On a signed-in Ubuntu desktop, PulseAudio may own the USB audio devices. If direct hardware access reports device-busy, use the desktop launcher. It selects the single USB microphone and speaker explicitly, because desktop defaults may change between sessions:
+
+   ```bash
+   bash scripts/desktop_device.sh
+   ```
+
+   The launcher includes user-local executables in PATH and requires a running desktop sound server. If multiple USB devices exist, set `PULSE_SOURCE` and `PULSE_SINK` to the desired names from `pactl list short sources` and `pactl list short sinks`. It refuses an ambiguous automatic selection. This desktop-session route does not establish headless system-service audio support.
 
 5. Build and flash the button as described below, then run `device --serial` with its actual stable `/dev/serial/by-id/…` path. The keyboard and serial inputs are alternatives, not simultaneous listeners.
 
