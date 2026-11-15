@@ -10,6 +10,7 @@ import termios
 import threading
 import time
 import tty
+import wave
 
 from .core import (
     Cancelled,
@@ -24,13 +25,14 @@ from .core import (
 
 
 def record(settings, destination, finished, cancel):
+    raw = destination.with_suffix(".pcm")
     args = [
         "arecord",
         "-q",
         "-D",
         settings.capture_device,
         "-t",
-        "wav",
+        "raw",
         "-f",
         "S16_LE",
         "-r",
@@ -39,7 +41,7 @@ def record(settings, destination, finished, cancel):
         "1",
         "-d",
         str(MAX_AUDIO_SECONDS),
-        str(destination),
+        str(raw),
     ]
     check_cancel(cancel)
     try:
@@ -58,7 +60,8 @@ def record(settings, destination, finished, cancel):
         while proc.poll() is None:
             check_cancel(cancel)
             if finished.is_set():
-                # SIGINT lets arecord finalize its WAV header before validation.
+                # Some ALSA drivers exit with EINTR without finalizing WAV headers.
+                # Capture raw PCM and frame it ourselves after the process stops.
                 os.killpg(proc.pid, signal.SIGINT)
                 stopped = True
                 try:
@@ -72,9 +75,20 @@ def record(settings, destination, finished, cancel):
         check_cancel(cancel)
         if not stopped and proc.returncode != 0:
             raise VoiceError("Microphone is unavailable or its format is unsupported.")
+        with raw.open("rb") as stream:
+            pcm = stream.read(MAX_AUDIO_SECONDS * 16000 * 2 + 1)
+        if len(pcm) > MAX_AUDIO_SECONDS * 16000 * 2 or len(pcm) % 2:
+            raise VoiceError("Microphone returned invalid PCM audio.")
+        check_cancel(cancel)
+        with wave.open(str(destination), "wb") as wav:
+            wav.setnchannels(1)
+            wav.setsampwidth(2)
+            wav.setframerate(16000)
+            wav.writeframes(pcm)
         validate_audio(destination)
     finally:
         stop_process(proc)
+        raw.unlink(missing_ok=True)
 
 
 class Controller:

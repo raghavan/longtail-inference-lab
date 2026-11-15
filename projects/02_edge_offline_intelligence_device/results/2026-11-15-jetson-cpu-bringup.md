@@ -42,3 +42,9 @@ The existing eSpeak wrapper is user-local and was absent from the noninteractive
 - Evaluate human speech accuracy, voice quality, thermal/power behavior, and simultaneous memory headroom. Zero published comparative quality or performance measurements remain.
 
 After the successful live turn, the owner reported low speaker volume. The USB speaker output was raised from 30% to 70% and the configured level was read back; listening comfort at the new level remains user-assessed.
+
+## Physical-button standalone continuation
+
+The identified AtomS3-Lite ESP32-S3 was flashed with the existing firmware after privately backing up the application region that would be overwritten. All flashed-region hashes verified. The owner observed LED changes, and the application received start/finish events. Firmware source was unchanged. Firmware image SHA-256: `770da8ffac4bb28c991418566c4f4d7f429466d893309442f0ff6a6b19bbf85e`.
+
+Direct ALSA capture exposed a real stop-path defect: on SIGINT the USB driver returned EINTR and arecord left a 30-second WAV header over a shorter recording. A controlled two-second check showed 480,000 frames declared but only 60,000 audio bytes present. The application correctly rejected the truncated file. Capture now writes bounded raw PCM and constructs its own WAV after the subprocess stops; cancellation still discards temporary data. The paced subprocess regression now reproduces the nonzero EINTR-style stop exit and checks PCM cleanup. All 38 tests passed on the Jetson after the change. The owner confirmed the manual button-to-spoken-answer retest passed; system-service acceptance remains pending.

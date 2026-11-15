@@ -548,17 +548,18 @@ class CaptureTests(unittest.TestCase):
             root = Path(tmp)
             exe = root / "arecord"
             exe.write_text("""#!/usr/bin/env python3
-import signal,sys,time,wave
+import signal,sys,time
 running=True
 def stop(*_):
  global running
  running=False
 signal.signal(signal.SIGINT,stop)
-with wave.open(sys.argv[-1],'wb') as wav:
- wav.setnchannels(1); wav.setsampwidth(2); wav.setframerate(16000)
+with open(sys.argv[-1],'wb') as pcm:
  while running:
-  wav.writeframes(b'\\x00\\x10'*1600)
+  pcm.write(b'\\x00\\x10'*1600); pcm.flush()
   time.sleep(0.1)
+# Match the observed direct-ALSA EINTR exit on requested stop.
+sys.exit(1)
 """)
             exe.chmod(0o700)
             with patch.dict(
@@ -577,6 +578,7 @@ with wave.open(sys.argv[-1],'wb') as wav:
                         else:
                             record(Settings(root), root / "input.wav", finish, cancel)
                             self.assertGreater(validate_audio(root / "input.wav"), 0)
+                        self.assertFalse((root / "input.pcm").exists())
                     finally:
                         timer.cancel()
 
