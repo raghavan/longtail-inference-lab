@@ -5,3 +5,7 @@ No drift detected in the scoped desktop-launcher change. The launcher delegates 
 ## Linux intake and capture contract — direct ALSA stop fix
 
 No drift detected in the scoped raw-PCM framing fix. Mono 16 kHz signed 16-bit capture, the 30-second cap, silence rejection, cancellation, and transient-file cleanup remain enforced. Direct driver interruption is reproduced by the updated subprocess regression. Hardware and headless acceptance remain separately recorded.
+
+## Standalone system-service deployment
+
+No drift detected in the scoped service deployment: the existing generator's non-root identity, audio/dialout groups, private network, read-only mounts, and transient-audio storage are retained. Machine-local configuration adds the user-local speech executable path, reserves USB audio from PulseAudio, and permits five-second restart retries without a burst lockout when the button is absent. The deployment guide records these settings. System-service inference and post-reboot readiness were observed; broader reliability remains unqualified.

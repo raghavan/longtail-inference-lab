@@ -10,7 +10,7 @@
 - Existing application and user-local runtime installation reused; no new runtime build or model download performed. A checksum-based transfer comparison matched the existing Python source to the repository. A desktop audio-selection launcher was subsequently added and deployed.
 - Qwen2.5 1.5B Instruct Q4_K_M and Whisper tiny.en model SHA-256 checks match the versioned runtime lock.
 - llama-server reports pinned commit `930e2fa`; full binary/build provenance of the pre-existing runtime installation was not independently reconstructed.
-- USB PnP Sound Device capture and UACDemoV1.0 playback devices enumerated. No physical button was enumerated in the inspected USB inventory.
+- USB PnP Sound Device capture and UACDemoV1.0 playback devices enumerated. The AtomS3-Lite was subsequently connected, identified, flashed, and tested as described below.
 
 ## Observed checks
 
@@ -37,8 +37,8 @@ The existing eSpeak wrapper is user-local and was absent from the noninteractive
 - Qualify repeated live turns and cancellation beyond the one owner-confirmed microphone-to-spoken-answer turn.
 - Reproduce runtime builds on the board and validate CUDA separately; installed toolkit files alone do not establish GPU execution.
 - Correct device time and establish target internet access before online setup. The USB link to a Mac is not automatically internet sharing.
-- Qualify physical button firmware, headless audio/service operation, reboot behavior, and then autostart.
-- Run a defined network-isolation check on the Jetson. The prior VM isolation result does not transfer to this device.
+- Extend button reconnect, repeated boot-cycle, and headless stability testing beyond the successful initial smoke checks.
+- Extend offline reliability testing beyond the observed Jetson service namespace containing only loopback. This physical evidence is distinct from the prior VM isolation check.
 - Evaluate human speech accuracy, voice quality, thermal/power behavior, and simultaneous memory headroom. Zero published comparative quality or performance measurements remain.
 
 After the successful live turn, the owner reported low speaker volume. The USB speaker output was raised from 30% to 70% and the configured level was read back; listening comfort at the new level remains user-assessed.
@@ -47,4 +47,6 @@ After the successful live turn, the owner reported low speaker volume. The USB s
 
 The identified AtomS3-Lite ESP32-S3 was flashed with the existing firmware after privately backing up the application region that would be overwritten. All flashed-region hashes verified. The owner observed LED changes, and the application received start/finish events. Firmware source was unchanged. Firmware image SHA-256: `770da8ffac4bb28c991418566c4f4d7f429466d893309442f0ff6a6b19bbf85e`.
 
-Direct ALSA capture exposed a real stop-path defect: on SIGINT the USB driver returned EINTR and arecord left a 30-second WAV header over a shorter recording. A controlled two-second check showed 480,000 frames declared but only 60,000 audio bytes present. The application correctly rejected the truncated file. Capture now writes bounded raw PCM and constructs its own WAV after the subprocess stops; cancellation still discards temporary data. The paced subprocess regression now reproduces the nonzero EINTR-style stop exit and checks PCM cleanup. All 38 tests passed on the Jetson after the change. The owner confirmed the manual button-to-spoken-answer retest passed; system-service acceptance remains pending.
+Direct ALSA capture exposed a real stop-path defect: on SIGINT the USB driver returned EINTR and arecord left a 30-second WAV header over a shorter recording. A controlled two-second check showed 480,000 frames declared but only 60,000 audio bytes present. The application correctly rejected the truncated file. Capture now writes bounded raw PCM and constructs its own WAV after the subprocess stops; cancellation still discards temporary data. The paced subprocess regression now reproduces the nonzero EINTR-style stop exit and checks PCM cleanup. All 38 tests passed on the Jetson after the change. The owner confirmed the manual button-to-spoken-answer retest passed; the owner also confirmed a spoken answer from the installed system service.
+
+The generated system service was installed and reached ready with zero restarts. Both USB sound cards report `PULSE_IGNORE=1`, reserving them for direct ALSA access. The service runs as the application user with audio/dialout groups, read-only home/system mounts, transient audio storage, and a network namespace observed to contain only loopback. Its machine-local PATH includes the pre-existing user-local speech wrapper. Boot startup was then enabled. A changed boot identity confirmed an actual reboot; the service was enabled, active, and ready with zero restarts, preserved 70% mixer volume, and only loopback in its network namespace. Laptop-disconnected listening confirmation remains pending.

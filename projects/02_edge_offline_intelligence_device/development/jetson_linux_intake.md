@@ -1,6 +1,6 @@
 # Jetson voice application: Linux ARM64 development intake
 
-**Status:** Linux ARM64 development validation passed; physical Jetson validation remains open.
+**Status:** Linux ARM64 development validation and basic physical Jetson CPU/button/service bring-up passed; extended hardware acceptance remains open. See the [physical record](../results/2026-11-15-jetson-cpu-bringup.md).
 **Track:** Offline edge application engineering
 **Difficulty:** Intermediate
 **Owner:** Laboratory maintainer

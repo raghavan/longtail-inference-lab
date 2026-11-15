@@ -1,6 +1,6 @@
 # Local Voice for Linux and Jetson development
 
-**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn; repeated live interaction, CUDA, button hardware, and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
+**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn; repeated live interaction, CUDA, extended button reliability and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
 
 An offline, single-turn English voice application:
 
@@ -187,6 +187,10 @@ For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://d
    sudo systemctl enable --now longtail-voice.service
    journalctl -u longtail-voice.service -f
    ```
+
+   For the validated standalone USB path, use stable ALSA card names (`plughw:CARD=Device,DEV=0` for the observed microphone and `plughw:CARD=UACDemoV10,DEV=0` for the observed speaker). Verify names on the actual board. The system service must own these devices; a desktop PulseAudio server can otherwise claim them. The November 15 deployment reserves the two observed USB devices with machine-local udev `PULSE_IGNORE=1` rules matched to their vendor/product IDs. This intentionally removes those devices from the desktop PulseAudio launcher while standalone mode is installed. Removing the rules, disabling the service, and reloading/reconnecting audio restores desktop use.
+
+   If speech tools were installed in the user's local executable directory, include that directory in the generated unit's `Environment=PATH=...`; systemd does not read interactive shell profiles. The November 15 unit also sets `StartLimitIntervalSec=0` so a disconnected/reconnected button can recover through the existing five-second restart delay. Save the working mixer level with `sudo alsactl store`. These are machine-local service settings; keep generated units and device identifiers outside Git.
 
    Replace `DEVICE` with the observed serial identifier. Add `--backend cuda` and the tested audio-device options to the generator only after those paths pass manual checks. Run the generator as the normal application user; it records that user and the local application/runtime locations in the generated machine-local file. Do not commit that generated file.
 
