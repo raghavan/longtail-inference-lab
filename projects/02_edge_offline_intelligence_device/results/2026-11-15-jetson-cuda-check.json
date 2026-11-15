@@ -1,0 +1,222 @@
+{
+  "scope": "Physical Jetson same-device development comparison; authored inputs only",
+  "started_at_utc": "2026-11-15T23:49:23.695794+00:00",
+  "architecture": "aarch64",
+  "kernel": "5.15.148-tegra",
+  "python": "3.10.12",
+  "runtime_lock": {
+    "llama_cpp": {
+      "repository": "https://github.com/ggml-org/llama.cpp.git",
+      "commit": "930e2fa5995789efbf249a8bf61325bb626e417b",
+      "license": "MIT"
+    },
+    "whisper_cpp": {
+      "repository": "https://github.com/ggml-org/whisper.cpp.git",
+      "commit": "da54572229bcf64ba367d96c7ef15770376c4280",
+      "license": "MIT"
+    },
+    "answer_model": {
+      "repository": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+      "revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+      "file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+      "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+      "bytes": 1117320736,
+      "quantization": "Q4_K_M",
+      "license": "Apache-2.0"
+    },
+    "speech_model": {
+      "repository": "ggerganov/whisper.cpp",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+      "file": "ggml-tiny.en.bin",
+      "sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+      "bytes": 77704715,
+      "quantization": "F16",
+      "license": "MIT"
+    },
+    "speech_output": {
+      "runtime": "espeak-ng",
+      "voice": "en-us",
+      "words_per_minute": 165,
+      "license": "GPL-3.0-or-later",
+      "selection": "Functional offline baseline; naturalness not qualified"
+    }
+  },
+  "system_prompt_sha256": "50f5e2f8a6eff1d2cf96fc46242e420c0ba7aa4ffc5b2a451fc3164861141236",
+  "settings": {
+    "threads": 4,
+    "context": 2048,
+    "max_tokens": 128,
+    "temperature": 0,
+    "seed": 42,
+    "history": "none",
+    "retrieval": "none"
+  },
+  "order": [
+    "cpu",
+    "cuda",
+    "cuda",
+    "cpu"
+  ],
+  "limits": "Two sessions per backend; cold means new server, not cold OS file cache. Times exclude microphone capture and speaker playback. Synthesis remains on CPU. No quality or percentile claim.",
+  "trials": [
+    {
+      "session": 0,
+      "backend": "cpu",
+      "server": "cold",
+      "mode": "text",
+      "transcript": "Name two things to pack for a short walk.",
+      "answer": "Water and sunscreen.",
+      "seconds": {
+        "answer": 9.109,
+        "synthesis": 0.062
+      }
+    },
+    {
+      "session": 0,
+      "backend": "cpu",
+      "server": "warm",
+      "mode": "text",
+      "transcript": "In one short sentence, why do plants need sunlight?",
+      "answer": "Plants need sunlight for photosynthesis, converting light into energy.",
+      "seconds": {
+        "answer": 7.86,
+        "synthesis": 0.063
+      }
+    },
+    {
+      "session": 0,
+      "backend": "cpu",
+      "server": "warm",
+      "mode": "synthetic_audio",
+      "transcript": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "seconds": {
+        "transcription": 1.64,
+        "answer": 6.837,
+        "synthesis": 0.032
+      }
+    },
+    {
+      "session": 1,
+      "backend": "cuda",
+      "server": "cold",
+      "mode": "text",
+      "transcript": "Name two things to pack for a short walk.",
+      "answer": "Water and sunscreen are two essentials to pack for a short walk.",
+      "seconds": {
+        "answer": 3.493,
+        "synthesis": 0.032
+      }
+    },
+    {
+      "session": 1,
+      "backend": "cuda",
+      "server": "warm",
+      "mode": "text",
+      "transcript": "In one short sentence, why do plants need sunlight?",
+      "answer": "Plants need sunlight for photosynthesis, converting light into energy.",
+      "seconds": {
+        "answer": 0.495,
+        "synthesis": 0.032
+      }
+    },
+    {
+      "session": 1,
+      "backend": "cuda",
+      "server": "warm",
+      "mode": "synthetic_audio",
+      "transcript": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "seconds": {
+        "transcription": 0.795,
+        "answer": 0.365,
+        "synthesis": 0.032
+      }
+    },
+    {
+      "session": 2,
+      "backend": "cuda",
+      "server": "cold",
+      "mode": "text",
+      "transcript": "Name two things to pack for a short walk.",
+      "answer": "Water and sunscreen are two essentials to pack for a short walk.",
+      "seconds": {
+        "answer": 3.178,
+        "synthesis": 0.032
+      }
+    },
+    {
+      "session": 2,
+      "backend": "cuda",
+      "server": "warm",
+      "mode": "text",
+      "transcript": "In one short sentence, why do plants need sunlight?",
+      "answer": "Plants need sunlight for photosynthesis, converting light into energy.",
+      "seconds": {
+        "answer": 0.479,
+        "synthesis": 0.032
+      }
+    },
+    {
+      "session": 2,
+      "backend": "cuda",
+      "server": "warm",
+      "mode": "synthetic_audio",
+      "transcript": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "seconds": {
+        "transcription": 0.795,
+        "answer": 0.406,
+        "synthesis": 0.032
+      }
+    },
+    {
+      "session": 3,
+      "backend": "cpu",
+      "server": "cold",
+      "mode": "text",
+      "transcript": "Name two things to pack for a short walk.",
+      "answer": "Water and sunscreen.",
+      "seconds": {
+        "answer": 8.767,
+        "synthesis": 0.062
+      }
+    },
+    {
+      "session": 3,
+      "backend": "cpu",
+      "server": "warm",
+      "mode": "text",
+      "transcript": "In one short sentence, why do plants need sunlight?",
+      "answer": "Plants need sunlight for photosynthesis, converting light into energy.",
+      "seconds": {
+        "answer": 7.859,
+        "synthesis": 0.063
+      }
+    },
+    {
+      "session": 3,
+      "backend": "cpu",
+      "server": "warm",
+      "mode": "synthetic_audio",
+      "transcript": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "seconds": {
+        "transcription": 1.647,
+        "answer": 6.816,
+        "synthesis": 0.032
+      }
+    }
+  ],
+  "fixture": {
+    "text": "What is the capital of France?",
+    "generator": "espeak-ng",
+    "voice": "en-us",
+    "words_per_minute": 145,
+    "format": "mono 16 kHz signed 16-bit PCM WAV",
+    "seconds": 2.219875,
+    "sha256": "599e4abdf24104442a85cdedbbbcb9dbb65800068735cafe7bdd33e82928f2bd"
+  },
+  "status": "passed",
+  "synthetic_fixtures_removed": true
+}

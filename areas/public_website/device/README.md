@@ -16,7 +16,7 @@ Serve the parent website directory with a static HTTP server and visit the `devi
 
 ## Evidence boundary
 
-The [hardware record](../../../projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md) is authoritative. Component illustrations are simplified, and enclosure fit, scale, cooling, and cable routing are conceptual. The first physical build is mains-powered; screen, battery, and portable enclosure remain deferred. Zero comparative quality or performance measurements are published for Mac, iPhone, or Jetson.
+The [hardware record](../../../projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md) is authoritative. Component illustrations are simplified, and enclosure fit, scale, cooling, and cable routing are conceptual. The first physical build is mains-powered; screen, battery, and portable enclosure remain deferred. A same-device Jetson CPU/CUDA development comparison is published; no scored quality or cross-platform comparison is published.
 
 The speaker is drawn as a tiny USB form study at the microphone's visual size. This is a presentation concept, not the housing or dimensions of the ordered Adafruit 3369 speaker.
 

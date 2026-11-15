@@ -2,11 +2,11 @@
 
 **Recorded:** September 13, 2026
 
-**Status:** All eight first-batch items are ordered: the Arrow Jetson kit, six DigiKey accessories, and one Newegg microSD card. The Arrow confirmation records $428.93 including tax and free shipping, with expected shipment September 14 and delivery September 21, 2026. Actual arrival and device acceptance remain open; DigiKey and Newegg final charges remain pending.
+**Status:** All eight first-batch items are ordered: the Arrow Jetson kit, six DigiKey accessories, and one Newegg microSD card. The Arrow confirmation records $428.93 including tax and free shipping, with expected shipment September 14 and delivery September 21, 2026. The board, audio devices, and button were observed in the November 15 standalone prototype. Full fulfillment reconciliation and extended device acceptance remain open; DigiKey and Newegg final charges remain pending.
 
 **Tracking:** [Hardware issue 47](https://github.com/raghavan/longtail-inference-lab/issues/47)
 
-**Evidence:** Zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
+**Evidence:** A same-device Jetson CPU/CUDA development comparison is published; no scored quality or cross-platform comparison is published.
 
 ## Eight-item parts list
 

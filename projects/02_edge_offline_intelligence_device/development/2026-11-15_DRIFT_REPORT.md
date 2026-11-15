@@ -9,3 +9,7 @@ No drift detected in the scoped raw-PCM framing fix. Mono 16 kHz signed 16-bit c
 ## Standalone system-service deployment
 
 No drift detected in the scoped service deployment: the existing generator's non-root identity, audio/dialout groups, private network, read-only mounts, and transient-audio storage are retained. Machine-local configuration adds the user-local speech executable path, reserves USB audio from PulseAudio, and permits five-second restart retries without a burst lockout when the button is absent. The deployment guide records these settings. System-service inference and post-reboot readiness were observed; broader reliability remains unqualified.
+
+## CUDA profile, setup, and development comparison
+
+No drift detected in the scoped GPU deployment. Separate CPU/CUDA runtime directories, locked models/source revisions, explicit answer-server device selection, existing transient-audio cleanup, bounded single-turn inference, and service network isolation are retained. Disabling unused UI downloads does not alter the voice contract. The authored comparison uses fixed existing settings and records every one of twelve completed turns, with no quality or cross-platform claim. Actual CUDA speech execution and 29/29 answer-layer offload were observed before the system service switched backend. Physical-button acceptance is tracked separately in the dated CUDA record. This is a scoped implementation consistency check against the Linux intake and deployment guide, not a fresh-context design review.

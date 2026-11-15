@@ -3,7 +3,7 @@
 **Status:** Proposed architecture; platform sequence and $1,000 first-year total ceiling agreed
 **Date:** September 12, 2026
 **Decider:** Project owner
-**Evidence:** Mac and simulator development checks, TestFlight delivery, and owner-confirmed basic iOS operation in [status](status.md); zero published comparative quality or performance measurements for Mac, iPhone, or Jetson
+**Evidence:** Mac and simulator development checks, TestFlight delivery, and owner-confirmed basic iOS operation in [status](status.md); same-device Jetson CPU/CUDA development timings; no scored quality or cross-platform comparison
 
 ## Context
 
@@ -38,7 +38,7 @@ Start Jetson trials around a 1–3B parameter answer model with 4-bit weights, a
 
 ## Options considered
 
-**September 15 implementation note:** The separate [Linux development slice](software/jetson/README.md) implements this Jetson interaction contract with Qwen2.5 1.5B Q4_K_M, Whisper tiny.en, and an eSpeak functional voice baseline. It passed local ARM64 CPU VM checks. The preceding architecture text does not itself establish implementation evidence; the [dated validation record](results/2026-09-15-linux-vm-development.md) does. The later [physical CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) establishes basic button, headless-service, and reboot smoke checks. Extended physical acceptance and CUDA remain open.
+**September 15 implementation note:** The separate [Linux development slice](software/jetson/README.md) implements this Jetson interaction contract with Qwen2.5 1.5B Q4_K_M, Whisper tiny.en, and an eSpeak functional voice baseline. It passed local ARM64 CPU VM checks. The preceding architecture text does not itself establish implementation evidence; the [dated validation record](results/2026-09-15-linux-vm-development.md) does. The later [physical CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) establishes basic button, headless-service, and reboot smoke checks. The [CUDA development check](results/2026-11-15-jetson-cuda-check.md) adds actual GPU offload and limited same-device timings. Extended physical acceptance and scored quality remain open.
 
 | Option | Benefit | Cost or limitation | Disposition |
 | --- | --- | --- | --- |

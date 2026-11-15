@@ -62,7 +62,12 @@ def main():
             "-DGGML_CUDA=" + ("ON" if a.backend == "cuda" else "OFF"),
         ]
         if key == "llama_cpp":
-            flags += ["-DLLAMA_CURL=OFF", "-DLLAMA_BUILD_TESTS=OFF"]
+            flags += [
+                "-DLLAMA_CURL=OFF",
+                "-DLLAMA_BUILD_TESTS=OFF",
+                "-DLLAMA_BUILD_UI=OFF",
+                "-DLLAMA_USE_PREBUILT_UI=OFF",
+            ]
         if a.backend == "cuda":
             flags += ["-DCMAKE_CUDA_ARCHITECTURES=87"]
         run("cmake", "-S", src, "-B", build, *flags)

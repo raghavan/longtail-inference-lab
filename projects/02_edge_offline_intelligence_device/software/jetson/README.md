@@ -1,6 +1,6 @@
 # Local Voice for Linux and Jetson development
 
-**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn; repeated live interaction, CUDA, extended button reliability and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
+**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn; button/service/reboot and laptop-disconnected basic operation also passed. The [CUDA record](../../results/2026-11-15-jetson-cuda-check.md) adds GPU execution and limited paired timings; extended reliability and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
 
 An offline, single-turn English voice application:
 
@@ -10,13 +10,13 @@ USB button or keyboard → ALSA microphone → whisper.cpp → llama.cpp → eSp
                          transient WAV    local models   transient WAV
 ```
 
-The program is designed for Orin Nano Super 8 GB and has a real Linux ARM64 CPU implementation. Its CUDA build profile targets Orin's architecture, but has not been built or run on Jetson. Apple frameworks and models are not used. There is no web access, retrieval, conversation memory, external action, or cloud fallback.
+The program is designed for Orin Nano Super 8 GB and has a real Linux ARM64 CPU implementation. Its CUDA profile has been built and run on the physical board, with GPU transcription and all answer-model layers offloaded. Apple frameworks and models are not used. There is no web access, retrieval, conversation memory, external action, or cloud fallback.
 
 ## What is included
 
 - A command-line text/WAV mode for reproducible model checks.
 - A device mode: press to start recording, press to finish and answer, press during processing/playback to cancel. Recording automatically ends at 30 seconds. The next press after cancellation starts a fresh turn.
-- An AtomS3-Lite firmware project and bounded USB serial protocol, with status LED and connection heartbeat. Firmware compiles; flashing and electrical/USB behavior await the hardware.
+- An AtomS3-Lite firmware project and bounded USB serial protocol, with status LED and connection heartbeat. Firmware was flashed and basic button/LED/voice interaction passed on the physical device; extended reconnect/cancellation reliability remains open.
 - Local runtime readiness and SHA-256 checks, pinned source/model identities, and a separate explicit online setup script.
 - Linux regressions, real-model smoke/failure checks, a VM lifecycle helper, and a startup-service generator.
 
@@ -127,7 +127,7 @@ Online setup downloads two source trees and approximately 1.2 GB of model files.
 
 ## Deploy to the actual Jetson
 
-**Prerequisite:** complete board/firmware/storage setup using the official installation instructions for the chosen JetPack release. This application does not flash the board or prepare the SD card. The Linux VM baseline is Ubuntu 22.04; JetPack 6.2.1 is a corresponding candidate, not a confirmed installation on the future device. Record the actual release before building.
+**Prerequisite:** complete board/firmware/storage setup using the official installation instructions for the chosen JetPack release. This application does not flash the board or prepare the SD card. The observed board runs Ubuntu 22.04.5, L4T R36.4.4, and CUDA 12.6. Record the actual installed release before building on another board.
 
 For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://docs.nvidia.com/jetson/jetpack/6.2.1/install-setup/index.html), including its firmware check before a JetPack 6.x SD-card boot. Its SDK Manager route requires a supported Ubuntu x64 host; this ARM64 application-test VM is not that flashing host. Resolve the board's installation method first, then use the steps below to install the application onto its running Linux system.
 
@@ -157,7 +157,7 @@ For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://d
    python3 -m local_voice --backend cuda ask --text 'Name a primary color.' --show-text
    ```
 
-   The CUDA profile builds separately with architecture 87 and explicitly selects `CUDA0` for the answer server. A missing CUDA device must fail instead of silently presenting a CPU run as a GPU result. CUDA compilation, library compatibility, offload, and memory remain untested; inspect actual runtime/device evidence on the board before treating this profile as accepted.
+   The CUDA profile builds separately with architecture 87 and explicitly selects `CUDA0` for the answer server. A missing CUDA device must fail instead of silently presenting a CPU run as a GPU result. The November 15 [CUDA check](../../results/2026-11-15-jetson-cuda-check.md) records successful compilation, library loading, full answer-model offload, GPU transcription, and limited timing/resource observations. Verify these on each installation; sustained memory/thermal limits remain unqualified.
 
 4. Identify the USB audio devices using `arecord -l` and `aplay -l`. Qualify capture/playback separately, then run the keyboard-controlled loop:
 
@@ -198,6 +198,27 @@ For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://d
 
 Application updates are another source transfer and service restart; routine code changes do not require reflashing the SanDisk card. Preserve a known-working local copy before an update and rerun the on-device checks.
 
+### Compare installed CPU and CUDA profiles
+
+After both profiles pass real inference, run the fixed authored development check
+on the Jetson with no builds or interactive voice turns running:
+
+```bash
+mkdir -p .local-results
+python3 scripts/backend_check.py --output .local-results/backend-check.json
+```
+
+The output file must not already exist. The check verifies model hashes, runs
+CPU-CUDA-CUDA-CPU sessions, and closes each answer server between sessions. Each
+session has a cold text turn, a warm text turn, and a warm synthetic-audio turn.
+Cold means a new server, not a cold operating-system file cache. Inputs are
+authored examples; the check never captures the microphone or plays speech.
+It removes temporary synthetic audio and writes only the explicitly requested
+report. Stage times exclude recording and playback; synthesis stays on CPU.
+Two sessions per profile do not establish quality, tail latency, or performance
+on other hardware. Check actual CUDA offload separately: asset readiness alone
+does not prove GPU execution. Keep the working CPU profile for rollback.
+
 For updates from the parent `software/` directory, use a trailing source slash to update the existing application directory rather than nesting another directory inside it. With `rsync` available on both machines:
 
 ```bash
@@ -221,7 +242,7 @@ cd button
 ~/.local/share/longtail-voice/firmware-tools/bin/pio run
 ```
 
-Flash later from a machine with the physical board attached using PlatformIO's `run --target upload --upload-port` and the observed device path. The Lima VM has no USB passthrough configured; the firmware was compiled there, not flashed. Native Mac PlatformIO or the Jetson can perform the later upload. Never flash an unidentified serial device.
+Flash later from a machine with the physical board attached using PlatformIO's `run --target upload --upload-port` and the observed device path. The Lima VM has no USB passthrough configured; its firmware compilation does not establish hardware behavior. The subsequent physical bring-up flashed and tested the button from Jetson. Native Mac PlatformIO or the Jetson can perform an upload. Never flash an unidentified serial device.
 
 Protocol is 115200 baud, newline-terminated ASCII. Button sends `PRESS`; application accepts `CANCEL` for integration tools too. Application sends `STATE ready|recording|finishing|transcribing|answering|synthesizing|speaking|cancelling|error` and repeats its current state once per second. Duplicate presses within 200 ms are ignored by the host. LED: green ready, red recording, amber processing/cancelling, cyan speaking, magenta error, dim white waiting/disconnected. A five-second missing heartbeat resets the LED to waiting.
 
@@ -229,4 +250,4 @@ Protocol is 115200 baud, newline-terminated ASCII. Button sends `PRESS`; applica
 
 Normal completion, ordinary errors, and cancellation delete temporary recording/transcript/speech files. The service's private tmpfs also disappears when the service exits. Standalone CLI files in `/dev/shm` can survive an uncatchable process kill until cleanup or reboot; no forensic-erasure guarantee is made. The selected OS controls swap and crash behavior. Explicitly exported WAVs and `--show-text` output are intentionally retained/displayed by the caller.
 
-VM tests establish native ARM64 Linux integration, local inference, bounded failure handling, and service behavior. They do not establish Jetson bootability, CUDA compatibility, acoustic quality, latency, power draw, thermals, long-session stability, or final model usefulness. Run the physical-device acceptance checklist in the validation record before deployment is called complete.
+VM tests establish native ARM64 Linux integration, local inference, bounded failure handling, and service behavior. They do not establish physical Jetson behavior. The linked physical CPU/CUDA records separately establish basic standalone operation and limited development timings, while acoustic quality, sustained power/thermals, long-session stability, and final model usefulness remain open. Run the physical-device acceptance checklist in the validation record before deployment is called complete.

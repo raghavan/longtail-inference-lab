@@ -1,9 +1,9 @@
 # 02 Edge Offline Intelligence Device
 
-**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. All eight first-batch hardware items are ordered across Arrow, DigiKey, and Newegg; arrival, setup, and device acceptance remain open. Detailed device evaluation and model-selection intake remain open.
-**Evidence:** Development checks, owner-confirmed Mac voice input/text response, and an owner report of basic iOS operation; zero published comparative quality or performance measurements for Mac, iPhone, or Jetson.
+**Status:** Active project; Mac app works and the owner confirmed basic use of the iOS TestFlight beta. The mains-powered Jetson now answers through its physical button with the laptop disconnected. Extended device acceptance remains open. Detailed device evaluation and model-selection intake remain open.
+**Evidence:** Development checks, owner-confirmed Mac voice input/text response, and an owner report of basic iOS operation; same-device Jetson CPU/CUDA development timings; no scored quality or cross-platform comparison.
 **Track:** Local inference and device systems
-**Last updated:** September 16, 2026
+**Last updated:** November 15, 2026
 
 ## One minute summary
 
@@ -37,7 +37,7 @@ Apple's model is an Apple-platform dependency. Jetson requires a local open-mode
 
 ## Budget and hardware
 
-The [order record and arrival checklist](hardware/portable_procurement.md) contains eight exact items from Arrow, DigiKey, and Newegg. All eight were ordered on September 13. Arrow confirms the complete US-region Jetson kit at $428.93 including tax and free shipping, with expected shipment September 14 and delivery September 21, 2026. Actual arrival is not yet confirmed. The six DigiKey accessories total $48.30 in parts and the Newegg SanDisk Extreme 128 GB card is $42.99; their final charges remain pending. Do not repurchase any first-batch item. The checklist records setup dependencies and proposed device acceptance steps without PII or private purchase identifiers.
+The [order record and arrival checklist](hardware/portable_procurement.md) contains eight exact items from Arrow, DigiKey, and Newegg. All eight were ordered on September 13. Arrow confirms the complete US-region Jetson kit at $428.93 including tax and free shipping, with expected shipment September 14 and delivery September 21, 2026. The board, USB audio, and button were observed during November 15 bring-up; full order reconciliation remains open. The six DigiKey accessories total $48.30 in parts and the Newegg SanDisk Extreme 128 GB card is $42.99; their final charges remain pending. Do not repurchase any first-batch item. The checklist records setup dependencies and proposed device acceptance steps without PII or private purchase identifiers.
 
 The [budget](hardware/bill_of_materials.md) records the confirmed $1,000 first-year ceiling: all new hardware needed for the end product, required subscriptions and software/distribution fees, tax, and shipping. Reuse the already-owned Mac and iPhone; any new development or test hardware and required renewals during the first year also count toward the ceiling.
 
@@ -53,13 +53,13 @@ The project can be marked complete when the three iterations have dated, reprodu
 
 ## Current implementation state
 
-The [Linux voice application](software/jetson/README.md) has local ARM64 VM development evidence: 38 passing regressions, real offline model/speech integration, service checks, and compiled button firmware. See the [dated record](results/2026-09-15-linux-vm-development.md). The [physical Jetson CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) subsequently passed readiness, 38 regressions, authored inference, and owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn. Physical-button operation, the headless system service, and automatic startup after reboot also passed basic checks. Extended reliability and CUDA remain open. VM and physical-device observations remain separate.
+The [Linux voice application](software/jetson/README.md) has local ARM64 VM development evidence: 38 passing regressions, real offline model/speech integration, service checks, and compiled button firmware. See the [dated record](results/2026-09-15-linux-vm-development.md). The [physical Jetson CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) subsequently passed readiness, 38 regressions, authored inference, and owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn. Physical-button operation, the headless system service, and automatic startup after reboot also passed basic checks. The [CUDA development check](results/2026-11-15-jetson-cuda-check.md) verifies GPU speech recognition, all 29 answer-model layers offloaded, and same-device CPU/CUDA timings. Extended reliability and scored quality remain open. VM and physical-device observations remain separate.
 
 Mac Local Voice 0.2.0 (build 4) extends the [specified Mac development slice](development/README.md) with [manual local speech output](development/local_speech_output.md). The owner confirmed voice input, text answers, and read-aloud. An initial microphone callback crash was repaired and covered by a background-callback regression test.
 
 The [iPhone beta](development/ios_testflight.md), 0.3.0 (build 5), uses the same core and SwiftUI source in a native app target. Seventeen shared automated tests passed, and the iOS simulator completed an authored typed question and manual read-aloud. Local speech recognition was unavailable in that simulator. Apple accepted and processed the signed upload for the internal owner group. The owner then confirmed that the beta works on their iOS device. The TestFlight listing is **Local Voice Lab**; the installed app is **Local Voice**. This is a report of basic operation; the device/OS and individual feature checks are still to be recorded. The [technical status](status.md) records each platform's configuration and evidence limits.
 
-The app handles one question at a time, with no conversation history. English is the current language scope; additional languages are deferred. General conversation is the task family. The tested iPhone/OS and representative evaluation cases remain to be recorded. No structured evaluation on iPhone or run on Jetson has been recorded.
+The app handles one question at a time, with no conversation history. English is the current language scope; additional languages are deferred. General conversation is the task family. The tested iPhone/OS and representative evaluation cases remain to be recorded. No structured quality evaluation on iPhone or Jetson has been recorded; the linked Jetson records contain hardware smoke checks and limited development timings.
 
 Read the [software guide](software/README.md), [intake](../../resources/project_proposals/apple_local_voice_intake.md), and [results policy](results/README.md) before expanding the implementation. The intake records proposed gates; no latency or quality threshold is a measured result.
 

@@ -4,7 +4,7 @@
 
 **Checkpoint:** September 13, 2026; all eight first-batch items are ordered across Arrow, DigiKey, and Newegg. The Arrow order total is confirmed at $428.93. DigiKey and Newegg final charges remain pending; arrival and device acceptance are not yet confirmed.
 
-**Evidence:** Zero published Jetson measurements.
+**Current device evidence:** [Standalone CPU bring-up](../results/2026-11-15-jetson-cpu-bringup.md) and [same-device CUDA development timings](../results/2026-11-15-jetson-cuda-check.md) are recorded. The September procurement checkpoint below does not establish final fulfillment or charges.
 
 The [order record and arrival checklist](portable_procurement.md) contains the eight exact ordered items and public product links. The first hardware stage is a mains-powered Orin Nano Super 8 GB with USB microphone, USB speaker, physical button, 128 GB SanDisk card, reader, and two data cables. The parts subtotal is **$490.29 before tax, shipping, and tariffs**. Including Arrow's confirmed $29.93 tax, **$520.22 in order costs is recorded so far**; this is an incomplete total until the other merchants' final charges are reconciled.
 
