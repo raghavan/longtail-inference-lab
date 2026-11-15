@@ -53,7 +53,7 @@ The project can be marked complete when the three iterations have dated, reprodu
 
 ## Current implementation state
 
-The [Linux voice application](software/jetson/README.md) has local ARM64 VM development evidence: 38 passing regressions, real offline model/speech integration, service checks, and compiled button firmware. See the [dated record](results/2026-09-15-linux-vm-development.md). The [physical Jetson CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) subsequently passed readiness, 38 regressions, authored inference, and owner-confirmed USB speaker playback. Live microphone interaction, CUDA, button, and headless acceptance remain open. VM and physical-device observations remain separate.
+The [Linux voice application](software/jetson/README.md) has local ARM64 VM development evidence: 38 passing regressions, real offline model/speech integration, service checks, and compiled button firmware. See the [dated record](results/2026-09-15-linux-vm-development.md). The [physical Jetson CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) subsequently passed readiness, 38 regressions, authored inference, and owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn. Repeated live interaction, CUDA, button, and headless acceptance remain open. VM and physical-device observations remain separate.
 
 Mac Local Voice 0.2.0 (build 4) extends the [specified Mac development slice](development/README.md) with [manual local speech output](development/local_speech_output.md). The owner confirmed voice input, text answers, and read-aloud. An initial microphone callback crash was repaired and covered by a background-callback regression test.
 

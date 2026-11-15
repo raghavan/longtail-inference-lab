@@ -1,7 +1,7 @@
 # Physical Jetson CPU bring-up
 
 **Date:** November 15, 2026 (operator date; the device clock was incorrect).
-**Status:** Existing CPU installation passes readiness, regression, authored inference, and owner-confirmed USB speaker checks. Live microphone interaction remains pending.
+**Status:** Existing CPU installation passes readiness, regression, authored inference, and owner-confirmed USB speaker checks. The owner confirmed a live microphone-to-spoken-answer turn after explicit USB selection.
 
 ## Environment and provenance
 
@@ -21,21 +21,24 @@
 | Authored typed question | Returned a primary-color answer and synthesized speech | CPU smoke check, no comparative quality claim |
 | Authored synthetic audio | Transcribed the France-capital question exactly; answered Paris and synthesized speech | eSpeak source converted to mono 16 kHz PCM using Python audioop; not human microphone input |
 | USB speaker playback | Application completed playback; owner confirmed hearing the test sentence | One short listening check |
+| Live microphone-to-answer loop | Owner confirmed an answer was spoken after using the explicit USB launcher | One turn, no private audio or transcript collected in this record |
 | Temporary synthetic fixtures | Removed at completion | No personal microphone recording collected for these checks |
 
 The synthetic-audio trial reported 1.640 s transcription, 9.279 s answer, and 0.032 s synthesis. These are a single physical-device CPU smoke observation, not latency distributions, total interaction time, or VM-comparable benchmark results.
 
 ## Configuration findings
 
-The desktop sound server and direct ALSA device access conflicted: direct speaker playback returned device-busy. Selecting the USB microphone/speaker as PulseAudio defaults and using `--capture-device pulse --playback-device pulse` allowed application playback. However, the defaults later reverted to the onboard interface, and the owner's first live test returned the explicit silence rejection. The new `scripts/desktop_device.sh` selects the single USB source/sink through process-local PulseAudio environment variables, fails on ambiguous selection, and reached the ready state on-device. Live retesting is pending. This is a signed-in desktop-session path, not proof that the headless system service can access PulseAudio.
+The desktop sound server and direct ALSA device access conflicted: direct speaker playback returned device-busy. Selecting the USB microphone/speaker as PulseAudio defaults and using `--capture-device pulse --playback-device pulse` allowed application playback. However, the defaults later reverted to the onboard interface, and the owner's first live test returned the explicit silence rejection. The new `scripts/desktop_device.sh` selects the single USB source/sink through process-local PulseAudio environment variables, fails on ambiguous selection, and reached the ready state on-device. The owner then confirmed a spoken answer from a live microphone turn. This is a signed-in desktop-session path, not proof that the headless system service can access PulseAudio.
 
 The existing eSpeak wrapper is user-local and was absent from the noninteractive SSH PATH. Adding the user-local executable directory to that session's PATH resolved readiness. The model and speech wrappers already existed; this session did not install or rebuild them.
 
 ## Remaining acceptance
 
-- Complete and confirm the live microphone-to-spoken-answer loop, repeated turns, and cancellation.
+- Qualify repeated live turns and cancellation beyond the one owner-confirmed microphone-to-spoken-answer turn.
 - Reproduce runtime builds on the board and validate CUDA separately; installed toolkit files alone do not establish GPU execution.
 - Correct device time and establish target internet access before online setup. The USB link to a Mac is not automatically internet sharing.
 - Qualify physical button firmware, headless audio/service operation, reboot behavior, and then autostart.
 - Run a defined network-isolation check on the Jetson. The prior VM isolation result does not transfer to this device.
 - Evaluate human speech accuracy, voice quality, thermal/power behavior, and simultaneous memory headroom. Zero published comparative quality or performance measurements remain.
+
+After the successful live turn, the owner reported low speaker volume. The USB speaker output was raised from 30% to 70% and the configured level was read back; listening comfort at the new level remains user-assessed.

@@ -1,6 +1,6 @@
 # Local Voice for Linux and Jetson development
 
-**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback; live microphone interaction, CUDA, button hardware, and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
+**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn; repeated live interaction, CUDA, button hardware, and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
 
 An offline, single-turn English voice application:
 
