@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="220" viewBox="0 0 260 220" fill="none">
+  <title>Tiny USB speaker concept</title>
+  <desc>A compact USB speaker illustration with the same visual footprint as the microphone. Its small square body contains one round speaker grille. This is an illustrative form, not a depiction of the ordered speaker's housing.</desc>
+  <defs>
+    <linearGradient id="usb-metal" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#eff0ec"/><stop offset=".35" stop-color="#b4b9b7"/><stop offset=".65" stop-color="#e0e3df"/><stop offset="1" stop-color="#8b9390"/>
+    </linearGradient>
+    <linearGradient id="body-top" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#626966"/><stop offset="1" stop-color="#3f4843"/>
+    </linearGradient>
+    <radialGradient id="speaker-cone">
+      <stop stop-color="#454e48"/><stop offset=".4" stop-color="#28332c"/><stop offset="1" stop-color="#18231c"/>
+    </radialGradient>
+    <pattern id="grille" width="3" height="3" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r=".65" fill="#141e17"/>
+      <path d="M.85 1.5A.65 .65 0 0 1 2.15 1.5" stroke="#8d978e" stroke-opacity=".45" stroke-width=".25"/>
+    </pattern>
+  </defs>
+  <!-- The USB plug and overall outline share the microphone's drawing geometry. -->
+  <polygon points="90.01,64.31 137.44,88.28 137.44,104.28 90.01,80.31" fill="#acb3af" stroke="#7e8981" stroke-width=".7" stroke-linejoin="round"/>
+  <polygon points="178.36,67.60 137.44,88.28 137.44,104.28 178.36,83.60" fill="#909a94" stroke="#7e8981" stroke-width=".7" stroke-linejoin="round"/>
+  <polygon points="130.93,43.63 178.36,67.60 137.44,88.28 90.01,64.31" fill="url(#usb-metal)" stroke="#7e8981" stroke-width=".7" stroke-linejoin="round"/>
+  <polygon points="42.58,77.28 104.89,108.77 104.89,135.77 42.58,104.28" fill="#2e3932" stroke="#68766b" stroke-width=".7" stroke-linejoin="round"/>
+  <polygon points="152.32,84.80 104.89,108.77 104.89,135.77 152.32,111.80" fill="#354138" stroke="#68766b" stroke-width=".7" stroke-linejoin="round"/>
+  <polygon points="90.01,53.31 152.32,84.80 104.89,108.77 42.58,77.28" fill="url(#body-top)" stroke="#7c8980" stroke-width=".7" stroke-linejoin="round"/>
+  <g transform="matrix(.93 .47 -.93 .47 130 66)">
+    <rect x="-31" y="12" width="59" height="43" rx="10" fill="#505b52" stroke="#8c988d" stroke-width=".6"/>
+    <circle cx="-1.5" cy="33.5" r="18.5" fill="#9aa69a"/>
+    <circle cx="-1.5" cy="33.5" r="16.8" fill="url(#speaker-cone)" stroke="#253629" stroke-width="1"/>
+    <circle cx="-1.5" cy="33.5" r="14.9" fill="url(#grille)"/>
+    <circle cx="-1.5" cy="33.5" r="7.8" fill="#29392c" fill-opacity=".45" stroke="#7b8b7c" stroke-width=".35"/>
+    <circle cx="-1.5" cy="33.5" r="3.6" fill="#526453" fill-opacity=".5"/>
+  </g>
+  <g transform="matrix(.93 .47 -.93 .47 130 77)">
+    <path d="M-26 -28h12v10h-12ZM-5 -28H7v10H-5Z" fill="#626e65"/>
+    <path d="M-34 -9H15" stroke="#e7eae3" stroke-width="1"/>
+  </g>
+</svg>

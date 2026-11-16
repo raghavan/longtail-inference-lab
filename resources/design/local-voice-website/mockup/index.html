@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf8f3">
+  <meta name="description" content="Explore Local Voice: the hardware, the local models, and the path from a spoken question to a spoken answer. A working Jetson prototype from Long Tail Inference Lab.">
+  <title>Local Voice — Intelligence, closer to you</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="inside.css">
+  <script src="assembly.js?v=3" type="module"></script>
+  <script src="inside.js" type="module"></script>
+</head>
+<body>
+  <a class="skip-link" href="#underneath">Skip the animation</a>
+  <main>
+    <section class="assembly-story" id="assembly" aria-label="Local Voice hardware assembly">
+      <div class="pin">
+        <header class="masthead">
+          <a class="lab-link" href="https://lily.md" aria-label="Long Tail Inference Lab home">
+            <svg viewBox="0 0 44 24" aria-hidden="true"><path d="M1 2C9 2 7 20 22 20H42"/><circle cx="42" cy="20" r="1.5"/></svg>
+            <span>Long Tail<br>Inference Lab</span>
+          </a>
+          <span class="edition">A voice. Entirely local.</span>
+          <a class="about-link" href="#inside">Inside the device <span aria-hidden="true">↗</span></a>
+        </header>
+
+        <div class="story-layout">
+          <div class="story-copy">
+            <p class="project-name">Local Voice<span class="title-period">.</span></p>
+            <div class="chapters">
+              <article class="chapter is-active" data-chapter="0">
+                <p class="eyebrow"><span>01</span> The compute</p>
+                <h1>It starts<br>with a <em>brain.</em></h1>
+                <p class="chapter-body">A small computer with room to listen, generate an answer, and speak. Follow the pieces as they become a local voice device.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>NVIDIA Jetson Orin Nano Super<small>8 GB · Developer kit</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="1" aria-hidden="true" inert>
+                <p class="eyebrow"><span>02</span> The storage</p>
+                <h2>A place for<br><em>possibility.</em></h2>
+                <p class="chapter-body">The operating system and downloaded models live here. The card holds persistent files; the Jetson’s separate 8 GB of shared memory does the working.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>SanDisk Extreme microSD<small>128 GB · System &amp; model storage</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="2" aria-hidden="true" inert>
+                <p class="eyebrow"><span>03</span> The microphone</p>
+                <h2>A way<br>to <em>listen.</em></h2>
+                <p class="chapter-body">A USB microphone brings your spoken question into the device. Press to record; press again to send that audio to local speech recognition.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>Adafruit Mini USB Microphone<small>3367 · Speech input</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="3" aria-hidden="true" inert>
+                <p class="eyebrow"><span>04</span> The speaker</p>
+                <h2>A voice<br>of <em>its own.</em></h2>
+                <p class="chapter-body">An answer finds its way back into the room. Local speech synthesis turns the completed text into audio, played automatically through the USB speaker.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>Adafruit USB speaker · 3369<small>Illustration is a compact form concept</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="4" aria-hidden="true" inert>
+                <p class="eyebrow"><span>05</span> The button</p>
+                <h2>You decide<br>when it <em>listens.</em></h2>
+                <p class="chapter-body">Press once to begin. Press again to finish. Press while it is busy to cancel. A status light shows when it is ready, recording, processing, or speaking.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>M5Stack AtomS3-Lite<small>C124 · Button &amp; status light</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="5" aria-hidden="true" inert>
+                <p class="eyebrow"><span>06</span> The power</p>
+                <h2>A spark.<br><em>A connection.</em></h2>
+                <p class="chapter-body">Power from the wall. Connections between the pieces. The first build begins with a simple, mains-powered voice loop.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>Jetson mains adapter &amp; USB cables<small>Included supply · Connected peripherals</small></p></div>
+              </article>
+              <article class="chapter" data-chapter="6" aria-hidden="true" inert>
+                <p class="eyebrow"><span>07</span> The whole</p>
+                <h2>Many parts.<br>One <em>Local Voice.</em></h2>
+                <p class="chapter-body">Listen. Generate. Speak. The standalone voice loop now works on the board. This enclosure is a form to work toward; the physical build remains open and mains-powered.</p>
+                <div class="part-detail"><span class="detail-rule"></span><p>A form to work toward<small>Illustrative enclosure concept</small></p></div>
+              </article>
+            </div>
+          </div>
+
+          <figure class="hardware" aria-labelledby="scene-caption">
+            <div class="figure-heading"><span id="figure-number">FIG. 01</span><span id="part-name">Jetson Orin Nano Super</span></div>
+            <svg class="hardware-scene" viewBox="0 0 820 720" role="img" aria-labelledby="hardware-title hardware-description">
+              <title id="hardware-title">Local Voice, piece by piece</title>
+              <desc id="hardware-description">A stylized Jetson board is joined by a microSD card, USB microphone, speaker, button and power supply as you scroll. The pieces gather inside an illustrative enclosure.</desc>
+              <defs>
+                <radialGradient id="ground"><stop stop-color="#76634a" stop-opacity=".15"/><stop offset="1" stop-color="#76634a" stop-opacity="0"/></radialGradient>
+              </defs>
+              <g class="construction" fill="none" stroke="#cfc6b5" stroke-width=".8">
+                <path d="M106 488 400 653 722 467 428 302Z" stroke-dasharray="3 7"/>
+                <path d="M400 653V614M106 488H143M722 467H685"/>
+                <path d="M410 151V180M395 166H425M733 330V346M725 338H741M125 342V358M117 350H133"/>
+              </g>
+              <ellipse id="scene-shadow" cx="418" cy="489" rx="290" ry="107" fill="url(#ground)"/>
+              <g id="wiring" class="wiring" fill="none" stroke-linecap="round">
+                <path class="cable-shadow" d="M380 431C286 525 197 396 272 354M490 411C542 518 598 431 582 380M483 458C574 482 556 572 660 537"/>
+                <path class="cable" d="M380 431C286 525 197 396 272 354M490 411C542 518 598 431 582 380M483 458C574 482 556 572 660 537"/>
+              </g>
+              <g id="enclosure-power" fill="none" stroke-linecap="round" opacity="0">
+                <path d="M596 383C644 402 687 350 755 361" stroke="#b1b5b6" stroke-width="3.5"/>
+                <path d="M596 382.3C644 401.3 687 349.3 755 360.3" stroke="#fbfbf7" stroke-width="1.2"/>
+              </g>
+              <g id="part-power" class="part" opacity="0" transform="translate(690 560) scale(.8)"><image href="assets/power.svg" x="-145" y="-110" width="290" height="220"/></g>
+              <g id="part-jetson" class="part" transform="translate(425 355)"><image href="assets/jetson.svg" x="-320" y="-260" width="640" height="520"/></g>
+              <g id="part-storage" class="part" opacity="0"><image href="assets/storage.svg" x="-100" y="-115" width="200" height="230"/></g>
+              <g id="part-microphone" class="part" opacity="0"><image href="assets/microphone.svg" x="-130" y="-110" width="260" height="220"/></g>
+              <g id="part-speaker" class="part" opacity="0"><image href="assets/speaker.svg?v=3" x="-130" y="-110" width="260" height="220"/></g>
+              <g id="part-button" class="part" opacity="0"><image href="assets/button.svg" x="-125" y="-125" width="250" height="250"/></g>
+              <g id="part-enclosure" class="part" opacity="0"><image href="assets/enclosure.svg?v=2" x="-320" y="-260" width="640" height="520"/></g>
+              <g id="callout" class="callout">
+                <path id="callout-line" d="M493 267 615 194H720"/>
+                <circle id="callout-dot" cx="493" cy="267" r="3"/>
+                <text id="callout-label" x="720" y="181" text-anchor="end">THE LOCAL BRAIN</text>
+              </g>
+            </svg>
+            <figcaption id="scene-caption"><span class="caption-line"></span><span id="figure-caption">A small beginning. Everything else follows.</span></figcaption>
+          </figure>
+        </div>
+
+        <footer class="assembly-footer">
+          <div class="journey-cue"><span class="scroll-stem" aria-hidden="true">↓</span><span id="scroll-instruction">Scroll to assemble</span></div>
+          <nav class="chapter-nav" aria-label="Assembly chapters">
+            <button data-go="0" aria-label="Chapter 1: Compute" aria-current="step"><span class="nav-track"></span><span class="nav-label">Compute</span><span class="nav-number" aria-hidden="true">01</span></button>
+            <button data-go="1" aria-label="Chapter 2: Storage"><span class="nav-track"></span><span class="nav-label">Storage</span><span class="nav-number" aria-hidden="true">02</span></button>
+            <button data-go="2" aria-label="Chapter 3: Microphone"><span class="nav-track"></span><span class="nav-label">Listen</span><span class="nav-number" aria-hidden="true">03</span></button>
+            <button data-go="3" aria-label="Chapter 4: Speaker"><span class="nav-track"></span><span class="nav-label">Speak</span><span class="nav-number" aria-hidden="true">04</span></button>
+            <button data-go="4" aria-label="Chapter 5: Button"><span class="nav-track"></span><span class="nav-label">Control</span><span class="nav-number" aria-hidden="true">05</span></button>
+            <button data-go="5" aria-label="Chapter 6: Power"><span class="nav-track"></span><span class="nav-label">Power</span><span class="nav-number" aria-hidden="true">06</span></button>
+            <button data-go="6" aria-label="Chapter 7: Complete assembly"><span class="nav-track"></span><span class="nav-label">Together</span><span class="nav-number" aria-hidden="true">07</span></button>
+          </nav>
+          <p class="chapter-count"><span id="chapter-number">01</span><span class="count-divider">/</span>07</p>
+        </footer>
+      </div>
+    </section>
+
+
+    <section class="inside-intro" aria-labelledby="inside-heading">
+      <p class="eyebrow">Beyond the hardware</p>
+      <h2 id="inside-heading">A question goes in.<br>A <em>voice comes back.</em></h2>
+      <p>Inside the device, each part has a specific job. A speech model hears the words. A language model forms an answer. A speech synthesizer gives it a voice.</p>
+      <a class="text-link" href="#inside">Follow one turn <span aria-hidden="true">↓</span></a>
+    </section>
+    <section class="inside-story" id="inside" aria-label="Interactive local voice architecture">
+      <div class="inside-pin">
+        <div class="inside-top"><a href="#assembly">Local Voice<span>.</span></a><span>Inside the device</span><a href="#progress">Current progress ↗</a></div>
+        <div class="inside-layout">
+          <div class="inside-copy">
+            <p class="eyebrow" id="flow-kicker">01 / Capture</p>
+            <h2 id="flow-title">Your voice.<br> <em>Your cue.</em></h2>
+            <p id="flow-description">The AtomS3-Lite sends a button press over USB. The Python controller starts the microphone; a second press ends the recording. Listening stops automatically at 30 seconds.</p>
+            <div class="flow-spec" id="flow-spec">ALSA · mono 16 kHz audio · temporary WAV</div>
+            <div class="example"><span class="micro-label">Illustrative turn · not live inference</span><p id="flow-example">“What is the capital of France?”</p><span id="flow-handoff">Sound → recorded audio</span></div>
+          </div>
+          <div class="system-map" aria-label="Signal path on the Jetson">
+            <div class="controller"><span class="status-dot" id="state-light"></span><div><span class="micro-label">AtomS3-Lite → Python controller</span><strong id="controller-state">Recording</strong></div><span class="control-note">Start · finish · cancel</span></div>
+            <div class="device-boundary">
+              <div class="boundary-label"><span>JETSON ORIN NANO SUPER</span><span>8 GB shared memory</span></div>
+              <div class="signal-path">
+                <button class="signal-node is-lit" data-flow="0" aria-current="step"><span class="node-number">01</span><img src="assets/microphone.svg" alt=""/><span class="node-text"><strong>Capture</strong><small>USB microphone · ALSA</small></span><span class="node-port">Audio</span></button>
+                <div class="signal-line" aria-hidden="true"><span></span></div>
+                <button class="signal-node" data-flow="1"><span class="node-number">02</span><span class="model-symbol" aria-hidden="true">∿</span><span class="node-text"><strong>Whisper tiny.en</strong><small>whisper.cpp · F16 · CUDA</small></span><span class="node-port">Text</span></button>
+                <div class="signal-line" aria-hidden="true"><span></span></div>
+                <button class="signal-node" data-flow="2"><span class="node-number">03</span><span class="model-symbol" aria-hidden="true">✳</span><span class="node-text"><strong>Qwen2.5 1.5B</strong><small>Instruct · Q4_K_M · llama.cpp</small></span><span class="node-port">Answer</span></button>
+                <div class="signal-line" aria-hidden="true"><span></span></div>
+                <button class="signal-node" data-flow="3"><span class="node-number">04</span><span class="model-symbol" aria-hidden="true">≋</span><span class="node-text"><strong>eSpeak NG</strong><small>Local synthesis · CPU · en-us</small></span><span class="node-port">Speech</span></button>
+                <div class="signal-line" aria-hidden="true"><span></span></div>
+                <button class="signal-node" data-flow="4"><span class="node-number">05</span><img src="assets/speaker.svg" alt=""/><span class="node-text"><strong>Playback</strong><small>USB speaker · ALSA</small></span><span class="node-port">Sound</span></button>
+              </div>
+              <div class="boundary-foot"><span>Local processing after model setup</span><span>One question at a time</span></div>
+            </div>
+            <p class="map-caption">The microphone, speaker, and button connect over USB. Recognition, answering, and synthesis run on the Jetson.</p>
+          </div>
+        </div>
+        <div class="inside-bottom"><span>Scroll to follow the signal</span><nav aria-label="Voice pipeline steps"><button data-step="0" aria-current="step">Capture</button><button data-step="1">Transcribe</button><button data-step="2">Answer</button><button data-step="3">Synthesize</button><button data-step="4">Speak</button></nav><span id="flow-count">01 / 05</span></div>
+      </div>
+    </section>
+    <section id="underneath" class="underneath section-wrap" aria-labelledby="underneath-title">
+      <div class="section-heading"><p class="eyebrow">How the pieces cooperate</p><h2 id="underneath-title">One controller.<br><em>A deliberate sequence.</em></h2></div>
+      <div class="detail-grid">
+        <article><span class="micro-label">Control</span><h3>The button runs the turn.</h3><p>The Python controller coordinates recording, transcription, generation, synthesis, and playback. It sends state updates back to the button’s LED. A press during processing or playback cancels the active turn.</p></article>
+        <article><span class="micro-label">Compute</span><h3>Two models. Different jobs.</h3><p>Whisper tiny.en converts audio to text. Qwen2.5 1.5B Instruct uses that transcript and a fixed system prompt to produce a short answer. The CUDA profile runs recognition and all 29 answer-model layers on the GPU. eSpeak synthesis stays on CPU.</p></article>
+        <article><span class="micro-label">Boundaries</span><h3>A fresh start, each time.</h3><p>The current device handles English, one question at a time. There is no conversation history, web search, document retrieval, or cloud fallback. Temporary audio is cleaned up on normal completion, cancellation, and ordinary errors.</p></article>
+      </div>
+      <details class="technical"><summary>Read the runtime and privacy details <span>+</span></summary><div><p>The answer context is 2,048 tokens, with a default 128-token response cap. A response that exhausts its allowance is discarded rather than spoken partially. Runtime commits, model revisions, and SHA-256 hashes are pinned in the <a href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/software/jetson/runtime-lock.json">runtime lock</a>.</p><p>Initial setup downloads software and weights. The deployed service’s process network namespace contains only loopback; this is a boundary around the service, not a claim that the entire board has no network. Temporary audio uses RAM-backed storage. Abrupt process kills and operating-system behavior have separate retention limits; no forensic-erasure guarantee is made.</p></div></details>
+    </section>
+    <section class="platforms section-wrap" aria-labelledby="platforms-title">
+      <div class="section-heading"><p class="eyebrow">One idea, three forms</p><h2 id="platforms-title">Local on the desk.<br>Local <em>in your hand.</em></h2><p>The Apple apps share a Swift core and native interface. The Jetson follows the same single-question idea with its own Linux controller and open models.</p></div>
+      <div class="platform-grid">
+        <article><span class="micro-label">macOS · 0.2.0 / build 4</span><h3>Local Voice</h3><p>Voice input, editable transcript, local text answers, and manual read-aloud. Basic use confirmed on the development Mac.</p><div class="platform-stack">Apple Speech → on-device<br>SystemLanguageModel → installed voice</div></article>
+        <article><span class="micro-label">iPhone · 0.3.0 / build 5</span><h3>Local Voice Lab</h3><p>Native beta delivered through TestFlight, with basic use reported on an iPhone. Device-specific feature and offline checks remain open.</p><div class="platform-stack">Shared Swift core and SwiftUI<br>Manual read-aloud · Apple-managed models</div></article>
+        <article><span class="micro-label">Jetson · physical prototype</span><h3>A standalone voice</h3><p>Physical button, USB audio, mains power, and automatic spoken answers. CPU standalone use confirmed; CUDA integration checked.</p><div class="platform-stack">Whisper → Qwen → eSpeak NG<br>Python controller · Linux / CUDA</div></article>
+      </div>
+      <p class="platform-note">Apple’s system models do not transfer to Jetson. Model selection and evidence remain specific to each platform; a working beta is not a cross-platform quality comparison.</p>
+    </section>
+    <section class="progress-section section-wrap" id="progress" aria-labelledby="progress-title">
+      <div class="section-heading"><p class="eyebrow">Build log · November 15, 2026</p><h2 id="progress-title">Built. Running.<br><em>Still learning.</em></h2><p>The physical device has moved beyond parts on a list. Here is what the current evidence establishes—and what is still being tested.</p></div>
+      <div class="progress-grid"><article><span class="micro-label">Observed on hardware</span><h3>The standalone loop works.</h3><p>Button-to-spoken-answer operation passed basic CPU checks with the laptop disconnected. The headless service and automatic startup after a CPU-profile reboot were checked.</p><p>GPU transcription and all answer-model layers passed integration checks. The service is now configured for CUDA and reports ready. A physical-button GPU listening check and CUDA reboot test remain pending.</p></article>
+      <article class="timing-card"><span class="micro-label">Same Jetson · warm synthetic voice case</span><div class="timing-values"><div><strong>8.50<span>s</span></strong><small>CPU</small></div><span aria-hidden="true">→</span><div><strong>1.21<span>s</span></strong><small>CUDA</small></div></div><p>Mean processing time, two trials per profile. Recording and speaker playback excluded. This small development check does not establish everyday response latency, answer quality, or sustained reliability.</p><a class="text-link" href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/results/2026-11-15-jetson-cuda-check.md">Read the method &amp; results ↗</a></article></div>
+      <div class="next-note"><span class="micro-label">What comes next</span><p>Representative spoken questions. Answer usefulness. Voice naturalness. Long-session reliability and thermal behavior. A screen, battery, and portable enclosure remain deferred.</p></div>
+    </section>
+
+    <section class="afterword" id="about" aria-labelledby="afterword-title">
+      <div class="afterword-heading"><p class="eyebrow">A work in progress</p><h2 id="afterword-title">From an idea<br>to something <em>you can hold.</em></h2></div>
+      <div class="afterword-copy">
+        <p>Local Voice is a local speech-and-answer project from Long Tail Inference Lab. The hardware story above preserves the enclosure concept while the working prototype develops on an open, mains-powered board.</p>
+        <p>The first build uses a Jetson Orin Nano Super, a USB microphone and speaker, a physical button, and mains power. The standalone button-to-spoken-answer loop works with the laptop disconnected. GPU transcription and answering have passed basic checks.</p>
+        <p class="study-note">The illustrations simplify the components. The final enclosure and cable routing are conceptual; a screen, battery, and portable enclosure are deferred. The first-year ceiling is $1,000, including required new hardware, software, distribution fees, tax, and shipping. Scored quality, sustained reliability, and cross-platform evaluation remain open.</p>
+        <a class="text-link" href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md">Follow the hardware build <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+    <footer class="colophon"><span>Local Voice · Long Tail Inference Lab</span><button id="replay">Back to the first piece <span aria-hidden="true">↑</span></button></footer>
+  </main>
+  <noscript><style>.inside-story{height:auto!important}.inside-pin{position:relative!important;height:auto!important}.inside-bottom{display:none!important}.assembly-story{height:auto}.pin{position:relative;height:auto;overflow:visible}.chapter{position:relative;visibility:visible;opacity:1;transform:none}.chapter-nav,.journey-cue{display:none}</style><p class="noscript-note">Turn on JavaScript to explore the animated assembly. The build notes above remain available.</p></noscript>
+</body>
+</html>
