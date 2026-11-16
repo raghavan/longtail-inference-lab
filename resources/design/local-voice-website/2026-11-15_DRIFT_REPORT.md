@@ -58,3 +58,7 @@ No drift detected. The requested compact model/latency table replaces price, pre
 ## video-demo.md — metric copy cleanup
 
 No drift detected. Removed the standalone approximate-timings/streaming sentence per owner request and its unused styles. The comparison source note and timing labels remain.
+
+## README.md — platform overview removal
+
+No drift detected. Removed the full three-form overview and its dedicated CSS per owner request. The technical explanation now precedes the build log directly. Production promotion remains pending visual approval.

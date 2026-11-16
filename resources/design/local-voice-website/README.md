@@ -8,7 +8,7 @@ The preview preserves the existing seven-stage scroll-driven hardware assembly a
 
 Serve `mockup/` using a local static HTTP server. No dependencies or build are required. The files are outside the public website deployment directory. Owner review is complete; the approved version is copied into `areas/public_website/device/`.
 
-- `mockup/index.html`: hardware narrative, model journey, platform status, and evidence boundaries.
+- `mockup/index.html`: hardware narrative, model journey, Jetson build status, and evidence boundaries.
 - `mockup/inside.css` and `mockup/inside.js`: illustration layout, scroll sequence, and chapter navigation.
 - `mockup/assets/voice-models.png`: original generated retro editorial illustration. A person speaks to the prototype; sound features, learned model layers, tokens, and neural speech generation are drawn above one Jetson circuit-board cutaway.
 - `mockup/styles.css`, `assembly.js`, `choreography.mjs`, and the original SVG assets preserve the hardware story.
@@ -50,3 +50,7 @@ The approved files are promoted into the production device page. Concurrent devi
 ## Recorded demo addition — review pending
 
 The mock-up now ends with a native video player and left-hand timing statistics for the selected real recording. On phones the video precedes the statistics. The [demo design and evidence](video-demo.md) defines the 1.6-second approximate response delay, approximately 6.5-second reply, local model stack, and compact cloud API latency context table with proportional bars; the video timings are separate from the instrumented development trials above. The original background, interaction and stereo audio are retained. The 1080p H.264/SDR derivative includes a poster and optional English captions. No new production changes or source push are authorized until this addition receives owner approval.
+
+## Page focus revision
+
+The owner removed the entire “One idea, three forms” section, including macOS/iPhone/Jetson cards and the platform caveat. The local preview now proceeds directly from the model explanation to the Jetson build log. Removed section-specific styles; shared detail and progress layouts are retained. This revision is included in the pending local review, not yet promoted to production.
