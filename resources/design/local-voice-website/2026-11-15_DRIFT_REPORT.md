@@ -42,3 +42,7 @@ No drift detected. Replaced the traveling signal dot with stage-specific, two-cy
 ## Production promotion — November 15, 2026
 
 Owner authorized deployment after local visual review. Reconciled the approved mock-up with the newer resident-worker/phrase-streaming implementation and live acceptance record. Removed obsolete complete-answer-before-speech and pending-listening statements. The model journey explains overlapping jobs as separate illustrative stages. Updated both the mock-up and production copy; preserved the approved artwork, simple controls, and active-widget motion.
+
+## video-demo.md — recorded demo addition
+
+No drift detected against the scoped local-preview requirement. The new section is last before the footer, uses native controls, preserves the selected original take, and separates video-derived approximate timings from other runs. The production page intentionally lacks the addition while owner visual review is pending; this is the requested release boundary. No Goldfish review claimed.

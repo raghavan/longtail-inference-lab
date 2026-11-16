@@ -1,6 +1,6 @@
 # Local Voice website preview
 
-Status: approved for production promotion on November 15, 2026.
+Status: the base design was approved and deployed on November 15, 2026. The recorded-demo addition is implemented locally and awaits owner visual approval before promotion.
 
 The preview preserves the existing seven-stage scroll-driven hardware assembly and adds a retro illustrated account of the real software pipeline: Whisper tiny.en → Gemma 4 E2B → Piper neural speech. It removes the numbered hardware-study masthead. The owner requested local visual review before production.
 
@@ -46,3 +46,7 @@ Scoped presentation change over the existing architecture and website contract. 
 JavaScript syntax, whitespace, and repository safety checks passed. Desktop (1280 × 800) and phone (375 × 667) layouts were checked after removing the toolbar; stage selection and responsive panning still work, with no page overflow or captured console warnings/errors. The widget-motion revision was checked at both sizes: each of the five stages selects only its corresponding widget animation, with no signal-dot element remaining. No select or input controls remain in the illustration. The temporary viewport override was reset. Reduced-motion handling remains in source; OS-level emulation is not claimed.
 
 The approved files are promoted into the production device page. Concurrent device work remains separate. Deployment status is tracked in the task knowledge record.
+
+## Recorded demo addition — review pending
+
+The mock-up now ends with a native video player and left-hand timing statistics for the selected real recording. On phones the video precedes the statistics. The [demo design and evidence](video-demo.md) defines the 1.6-second approximate response delay, approximately 6.5-second reply, and 17.9-second uncut take; these are separate from the instrumented development trials above. The original background, interaction and stereo audio are retained. The 1080p H.264/SDR derivative includes a poster and optional English captions. No new production changes or source push are authorized until this addition receives owner approval.
