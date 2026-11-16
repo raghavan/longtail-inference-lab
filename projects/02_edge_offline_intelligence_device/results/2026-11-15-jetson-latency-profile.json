@@ -1,0 +1,82 @@
+{
+  "live-stage-profile": {
+    "scope": "Live button-turn state intervals; no audio or utterances retained",
+    "turns": [
+      {
+        "turn": 1,
+        "recording_seconds": 6.345,
+        "capture_finalization_seconds": 0.045,
+        "recognition_seconds": 3.619,
+        "answer_seconds_including_first_load": 30.572,
+        "synthesis_seconds": 4.963,
+        "playback_seconds": 2.205,
+        "finish_to_playback_start_seconds": 39.198,
+        "finish_to_playback_end_seconds": 41.402
+      },
+      {
+        "turn": 2,
+        "recording_seconds": 2.243,
+        "capture_finalization_seconds": 0.048,
+        "recognition_seconds": 4.248,
+        "answer_seconds_including_first_load": 0.742,
+        "synthesis_seconds": 3.618,
+        "playback_seconds": 2.503,
+        "finish_to_playback_start_seconds": 8.657,
+        "finish_to_playback_end_seconds": 11.16
+      }
+    ]
+  },
+  "piper-component-profile": {
+    "scope": "Authored Piper component profile, same deployed model, CPU defaults",
+    "import_seconds": 0.256,
+    "model_load_seconds": 2.679,
+    "syntheses": [
+      {
+        "turn": 1,
+        "seconds": 0.267,
+        "audio_seconds": 2.101
+      },
+      {
+        "turn": 2,
+        "seconds": 0.232,
+        "audio_seconds": 2.067
+      }
+    ]
+  },
+  "whisper-component-profile": {
+    "scope": "Authored Whisper CLI component profile with deployed Gemma resident",
+    "runs": [
+      {
+        "files_in_one_process": 1,
+        "wall_seconds": 1.205,
+        "runtime_timings": [
+          "whisper_print_timings:     load time =   407.38 ms",
+          "whisper_print_timings:     fallbacks =   0 p /   0 h",
+          "whisper_print_timings:      mel time =     9.63 ms",
+          "whisper_print_timings:   sample time =    44.89 ms /    40 runs (     1.12 ms per run)",
+          "whisper_print_timings:   encode time =   243.27 ms /     1 runs (   243.27 ms per run)",
+          "whisper_print_timings:   decode time =     0.00 ms /     1 runs (     0.00 ms per run)",
+          "whisper_print_timings:   batchd time =    82.94 ms /    37 runs (     2.24 ms per run)",
+          "whisper_print_timings:   prompt time =     0.00 ms /     1 runs (     0.00 ms per run)",
+          "whisper_print_timings:    total time =   880.27 ms"
+        ]
+      },
+      {
+        "files_in_one_process": 2,
+        "wall_seconds": 1.266,
+        "runtime_timings": [
+          "whisper_print_timings:     load time =   266.42 ms",
+          "whisper_print_timings:     fallbacks =   0 p /   0 h",
+          "whisper_print_timings:      mel time =    17.82 ms",
+          "whisper_print_timings:   sample time =    87.11 ms /    80 runs (     1.09 ms per run)",
+          "whisper_print_timings:   encode time =   286.08 ms /     2 runs (   143.04 ms per run)",
+          "whisper_print_timings:   decode time =     0.00 ms /     1 runs (     0.00 ms per run)",
+          "whisper_print_timings:   batchd time =   116.46 ms /    74 runs (     1.57 ms per run)",
+          "whisper_print_timings:   prompt time =     0.00 ms /     1 runs (     0.00 ms per run)",
+          "whisper_print_timings:    total time =   846.24 ms"
+        ]
+      }
+    ]
+  },
+  "limits": "Live state intervals contain no utterances or audio. Playback request is a software timestamp, not acoustic onset. Two live turns plus unmatched authored component probes; no percentile or promised optimization gain."
+}

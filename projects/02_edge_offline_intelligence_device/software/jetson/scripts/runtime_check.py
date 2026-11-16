@@ -15,10 +15,14 @@ import wave
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path)
+    p.add_argument("--root", type=Path, default=Path.home() / ".local/share/longtail-voice")
+    p.add_argument("--backend", choices=["cpu", "cuda"], default="cpu")
     args = p.parse_args()
     app = Path(__file__).resolve().parents[1]
-    report = {"scope": "Linux CPU actual CLI failure handling; no physical device"}
-    base = [sys.executable, "-m", "local_voice"]
+    report = {"scope": "Linux actual CLI failure handling; no microphone capture",
+              "backend": args.backend}
+    base = [sys.executable, "-m", "local_voice", "--root",
+            str(args.root.expanduser().resolve()), "--backend", args.backend]
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         for name, command, expected in [
@@ -47,7 +51,7 @@ def main():
                 cwd=app,
                 text=True,
                 capture_output=True,
-                timeout=30,
+                timeout=150,
             )
             assert proc.returncode == 1, name
             assert expected in proc.stderr, name
@@ -102,7 +106,15 @@ def main():
         deadline = time.monotonic() + 5
         while time.monotonic() < deadline:
             path = Path("/proc") / str(proc.pid) / "task" / str(proc.pid) / "children"
-            children = path.read_text().split() if path.exists() else []
+            if path.exists():
+                children = path.read_text().split()
+            else:
+                # Some Jetson kernels omit /proc/.../children.
+                listing = subprocess.run(
+                    ["ps", "-o", "pid=", "--ppid", str(proc.pid)],
+                    capture_output=True, text=True, check=False,
+                )
+                children = listing.stdout.split()
             if children:
                 break
             if proc.poll() is not None:

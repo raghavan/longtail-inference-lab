@@ -2,6 +2,10 @@
 
 **A same-device Jetson CPU/CUDA development comparison is published; no scored quality or cross-platform comparison is published.**
 
+The current [Gemma 4 E2B/Piper upgrade](2026-11-15-jetson-gemma4-piper.md) records the new model/voice, 42 passing regressions, three authored final turns, failures encountered, cancellation checks, and actual deployment state. Its timings do not inherit the preceding configuration's speedup.
+
+The [current latency profile](2026-11-15-jetson-latency-profile.md) separates two live button turns into stages and uses authored component probes to prioritize persistent speech workers. These optimizations are proposed, not deployed. No live utterances or audio are included.
+
 The [November 15 physical CPU bring-up](2026-11-15-jetson-cpu-bringup.md) records standalone button/service/reboot acceptance. The [same-device CUDA check](2026-11-15-jetson-cuda-check.md) records actual GPU execution and twelve authored CPU/CUDA development turns. Its two trials per case/profile are not a representative latency distribution or quality evaluation.
 
 The [September 15 Linux ARM64 VM development record](2026-09-15-linux-vm-development.md) documents implementation checks for the Jetson-oriented voice application. Its CPU timing, model smoke checks, service tests, and compiled button firmware do not establish physical Jetson behavior or comparative model quality.

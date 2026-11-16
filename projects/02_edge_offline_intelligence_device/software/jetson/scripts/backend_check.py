@@ -22,9 +22,10 @@ from local_voice.core import LocalBackend, Settings, SYSTEM_PROMPT, readiness, r
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--root", type=Path, default=Path.home() / ".local/share/longtail-voice")
     args = parser.parse_args()
     app = Path(__file__).resolve().parents[1]
-    root = Path.home() / ".local/share/longtail-voice"
+    root = args.root.expanduser().resolve()
     report = {
         "scope": "Physical Jetson same-device development comparison; authored inputs only",
         "started_at_utc": datetime.now(timezone.utc).isoformat(),

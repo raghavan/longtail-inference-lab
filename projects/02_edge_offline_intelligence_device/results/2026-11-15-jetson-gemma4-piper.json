@@ -1,0 +1,131 @@
+{
+  "scope": "Physical Jetson single-profile development check; authored inputs only",
+  "started_at_utc": "2026-11-16T00:12:58.349908+00:00",
+  "architecture": "aarch64",
+  "network_isolated": false,
+  "kernel": "5.15.148-tegra",
+  "python": "3.10.12",
+  "runtime_lock": {
+    "llama_cpp": {
+      "repository": "https://github.com/ggml-org/llama.cpp.git",
+      "commit": "930e2fa5995789efbf249a8bf61325bb626e417b",
+      "license": "MIT"
+    },
+    "whisper_cpp": {
+      "repository": "https://github.com/ggml-org/whisper.cpp.git",
+      "commit": "da54572229bcf64ba367d96c7ef15770376c4280",
+      "license": "MIT"
+    },
+    "answer_model": {
+      "repository": "unsloth/gemma-4-E2B-it-GGUF",
+      "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+      "file": "gemma-4-E2B-it-Q4_K_M.gguf",
+      "sha256": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8",
+      "bytes": 3106738272,
+      "quantization": "Q4_K_M",
+      "license": "Apache-2.0",
+      "base_model": "google/gemma-4-E2B-it"
+    },
+    "speech_model": {
+      "repository": "ggerganov/whisper.cpp",
+      "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+      "file": "ggml-tiny.en.bin",
+      "sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+      "bytes": 77704715,
+      "quantization": "F16",
+      "license": "MIT"
+    },
+    "speech_output": {
+      "runtime": "piper-tts",
+      "version": "1.8.0",
+      "voice": "en_US-ljspeech-medium",
+      "sample_rate": 22050,
+      "execution": "CPU subprocess; model loaded per turn",
+      "license": "GPL-3.0-or-later",
+      "selection": "Local neural English voice; physical listening acceptance required"
+    },
+    "voice_model": {
+      "repository": "rhasspy/piper-voices",
+      "revision": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+      "file": "en_US-ljspeech-medium.onnx",
+      "repository_path": "en/en_US/ljspeech/medium/en_US-ljspeech-medium.onnx",
+      "sha256": "6f52a751e2349abe7a76735eb09dc1875298c77ea2342ffd2fef79ff81b87f22",
+      "bytes": 63531379,
+      "dataset_license": "Public domain (LJ Speech; see voice model card)"
+    },
+    "voice_config": {
+      "repository": "rhasspy/piper-voices",
+      "revision": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+      "file": "en_US-ljspeech-medium.onnx.json",
+      "repository_path": "en/en_US/ljspeech/medium/en_US-ljspeech-medium.onnx.json",
+      "sha256": "141d612cc0a95ed7efc1ca936b845c2364967f2e9217c5dbfcf69fc4d6c65860",
+      "bytes": 4972,
+      "dataset_license": "Public domain (LJ Speech; see voice model card)"
+    }
+  },
+  "system_prompt_sha256": "ddd95c260821c1d0fd0e59f736423fa1e21a39c5fcdc99b09c22d44704720597",
+  "settings": {
+    "threads": 4,
+    "context": 2048,
+    "max_tokens": 128,
+    "temperature": 0,
+    "seed": 42,
+    "history": "none",
+    "retrieval": "none",
+    "thinking": false
+  },
+  "order": [
+    "cuda"
+  ],
+  "limits": "One session with three authored turns; cold means new server, not cold OS file cache. Times exclude microphone capture and speaker playback. Synthesis remains on CPU. No quality or percentile claim.",
+  "trials": [
+    {
+      "session": 0,
+      "backend": "cuda",
+      "server": "cold",
+      "mode": "text",
+      "transcript": "Name two things to pack for a short walk.",
+      "answer": "Pack water and a light jacket. Bring comfortable shoes for your feet.",
+      "seconds": {
+        "answer": 21.394,
+        "synthesis": 4.224
+      }
+    },
+    {
+      "session": 0,
+      "backend": "cuda",
+      "server": "warm",
+      "mode": "text",
+      "transcript": "In one short sentence, why do plants need sunlight?",
+      "answer": "Plants need sunlight for photosynthesis to create food.",
+      "seconds": {
+        "answer": 0.744,
+        "synthesis": 3.559
+      }
+    },
+    {
+      "session": 0,
+      "backend": "cuda",
+      "server": "warm",
+      "mode": "synthetic_audio",
+      "transcript": "What is the capital of France?",
+      "answer": "The capital of France is Paris.",
+      "seconds": {
+        "transcription": 3.346,
+        "answer": 0.687,
+        "synthesis": 3.379
+      }
+    }
+  ],
+  "fixture": {
+    "text": "What is the capital of France?",
+    "generator": "espeak-ng",
+    "voice": "en-us",
+    "words_per_minute": 145,
+    "format": "mono 16 kHz signed 16-bit PCM WAV",
+    "seconds": 2.219875,
+    "sha256": "599e4abdf24104442a85cdedbbbcb9dbb65800068735cafe7bdd33e82928f2bd"
+  },
+  "status": "passed",
+  "synthetic_fixtures_removed": true
+}

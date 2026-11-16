@@ -1,11 +1,11 @@
 # Local Voice for Linux and Jetson development
 
-**Version:** 0.1.0 development slice. **Status:** CPU integration tested in an Ubuntu ARM64 VM and on a physical Orin Nano Super. The [physical bring-up record](../../results/2026-11-15-jetson-cpu-bringup.md) includes owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn; button/service/reboot and laptop-disconnected basic operation also passed. The [CUDA record](../../results/2026-11-15-jetson-cuda-check.md) adds GPU execution and limited paired timings; extended reliability and voice naturalness remain unqualified. See the [intake](../../development/jetson_linux_intake.md) and [Linux validation record](../../results/2026-09-15-linux-vm-development.md).
+**Status:** The physical Jetson profile uses Gemma 4 E2B Q4_K_M with CUDA recognition/answering and a local Piper neural voice. The [upgrade record](../../results/2026-11-15-jetson-gemma4-piper.md) contains the exact configuration, 42 regressions, real pipeline/failure checks, deployment state, timing trade-offs, and listening limits. The earlier [CPU](../../results/2026-11-15-jetson-cpu-bringup.md) and [CUDA development](../../results/2026-11-15-jetson-cuda-check.md) records describe their dated configurations; their latency figures do not transfer to this model/voice. See the [upgrade contract](../../development/jetson_gemma4_voice_upgrade.md).
 
 An offline, single-turn English voice application:
 
 ```text
-USB button or keyboard → ALSA microphone → whisper.cpp → llama.cpp → eSpeak NG → ALSA speaker
+USB button or keyboard → ALSA microphone → whisper.cpp → llama.cpp → Piper → ALSA speaker
                               ↓                ↓             ↓
                          transient WAV    local models   transient WAV
 ```
@@ -44,20 +44,25 @@ This repository supplies application source and installation tools. It is not a 
 | Component | Development choice | Boundary |
 | --- | --- | --- |
 | Speech recognition | Whisper tiny.en, F16, whisper.cpp | Compact English baseline; human speech/noise accuracy not scored |
-| Answer model | Qwen2.5 1.5B Instruct, Q4_K_M, llama.cpp | Initial 1–3B-band candidate; general usefulness not evaluated |
-| Speech output | eSpeak NG, en-us, 165 words/minute | Functional, robotic voice; not the final natural-speech choice |
-| Controller | Python 3.10+, standard library | One active operation; no Python inference wheels needed |
+| Answer model | Gemma 4 E2B instruction model, Unsloth Q4_K_M GGUF, llama.cpp | Text answering with thinking disabled; usefulness not scored |
+| Speech output | Piper 1.8.0, en_US-ljspeech-medium, CPU ONNX Runtime | Neural English voice; model loads per turn, adding synthesis latency |
+| Controller | Python standard library; separate Python 3.10 Piper environment | One active operation; pinned ARM64 voice wheels required |
 | Audio | ALSA `arecord` and `aplay` | Actual device selection and permissions need on-board qualification |
 
-Exact commits, model revisions, hashes, and licenses are in `runtime-lock.json`. Models and source builds live outside the repository by default. llama.cpp and whisper.cpp are MIT licensed; Qwen2.5 1.5B is Apache-2.0; eSpeak NG is GPL-3.0-or-later. Their upstream license requirements still apply if a packaged product is later distributed.
+Exact commits, model revisions, hashes, and licenses are in `runtime-lock.json`. Models and source builds live outside the repository by default. llama.cpp and whisper.cpp are MIT licensed; Gemma 4 is Apache-2.0; Piper is GPL-3.0-or-later. The voice card identifies a public-domain LJ Speech dataset. eSpeak remains a synthetic fixture generator, not answer synthesis. Their upstream license requirements still apply if a packaged product is later distributed.
 
-Input is at most 1,200 characters or 30 seconds of mono, 16 kHz, signed 16-bit PCM WAV. Near-zero audio is rejected before transcription; this is not a full voice activity detector. Context is 2,048 tokens. Output defaults to 128 model tokens, bounded to a maximum of 384, and 4,000 characters. A model response that exhausts its token allowance is discarded instead of speaking a partial answer. Sampling uses temperature 0 and seed 42. Each turn supplies only the fixed system prompt and the current utterance; there is no retrieval or saved conversation.
+Input is at most 1,200 characters or 30 seconds of mono, 16 kHz, signed 16-bit PCM WAV. Near-zero audio is rejected before transcription; this is not a full voice activity detector. Context is 2,048 tokens. Output defaults to 128 model tokens, bounded to a maximum of 384, and 4,000 characters. A model response that exhausts its token allowance is discarded instead of speaking a partial answer. Sampling uses temperature 0 and seed 42, with Gemma thinking disabled. Leaked model control tokens are rejected before synthesis. Each turn supplies only the fixed system prompt and the current utterance; there is no retrieval or saved conversation.
 
 Deadlines are per stage: model-server startup 120 seconds, transcription 60 seconds, answer 120 seconds, synthesis 30 seconds, and playback 120 seconds. They are protective caps, not desired response times or measured Jetson performance. A model can still give incorrect answers.
 
 The default system prompt is versioned in `local_voice/core.py`. To customize it, put a local UTF-8 prompt in a file outside the repository and use `--system-prompt-file` before `ask` or `device`; the service generator accepts the same option. Prompt files are limited to 1,200 characters. Changing the prompt creates a different evaluation condition and does not inherit the default prompt's smoke observations.
 
 ## Use the existing local VM
+
+The recorded VM snapshot predates Gemma/Piper. Source sync alone does not install
+this profile: run model setup and the neural-voice installation below before
+current-source inference checks. The current upgrade was qualified on the physical
+Jetson; the earlier VM evidence belongs to its recorded configuration.
 
 From this directory on the Mac:
 
@@ -110,6 +115,7 @@ Inside the guest:
 cd ~/voice-app
 bash scripts/install_linux_deps.sh
 python3 scripts/setup_runtime.py --backend cpu
+python3 scripts/setup_voice.py --wheel-dir /path/to/verified-voice-wheels
 python3 -m local_voice doctor --verify-hashes
 python3 -m unittest discover -s tests -v
 bash scripts/offline_check.sh
@@ -117,19 +123,41 @@ python3 scripts/runtime_check.py
 python3 scripts/service_check.py
 ```
 
-The regression runner should end with `Ran 38 tests` and `OK`. The smoke and runtime/service scripts must exit with status 0 and report `"status": "passed"`. The smoke report must list only `lo` under `network_interfaces`. A passing `doctor` checks assets/executables, not real microphone, speaker, or GPU operation. Firmware compilation is a separate command in the button section.
+The regression runner should end with `Ran 42 tests` and `OK`. The smoke and runtime/service scripts must exit with status 0 and report `"status": "passed"`. The smoke report must list only `lo` under `network_interfaces`. A passing `doctor` checks assets/executables, not real microphone, speaker, or GPU operation. Firmware compilation is a separate command in the button section.
 
 `vm.yaml` pins the Ubuntu image and checksum used for the observed run. If Ubuntu retires that snapshot URL, deliberately select and record a replacement image/digest; do not silently call it the same environment. Apt security updates can change package versions; the observed versions are recorded with results.
 
-Online setup downloads two source trees and approximately 1.2 GB of model files. It builds CPU runtimes on ARM64 and verifies the weights before installing them. Setup uses the network; application inference does not invoke the setup code. Re-running setup reuses verified model files and the pinned source/build trees.
+Online setup downloads two source trees and approximately 3.25 GB of answer, recognition, and voice model/config files. It builds CPU runtimes on ARM64 and verifies the weights before installing them. Setup uses the network; application inference does not invoke the setup code. Re-running setup reuses verified model files and the pinned source/build trees.
 
 `offline_check.sh` creates a new network namespace for the test process tree, brings up only loopback, and runs inference as the invoking non-root user. It does not disable the whole VM's network. `service_check.py` uses `sudo` to create one temporary system service, checks it, and removes it; it deliberately uses a nonexistent capture device and a pseudo terminal, so no person is recorded.
+
+## Install the neural voice dependencies
+
+The controller uses the system Python; Piper runs in a separate `tts-venv` under
+the selected runtime root. This release locks Linux ARM64/Python 3.10 wheels.
+Download them on an internet-connected setup host (the Mac can cross-download):
+
+```bash
+python3 -m pip download --only-binary=:all: \
+  --platform manylinux_2_28_aarch64 --platform manylinux2014_aarch64 \
+  --python-version 310 --implementation cp --abi cp310 --abi abi3 \
+  --require-hashes -r piper-requirements.txt --dest /path/to/verified-voice-wheels
+```
+
+Copy that wheel directory to the target, then run `scripts/setup_voice.py` there
+with `--wheel-dir` pointing at it. Pass the same `--root` used by model setup and
+the application if using a separate deployment root. The installer checks every
+required wheel and the pip bootstrap hash before execution, uses `--no-index`,
+and checks installed dependencies. `setup_runtime.py` separately downloads and
+verifies the voice ONNX/config alongside the answer and transcription models.
+Inference never calls either installer. English phonemization assets are included
+in Piper's wheel; no cloud voice endpoint is used.
 
 ## Deploy to the actual Jetson
 
 **Prerequisite:** complete board/firmware/storage setup using the official installation instructions for the chosen JetPack release. This application does not flash the board or prepare the SD card. The observed board runs Ubuntu 22.04.5, L4T R36.4.4, and CUDA 12.6. Record the actual installed release before building on another board.
 
-For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://docs.nvidia.com/jetson/jetpack/6.2.1/install-setup/index.html), including its firmware check before a JetPack 6.x SD-card boot. Its SDK Manager route requires a supported Ubuntu x64 host; this ARM64 application-test VM is not that flashing host. Resolve the board's installation method first, then use the steps below to install the application onto its running Linux system.
+For a new board, follow [NVIDIA's JetPack 6.2.1 installation guide](https://docs.nvidia.com/jetson/jetpack/6.2.1/install-setup/index.html), including its firmware check before a JetPack 6.x SD-card boot. Its SDK Manager route requires a supported Ubuntu x64 host; this ARM64 application-test VM is not that flashing host. Resolve the board's installation method first, then use the steps below to install the application onto its running Linux system.
 
 1. Put the Jetson and Mac on the local network, enable SSH during device setup, and copy this directory using `scp`/`rsync`. Do not copy the Mac's Python environment or the VM's build symlinks. The placeholder destination below must be replaced with your Jetson account and address; keep real connection details out of Git.
 
@@ -139,12 +167,13 @@ For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://d
 
    Run that transfer from the parent `software/` directory, then open an SSH session using your device's account and address. The following commands run **on Jetson**.
 
-2. Build and test a CPU baseline directly on the target:
+2. Build and test a CPU baseline directly on the target (install the verified voice wheels as described above):
 
    ```bash
    cd ~/voice-app
    bash scripts/install_linux_deps.sh
    python3 scripts/setup_runtime.py --backend cpu
+python3 scripts/setup_voice.py --wheel-dir /path/to/verified-voice-wheels
    python3 -m local_voice doctor --verify-hashes --audio
    python3 -m local_voice ask --text 'Name a primary color.' --show-text
    ```
@@ -197,6 +226,15 @@ For that candidate, follow [NVIDIA's JetPack 6.2.1 installation guide](https://d
    The system service grants the `audio` and `dialout` supplementary groups, runs inference as the selected non-root user, isolates external networking, mounts a private 16 MiB tmpfs for transient audio, and terminates the whole process group when stopping. Journal entries contain states and sanitized errors, not utterances. Disable it with `sudo systemctl disable --now longtail-voice.service`. Leave boot autostart disabled until physical testing passes.
 
 Application updates are another source transfer and service restart; routine code changes do not require reflashing the SanDisk card. Preserve a known-working local copy before an update and rerun the on-device checks.
+
+### Check the selected model and voice
+
+Run `python3 scripts/profile_check.py --backend cuda --root /path/to/runtime` for
+three fixed authored pipeline turns. Add `--output` to retain an explicit report.
+Run `python3 scripts/runtime_check.py --backend cuda --root /path/to/runtime` for
+real CLI failure/cancellation checks. The latter does not record the microphone.
+The earlier CPU/CUDA result can be reproduced from its source commit `bf0f6a7`;
+current-source timings describe Gemma/Piper and must not inherit its results.
 
 ### Compare installed CPU and CUDA profiles
 

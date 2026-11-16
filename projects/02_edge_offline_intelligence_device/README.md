@@ -53,6 +53,8 @@ The project can be marked complete when the three iterations have dated, reprodu
 
 ## Current implementation state
 
+The current Jetson profile is [Gemma 4 E2B with a Piper neural voice](results/2026-11-15-jetson-gemma4-piper.md). It uses the existing GPU recognition/answer runtime, physical button, and offline system service. The new profile has 42 passing regressions and authored integration/failure checks; its voice preference, latency, and quality limits are recorded separately from prior configurations.
+
 The [Linux voice application](software/jetson/README.md) has local ARM64 VM development evidence: 38 passing regressions, real offline model/speech integration, service checks, and compiled button firmware. See the [dated record](results/2026-09-15-linux-vm-development.md). The [physical Jetson CPU bring-up](results/2026-11-15-jetson-cpu-bringup.md) subsequently passed readiness, 38 regressions, authored inference, and owner-confirmed USB speaker playback and a live microphone-to-spoken-answer turn. Physical-button operation, the headless system service, and automatic startup after reboot also passed basic checks. The [CUDA development check](results/2026-11-15-jetson-cuda-check.md) verifies GPU speech recognition, all 29 answer-model layers offloaded, and same-device CPU/CUDA timings. Extended reliability and scored quality remain open. VM and physical-device observations remain separate.
 
 Mac Local Voice 0.2.0 (build 4) extends the [specified Mac development slice](development/README.md) with [manual local speech output](development/local_speech_output.md). The owner confirmed voice input, text answers, and read-aloud. An initial microphone callback crash was repaired and covered by a background-callback regression test.

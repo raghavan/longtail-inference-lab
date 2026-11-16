@@ -24,8 +24,9 @@ MAX_AUDIO_SECONDS = 30
 MAX_INPUT_CHARS = 1200
 MAX_OUTPUT_CHARS = 4000
 SYSTEM_PROMPT = (
-    "You are a helpful offline voice assistant. Answer in English, briefly and clearly, "
-    "usually in two or three sentences. Say when you do not know. You have no internet "
+    "You are a helpful offline voice assistant. Answer in English, briefly and clearly. "
+    "Use one short sentence for simple facts and at most two short sentences otherwise. "
+    "Follow the requested length and item count. Say when you do not know. You have no internet "
     "or tools. Do not claim to perform actions. Use plain spoken text without Markdown."
 )
 
@@ -186,25 +187,26 @@ class Settings:
         return self.root / "bin" / self.backend / name
 
     def model(self, kind):
-        return (
-            self.root
-            / "models"
-            / (
-                "qwen2.5-1.5b-instruct-q4_k_m.gguf"
-                if kind == "answer"
-                else "ggml-tiny.en.bin"
-            )
-        )
+        names = {
+            "answer": "gemma-4-E2B-it-Q4_K_M.gguf",
+            "speech": "ggml-tiny.en.bin",
+            "voice": "en_US-ljspeech-medium.onnx",
+            "voice_config": "en_US-ljspeech-medium.onnx.json",
+        }
+        return self.root / "models" / names[kind]
+
+    def speech_binary(self):
+        return self.root / "tts-venv" / "bin" / "piper"
 
 
 def readiness(settings: Settings, *, verify_hashes=False, audio=False):
     checks = {}
     for name in ("llama-server", "whisper-cli"):
         checks[name] = os.access(settings.binary(name), os.X_OK)
-    for name in ("answer", "speech"):
+    for name in ("answer", "speech", "voice", "voice_config"):
         path = settings.model(name)
         checks[name + "_model"] = path.is_file() and path.stat().st_size > 0
-    checks["espeak-ng"] = shutil.which("espeak-ng") is not None
+    checks["piper"] = os.access(settings.speech_binary(), os.X_OK)
     checks["transient_audio"] = Path("/dev/shm").is_dir() and os.access(
         "/dev/shm", os.W_OK
     )
@@ -223,7 +225,10 @@ def readiness(settings: Settings, *, verify_hashes=False, audio=False):
                 ) from exc
         else:
             lock = json.loads(lock_file.read_text())
-        for kind, key in (("answer", "answer_model"), ("speech", "speech_model")):
+        for kind, key in (
+            ("answer", "answer_model"), ("speech", "speech_model"),
+            ("voice", "voice_model"), ("voice_config", "voice_config"),
+        ):
             h = hashlib.sha256()
             try:
                 with settings.model(kind).open("rb") as f:
@@ -302,6 +307,7 @@ class AnswerServer:
             "0" if s.backend == "cpu" else "99",
             "--no-webui",
             "--no-warmup",
+            "--jinja",
         ]
         if s.backend == "cuda":
             args += ["--device", "CUDA0"]
@@ -348,6 +354,7 @@ class AnswerServer:
             "seed": 42,
             "stream": False,
             "cache_prompt": False,
+            "chat_template_kwargs": {"enable_thinking": False},
         }
 
         def request():
@@ -387,6 +394,11 @@ class AnswerServer:
                     raise VoiceError(
                         "Local model returned an empty or oversized answer."
                     )
+                if any(token in content for token in (
+                    "<|channel>", "<channel|>", "<|think|>",
+                    "<|tool_call>", "<|turn>", "<turn|>",
+                )):
+                    raise VoiceError("Local model returned unsupported control output.")
                 return content.strip()
             except (KeyError, IndexError, TypeError) as exc:
                 raise VoiceError("Local model returned an invalid response.") from exc
@@ -442,8 +454,11 @@ class LocalBackend:
     def synthesize(self, text, destination, cancel):
         if not text.strip() or len(text) > MAX_OUTPUT_CHARS:
             raise VoiceError("Answer cannot be synthesized within the output bounds.")
+        if not all(self.settings.model(kind).is_file() for kind in ("voice", "voice_config")):
+            raise VoiceError("Local voice model or configuration is missing.")
         process(
-            ["espeak-ng", "-v", "en-us", "-s", "165", "-w", destination, "--stdin"],
+            [self.settings.speech_binary(), "-m", self.settings.model("voice"),
+             "-c", self.settings.model("voice_config"), "-f", destination],
             cancel,
             30,
             input_text=text,

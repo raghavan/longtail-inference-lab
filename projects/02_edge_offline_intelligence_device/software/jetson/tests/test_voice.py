@@ -443,8 +443,10 @@ class H(http.server.BaseHTTPRequestHandler):
   reason='length' if text=='truncate' else 'stop'
   if text=='history': content=str(len(b['messages']))
   if text=='system': content=b['messages'][0]['content']
+  if text=='thinking': content=json.dumps(b['chat_template_kwargs']['enable_thinking'])
+  if text=='control': content='<|channel>thought<channel|>answer'
   if text=='invalid': data={}
-  else: data={'choices':[{'message':{'content':content},'finish_reason':reason}]}
+  else: data={'choices':[{'message':{'content':content,'reasoning_content':'unspoken fixture'},'finish_reason':reason}]}
   self.send_response(200); self.end_headers(); self.wfile.write(json.dumps(data).encode())
 http.server.HTTPServer(('127.0.0.1',port),H).serve_forever()
 """
@@ -455,7 +457,7 @@ class ServerTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         root = Path(self.tmp.name)
         (root / "models").mkdir()
-        (root / "models/qwen2.5-1.5b-instruct-q4_k_m.gguf").touch()
+        Settings(root).model("answer").touch()
         directory = root / "bin/cpu"
         directory.mkdir(parents=True)
         exe = directory / "llama-server"
@@ -490,9 +492,13 @@ class ServerTests(unittest.TestCase):
             self.assertEqual(self.server.answer("history", threading.Event()), "2")
 
     def test_rejects_partial_empty_and_malformed_output(self):
-        for text in ("truncate", "empty", "invalid"):
+        for text in ("truncate", "empty", "invalid", "control"):
             with self.assertRaises(VoiceError):
                 self.server.answer(text, threading.Event())
+
+    def test_thinking_disabled_and_only_final_content_returned(self):
+        self.assertEqual(self.server.answer("thinking", threading.Event()), "false")
+        self.assertEqual(self.server.answer("hello", threading.Event()), "answer")
 
     def test_timeout_reaps_server_and_can_restart(self):
         with self.assertRaises(VoiceError):
@@ -527,6 +533,61 @@ class ServerTests(unittest.TestCase):
         with self.assertRaisesRegex(VoiceError, "missing"):
             self.server.start(threading.Event())
         self.assertIsNone(self.server.proc)
+
+
+class NeuralSpeechTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.settings = Settings(Path(self.tmp.name))
+        self.settings.model("voice").parent.mkdir()
+        for name in ("voice", "voice_config"):
+            self.settings.model(name).write_text("fixture")
+        exe = self.settings.speech_binary()
+        exe.parent.mkdir(parents=True)
+        exe.write_text("""#!/usr/bin/env python3
+import sys,wave,time
+text=sys.stdin.read()
+assert text and text not in sys.argv
+if text=='fail': sys.exit(1)
+if text=='slow': time.sleep(60)
+p=sys.argv[sys.argv.index('-f')+1]
+with wave.open(p,'wb') as w:
+ w.setparams((1,2,22050,0,'NONE','not compressed'))
+ w.writeframes(bytes([0,16])*2205)
+""")
+        exe.chmod(0o700)
+        self.backend = LocalBackend(self.settings)
+        self.output = Path(self.tmp.name) / "answer.wav"
+
+    def tearDown(self):
+        self.backend.close()
+        self.tmp.cleanup()
+
+    def test_neural_wav_and_stdin_text(self):
+        self.backend.synthesize("First sentence.\nSecond sentence.", self.output, threading.Event())
+        with wave.open(str(self.output), "rb") as wav:
+            self.assertEqual((wav.getnchannels(), wav.getsampwidth(), wav.getframerate()), (1, 2, 22050))
+            self.assertGreater(wav.getnframes(), 0)
+
+    def test_missing_voice_config_and_runtime_failure(self):
+        with self.assertRaises(VoiceError):
+            self.backend.synthesize("fail", self.output, threading.Event())
+        self.assertFalse(self.output.exists())
+        self.settings.model("voice_config").unlink()
+        with self.assertRaisesRegex(VoiceError, "missing"):
+            self.backend.synthesize("Hello", self.output, threading.Event())
+        self.assertFalse(self.output.exists())
+
+    def test_neural_synthesis_cancellation(self):
+        cancel = threading.Event()
+        timer = threading.Timer(0.2, cancel.set)
+        timer.start()
+        try:
+            with self.assertRaises(Cancelled):
+                self.backend.synthesize("slow", self.output, cancel)
+            self.assertFalse(self.output.exists())
+        finally:
+            timer.cancel()
 
 
 class CaptureTests(unittest.TestCase):

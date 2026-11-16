@@ -82,15 +82,14 @@ def main():
         link.symlink_to(build / "bin" / target)
     models = root / "models"
     models.mkdir(exist_ok=True)
-    for key in ("answer_model", "speech_model"):
+    for key in ("answer_model", "speech_model", "voice_model", "voice_config"):
         spec = lock[key]
         dest = models / spec["file"]
         if dest.exists() and sha256(dest) == spec["sha256"]:
             print("Verified", spec["file"], flush=True)
             continue
-        url = "https://huggingface.co/{repository}/resolve/{revision}/{file}".format(
-            **spec
-        )
+        url = "https://huggingface.co/{repository}/resolve/{revision}/".format(**spec)
+        url += spec.get("repository_path", spec["file"])
         part = dest.with_suffix(dest.suffix + ".part")
         print("Downloading", spec["file"], flush=True)
         try:
@@ -108,7 +107,7 @@ def main():
     (root / ("installed-" + a.backend + ".json")).write_text(
         json.dumps(installed, indent=2) + "\n"
     )
-    print("Runtime ready. No inference was performed.")
+    print("Model runtimes/assets installed. Install the locked Piper environment with setup_voice.py before doctor. No inference performed.")
 
 
 if __name__ == "__main__":
