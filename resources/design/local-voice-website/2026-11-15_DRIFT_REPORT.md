@@ -30,3 +30,7 @@ Scope: existing website presentation versus the November 15 architecture, runtim
 - The earlier Qwen/eSpeak labels no longer matched the current runtime lock. The preview now identifies Whisper tiny.en F16, Gemma 4 E2B Q4_K_M, and Piper 1.8.0 / LJ Speech medium. The current deployment record became available during the revision and reports service activation; physical voice acceptance remains pending.
 - The old timing comparison could incorrectly imply Gemma/Piper latency. It was removed from the current-stack presentation; configuration limits and a link to the current deployment record replace it.
 - The first illustrated version only supported scroll/step selection. The revision adds explicit animation/pause, keyboard scrubbing, three consistently propagated authored examples, and an optional runtime-detail view. None invokes live inference or audio recording.
+
+## Simplification after visual review
+
+- The example customization and exploration toolbar added too much UI to the illustration. Removed all toolbar controls and their code, keeping one fixed France question with scroll/chapter navigation. Model/runtime detail content remains below the illustration.

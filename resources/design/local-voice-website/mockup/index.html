@@ -144,12 +144,6 @@
       <div class="inside-pin">
         <div class="inside-top"><a href="#assembly">Local Voice<span>.</span></a><span>Three models. One local device.</span><a href="#underneath">The finer details ↗</a></div>
         <div class="journey-heading"><div><p class="eyebrow" id="flow-kicker">01 / A question, out loud</p><h2 id="flow-title">It starts with <em>you.</em></h2></div><p id="flow-description">“What is the capital of France?” You speak to Local Voice. Its microphone captures the sound of your question.</p></div>
-        <div class="journey-tools">
-          <button id="animate-turn" type="button" aria-pressed="false">▶ Animate a turn</button>
-          <label class="example-select">Try an example <select id="example-question"><option value="france">Capital of France</option><option value="plants">Why sunlight?</option><option value="walk">A short walk</option></select></label>
-          <button id="detail-lens" type="button" aria-pressed="false">Under the hood +</button>
-          <label class="scrub-label">Explore <input id="journey-scrub" type="range" min="0" max="1000" value="0" aria-label="Explore the voice journey"></label>
-        </div>
         <div class="workshop-viewport" tabindex="0" aria-label="Illustrated voice journey; scroll horizontally on small screens">
           <div class="workshop" data-scene="0">
             <div class="workshop-labels">
@@ -168,14 +162,13 @@
               <div class="spectrogram-scan" aria-hidden="true"></div>
               <div class="gemma-activation" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
               <div class="piper-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="model-annotations" aria-hidden="true"><span>Audio features<br><b>whisper.cpp · CUDA</b></span><span>Learned weights + tokens<br><b>llama.cpp · CUDA</b></span><span>Neural voice model<br><b>Piper · ONNX · CPU</b></span></div>
               <svg class="journey-route" viewBox="0 0 1200 470" aria-hidden="true"><defs><marker id="route-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs><path class="return-route" d="M1090 310V410Q1090 433 1067 433H218Q190 433 190 405V278" marker-end="url(#route-arrow)"/><circle class="signal-dot" r="5" cx="240" cy="235"/></svg>
               <span class="return-note">and back to you, through the very same device.</span>
             </div>
             <div class="device-footnote"><img src="assets/enclosure.svg" alt="The prototype enclosure from the hardware story"><span>One Jetson · 8 GB shared memory.<br><em>Software cutaway, not separate machines.</em></span></div>
           </div>
         </div>
-        <div class="journey-caption"><span class="caption-index" id="flow-count">01 / 05</span><div><span class="micro-label" id="flow-handoff">Your voice → recorded sound</span><p id="flow-detail">The device receives audio, not written words. The next job is to work out what was said.</p></div><span class="illustration-note">Authored examples · no live inference<br>Animation timing ≠ device latency</span></div>
+        <div class="journey-caption"><span class="caption-index" id="flow-count">01 / 05</span><div><span class="micro-label" id="flow-handoff">Your voice → recorded sound</span><p id="flow-detail">The device receives audio, not written words. The next job is to work out what was said.</p></div><span class="illustration-note">Illustrative example · no live inference<br>Animation timing ≠ device latency</span></div>
         <div class="inside-bottom"><span>Scroll to follow the question ↓</span><nav aria-label="Voice journey steps"><button data-step="0" aria-current="step">You speak</button><button data-step="1">Whisper hears</button><button data-step="2">Gemma answers</button><button data-step="3">Piper speaks</button><button data-step="4">Back to you</button></nav></div>
       </div>
     </section>
