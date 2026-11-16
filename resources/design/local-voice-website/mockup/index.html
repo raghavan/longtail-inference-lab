@@ -236,7 +236,7 @@
         <p>A real question. A reply from the Jetson.<br>One continuous take, with the original sound.</p>
       </header>
       <div class="demo-layout">
-        <aside class="demo-stats" aria-label="Demo timing, local models and hardware cost">
+        <aside class="demo-stats" aria-label="Demo timing, local models and latency comparison">
           <p class="micro-label">A reply, entirely on device</p>
           <dl class="demo-response-stats">
             <div><dt>To first spoken word</dt><dd><span class="demo-approx" aria-label="approximately">≈</span>1.6<span class="demo-unit">s</span></dd><dd class="demo-stat-detail">After recording ends</dd></div>
@@ -251,10 +251,18 @@
               <div><dt>Speak</dt><dd>Piper <span>LJ Speech</span></dd></div>
             </dl>
           </div>
-          <div class="demo-cost">
-            <p class="micro-label">Hardware parts total</p>
-            <p class="demo-cost-value"><span>$</span>490.29</p>
-            <p class="demo-cost-note">USD · Includes setup accessories.<br>Before tax, shipping &amp; tariffs.</p>
+          <div class="demo-comparison">
+            <p class="micro-label" id="latency-heading">Time to first speech</p>
+            <table aria-labelledby="latency-heading" aria-describedby="latency-note">
+              <thead><tr><th scope="col">Model / system</th><th scope="col">Latency</th></tr></thead>
+              <tbody>
+                <tr class="demo-local-row"><th scope="row">Local Voice <span class="demo-row-tag">this demo</span><span class="demo-latency-track" aria-hidden="true"><span style="width:64%"></span></span></th><td>≈1.60 s</td></tr>
+                <tr><th scope="row">Grok Voice 3.0<span class="demo-latency-track" aria-hidden="true"><span style="width:64%"></span></span></th><td>1.60 s</td></tr>
+                <tr><th scope="row">Gemini 3.8 Live<span class="demo-latency-track" aria-hidden="true"><span style="width:80.4%"></span></span></th><td>2.01 s</td></tr>
+                <tr><th scope="row">GPT Realtime 2.1<span class="demo-latency-track" aria-hidden="true"><span style="width:86.4%"></span></span></th><td>2.16 s</td></tr>
+              </tbody>
+            </table>
+            <p class="demo-comparison-note" id="latency-note">Local: one take, recording end → speech.<br>Cloud: <a href="https://benchmarks.cekura.ai/speech-to-speech/real-calls/gemini-live">Cekura API medians ↗</a>, speech end → reply.<br>Different tasks; not a head-to-head test.</p>
           </div>
         </aside>
         <figure class="demo-recording">

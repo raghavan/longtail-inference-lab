@@ -23,7 +23,6 @@ Only the deliberately selected technical demonstration, web derivative, poster a
 | --- | --- |
 | Approximately 1.6 seconds to first spoken word | Recording-state red light remains visible at frame 234 (7.800 s) and disappears by frame 235 (7.833 s). The first clearly audible reply starts around 9.43–9.45 s in the recording waveform. Difference approximately 1.60–1.65 s, rounded to 1.6 s. This is a video-derived recording-end indicator to acoustic-reply estimate, not isolated model processing time or instrumented button-event latency. |
 | Approximately 6.5 seconds spoken reply | First spoken output about 9.44 s; final spoken word finishes about 15.95 s. Includes the pause between the two sentences. This is the duration of the locally generated spoken output, not synthesis compute time; playback streams while the reply is generated. Boundary is approximate because room noise continues. |
-| $490.29 hardware parts total | Eight ordered hardware/setup items in the [bill of materials](../../../projects/02_edge_offline_intelligence_device/hardware/bill_of_materials.md), including setup accessories. USD, before tax, shipping and tariffs. Final checkout charges remain incompletely reconciled; this is not a settled-spending total. |
 
 No stage-by-stage ASR, LLM or speech-synthesis time is available for this specific take. The separately published live playback-request and authored-WAV timings are not substituted for this example. Current model labels follow the existing runtime record and are configuration context, not independently proven by the movie.
 
@@ -31,7 +30,13 @@ English captions were prepared locally from the selected technical demo. The que
 
 ## Visual review revision
 
-The two timing figures receive equal prominence. Recording length is omitted from the visible statistics. Below the timings, the local stack lists Whisper tiny.en, Gemma 4 E2B Q4_K_M, and Piper LJ Speech, followed by one aggregate hardware parts cost with no merchant or item breakdown. The recording and player are unchanged.
+The two timing figures receive equal prominence. Recording length is omitted from the visible statistics. Below the timings, the local stack lists Whisper tiny.en, Gemma 4 E2B Q4_K_M, and Piper LJ Speech, followed by a compact latency comparison table replacing the earlier hardware price. The recording and player are unchanged.
+
+## Cloud latency context
+
+At the owner's request, replace price with model/system, latency and a thin proportional bar per row. Local Voice is highlighted and marked “this demo”; cloud rows retain exact API model names. Values are Local Voice approximately 1.60 s, Grok Voice 3.0 1.60 s, Gemini 3.8 Live 2.01 s and GPT Realtime 2.1 2.16 s. Bars share a zero-based 2.5-second scale (64%, 64%, 80.4%, 86.4%); equal values have equal lengths. Semantic table headers and numeric text carry the information; decorative bars are hidden from assistive technology.
+
+Cloud source: [Cekura real-human-call benchmark](https://benchmarks.cekura.ai/speech-to-speech/real-calls/gemini-live), checked November 15, 2026, latency P50 table. These are published API medians, measured from caller speech end to reply, on different tasks. The local result is one video-derived recording-end-to-speech estimate. A visible linked note preserves both boundaries and explicitly says this is not a head-to-head test. No claim about consumer ChatGPT/Gemini app speed or cloud superiority is made. Claude is omitted because no comparable measured number was established. Values are a dated static snapshot, not live telemetry.
 
 ## Files
 
@@ -45,7 +50,9 @@ The two timing figures receive equal prominence. Recording length is omitted fro
 
 Desktop 1280 × 720 and 1280 × 900, and narrow 390 × 844 layout inspected in the local browser. Statistics sit left on desktop; video sits above statistics on narrow screens. No page horizontal overflow observed. Native playback reached 16.4 seconds with 1920 × 1080 decoded dimensions, readyState 4, no video error, and an English captions track exposed. No captured console warnings or errors. Temporary viewport override reset. Poster and fallback assets resolve locally. Full-file decode, relative-asset validation, repository safety scan and whitespace checks passed.
 
-Revision verification: desktop 1280 × 1000 and mobile 390 × 844 inspected; both timing figures, model labels and total are readable with no horizontal overflow or captured browser warnings/errors. Viewport reset and local review tab preserved.
+Revision verification: desktop 1280 × 1000 and mobile 390 × 844 inspected; both timing figures and model labels are readable with no horizontal overflow or captured browser warnings/errors. Viewport reset and local review tab preserved.
+
+Comparison revision: desktop 1280 × 1100 and mobile 390 × 844 inspected, with no horizontal overflow or browser warnings/errors. Rendered bar widths checked against the shared scale; equal local/Grok values produce equal bar lengths. Price removed; recording/player unchanged.
 
 ## Release gate
 

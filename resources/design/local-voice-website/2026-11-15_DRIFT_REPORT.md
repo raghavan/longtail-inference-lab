@@ -50,3 +50,7 @@ No drift detected against the scoped local-preview requirement. The new section 
 ## video-demo.md — timing, stack and cost revision
 
 No drift detected. Owner feedback removes recording length from the displayed statistics and emphasizes approximate first speech and spoken-output duration equally. The stack follows the current runtime lock. The single $490.29 hardware figure follows the recorded parts subtotal, explicitly includes setup accessories and excludes tax, shipping and tariffs. The 6.5-second figure describes streamed output duration, not synthesis compute time. Desktop and mobile layouts checked; production promotion remains gated on owner visual approval.
+
+## video-demo.md — compact cloud latency context
+
+No drift detected. The requested compact model/latency table replaces price, preserves an explicit comparison-boundary note and source link, and uses one proportional bar scale. Published cloud medians and the single local estimate remain distinct; no consumer-app speed claim is introduced. The local-only release boundary remains in effect.
