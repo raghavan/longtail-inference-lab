@@ -50,7 +50,7 @@ function setChapter(index) {
   figure.textContent = `FIG. ${String(index + 1).padStart(2, '0')}`;
   partName.textContent = ['Jetson Orin Nano Super', '128 GB microSD', 'Mini USB microphone', 'Tiny USB speaker', 'AtomS3-Lite', 'Mains power', 'Local Voice / Form study'][index];
   caption.textContent = stage.caption;
-  instruction.textContent = index === 6 ? 'Scroll for the build notes' : 'Scroll to assemble';
+  instruction.textContent = index === 6 ? 'Scroll to go inside' : 'Scroll to assemble';
   calloutLine.setAttribute('d', `M${stage.point.join(' ')} ${stage.elbow.join(' ')}H${stage.label[0]}`);
   calloutDot.setAttribute('cx', stage.point[0]);
   calloutDot.setAttribute('cy', stage.point[1]);
@@ -105,7 +105,7 @@ function requestRender() {
 
 function goTo(chapter) {
   const time = chapter === 6 ? 6.35 : chapter;
-  window.scrollTo({ top: storyTop + travel * time / END, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+  window.scrollTo({ top: storyTop + travel * time / END, behavior: 'instant' });
 }
 
 navigation.forEach(button => button.addEventListener('click', () => goTo(Number(button.dataset.go))));

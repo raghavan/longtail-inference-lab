@@ -13,7 +13,7 @@ The website is an ongoing responsibility rather than a bounded research project.
 1. [`index.html`](index.html) contains the laboratory homepage.
 2. [`styles.css`](styles.css) contains the shared visual system and responsive behavior.
 3. [`experiment.css`](experiment.css) contains styles for the current experiment method.
-4. [`device/`](device/README.md) contains the Local Voice hardware assembly study, published at <https://lily.md/device/>.
+4. [`device/`](device/README.md) contains the Local Voice hardware assembly and model journey, published at <https://lily.md/device/>.
 
 ## Responsibilities
 

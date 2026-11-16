@@ -38,3 +38,7 @@ Scope: existing website presentation versus the November 15 architecture, runtim
 ## README.md — widget motion revision
 
 No drift detected. Replaced the traveling signal dot with stage-specific, two-cycle widget wiggles. The original art is composed through SVG masks and clips; the board and person remain stationary. Reduced-motion preferences disable the new animations. Desktop and phone checks confirm stage mapping and no page overflow. Local preview only; owner visual review remains pending.
+
+## Production promotion — November 15, 2026
+
+Owner authorized deployment after local visual review. Reconciled the approved mock-up with the newer resident-worker/phrase-streaming implementation and live acceptance record. Removed obsolete complete-answer-before-speech and pending-listening statements. The model journey explains overlapping jobs as separate illustrative stages. Updated both the mock-up and production copy; preserved the approved artwork, simple controls, and active-widget motion.

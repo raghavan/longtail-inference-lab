@@ -1,16 +1,19 @@
-# Local Voice assembly study
+# Local Voice device website
 
-The hardware assembly page at <https://lily.md/device/>. This page follows the laboratory homepage's Newsreader and IBM Plex Mono typography, warm paper, bronze accents, and fine rules.
+The hardware and model-architecture page at <https://lily.md/device/>. This page follows the laboratory homepage's Newsreader and IBM Plex Mono typography, warm paper, bronze accents, and fine rules.
 
 The experience starts with a Jetson and introduces storage, a microphone, a speaker, a button, and power. Scrolling gathers the components into an illustrative enclosure. Scrolling backward reverses the sequence. The chapter controls jump directly to each component; reduced-motion preferences select still frames.
+
+The model journey follows one authored France question through Whisper tiny.en, Gemma 4 E2B, and Piper, then back to the prototype. Each widget briefly wiggles during its action; no traveling signal dot or customization toolbar is used. Scroll or chapter controls advance the story. Reduced motion disables wiggles. The runtime keeps models resident and streams complete phrases; the five visual chapters separate overlapping jobs for clarity. The illustration is explanatory, not a live model run or measured activation trace.
 
 ## Editing
 
 - `index.html` contains the narrative and scene structure.
-- `styles.css` contains the page layout and responsive styles.
+- `styles.css` contains the hardware layout; `inside.css` styles the model journey and reading sections.
+- `inside.js` maps scroll/chapter navigation to the fixed example and active widget wiggles.
 - `choreography.mjs` contains the chapter data and component poses in the 820 by 720 scene.
 - `assembly.js` maps native scroll position to the poses and chapter controls.
-- `assets/` contains seven self-contained, editable SVG illustrations.
+- `assets/` contains seven self-contained SVG hardware illustrations and the original generated retro model illustration. SVG masks and clips animate its individual widgets without moving the board or person.
 
 Serve the parent website directory with a static HTTP server and visit the `device/` route. No package installation or build step is required. The existing GitHub Pages workflow publishes the page when website changes reach `main`. The typography uses the same Google Fonts families as the existing site, with local serif and monospace fallbacks.
 
@@ -23,3 +26,7 @@ The speaker is drawn as a tiny USB form study at the microphone's visual size. T
 The USB card reader and setup cable are preparation accessories rather than permanent parts of the finished device, so they do not appear as separate assembly chapters. The mains power supply remains outside the illustrated enclosure; the final frame shows its lead, with the adapter outside the composition.
 
 Manufacturer references: [Jetson layout](https://docs.nvidia.com/jetson/orin-nano-devkit/user-guide/hardware_layout.html), [microphone](https://www.adafruit.com/product/3367), [speaker](https://www.adafruit.com/product/3369), and [AtomS3-Lite](https://docs.m5stack.com/en/core/AtomS3%20Lite). The SVGs are original illustrations, not manufacturer CAD.
+
+## Design approval
+
+The owner approved promotion of the locally reviewed mock-up on November 15, 2026. The [design record](../../../resources/design/local-voice-website/README.md) tracks the iterations. Production copy was reconciled with the resident-worker deployment and two confirmed live answers before promotion.

@@ -23,7 +23,7 @@ export const STAGES = [
   { caption: 'From a thought to a voice in the room.', callout: 'AN ANSWER, OUT LOUD', point: [475, 424], elbow: [565, 537], label: [750, 558] },
   { caption: 'A simple gesture. A clear intention.', callout: 'ONE DELIBERATE PRESS', point: [612, 292], elbow: [674, 207], label: [775, 191] },
   { caption: 'Separate pieces, becoming a single loop.', callout: 'POWER FROM THE WALL', point: [681, 521], elbow: [717, 602], label: [774, 625] },
-  { caption: 'A possible form. A real build still to come.', callout: 'A POSSIBLE FINAL FORM', point: [514, 334], elbow: [635, 206], label: [764, 190] },
+  { caption: 'A working voice loop. A possible enclosure.', callout: 'A POSSIBLE FINAL FORM', point: [514, 334], elbow: [635, 206], label: [764, 190] },
 ];
 
 export const PARTS = {
