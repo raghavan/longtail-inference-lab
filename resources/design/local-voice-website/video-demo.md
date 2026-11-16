@@ -30,7 +30,7 @@ English captions were prepared locally from the selected technical demo. The que
 
 ## Visual review revision
 
-The two timing figures receive equal prominence. Recording length is omitted from the visible statistics. Below the timings, the local stack lists Whisper tiny.en, Gemma 4 E2B Q4_K_M, and Piper LJ Speech, followed by a compact latency comparison table replacing the earlier hardware price. The recording and player are unchanged.
+The two timing figures receive equal prominence. Recording length is omitted from the visible statistics. Below the timings, the local stack lists Whisper tiny.en, Gemma 4 E2B Q4_K_M, and Piper LJ Speech, followed by a compact latency comparison table replacing the earlier hardware price. The standalone approximate-timings/streaming sentence beneath the large metrics is removed at owner request. Approximation marks, the recording-end label and the comparison source/boundary note remain. The recording and player are unchanged.
 
 ## Cloud latency context
 

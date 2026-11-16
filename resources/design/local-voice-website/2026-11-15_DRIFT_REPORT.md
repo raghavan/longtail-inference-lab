@@ -54,3 +54,7 @@ No drift detected. Owner feedback removes recording length from the displayed st
 ## video-demo.md — compact cloud latency context
 
 No drift detected. The requested compact model/latency table replaces price, preserves an explicit comparison-boundary note and source link, and uses one proportional bar scale. Published cloud medians and the single local estimate remain distinct; no consumer-app speed claim is introduced. The local-only release boundary remains in effect.
+
+## video-demo.md — metric copy cleanup
+
+No drift detected. Removed the standalone approximate-timings/streaming sentence per owner request and its unused styles. The comparison source note and timing labels remain.

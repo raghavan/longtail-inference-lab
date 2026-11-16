@@ -15,8 +15,7 @@
 .demo-response-stats .demo-stat-detail{order:3;font-size:14px;line-height:1.45;color:var(--muted);margin:7px 0 0;font-weight:300}
 .demo-approx{font-size:.32em;margin-right:.12em;color:var(--bronze);align-self:center;letter-spacing:0}
 .demo-unit{font-size:.36em;margin-left:.12em;color:var(--bronze);letter-spacing:0}
-.demo-measurement-note{font-size:13px;line-height:1.55;color:var(--muted);margin:22px 0 24px}
-.demo-local-stack{border-top:1px solid var(--rule);padding:21px 0 22px}
+.demo-local-stack{margin-top:24px;border-top:1px solid var(--rule);padding:21px 0 22px}
 .demo-local-stack>.micro-label{margin:0 0 13px;color:var(--bronze)}
 .demo-local-stack dl{margin:0;display:grid;gap:11px}
 .demo-local-stack dl>div{display:flex;flex-direction:row-reverse;justify-content:space-between;gap:14px;align-items:baseline}
@@ -51,6 +50,6 @@
 @media(max-width:800px){
  .real-demo{padding-top:56px;padding-bottom:56px}
  .demo-heading{display:block;margin-bottom:30px}.demo-heading h2{font-size:43px}.demo-heading .eyebrow{font-size:10px;margin-bottom:15px}.demo-heading>p{max-width:none;font-size:18px;margin:20px 0 0}
- .demo-layout{grid-template-columns:1fr;gap:34px}.demo-recording{grid-row:1}.demo-stats{grid-row:2;max-width:none;padding-top:0}.demo-stats>.micro-label{margin-bottom:23px}.demo-response-stats{gap:24px}.demo-response-stats dd:not(.demo-stat-detail){font-size:76px}.demo-response-stats dt{font-size:19px}.demo-measurement-note{max-width:440px}.demo-local-stack dl{gap:14px}.demo-local-stack dd{font-size:20px}.demo-local-stack dt{font-size:10px}.demo-video-label{font-size:8px;gap:12px}.demo-recording figcaption{margin-top:18px}.demo-recording figcaption p{font-size:22px;margin-bottom:0}
+ .demo-layout{grid-template-columns:1fr;gap:34px}.demo-recording{grid-row:1}.demo-stats{grid-row:2;max-width:none;padding-top:0}.demo-stats>.micro-label{margin-bottom:23px}.demo-response-stats{gap:24px}.demo-response-stats dd:not(.demo-stat-detail){font-size:76px}.demo-response-stats dt{font-size:19px}.demo-local-stack dl{gap:14px}.demo-local-stack dd{font-size:20px}.demo-local-stack dt{font-size:10px}.demo-video-label{font-size:8px;gap:12px}.demo-recording figcaption{margin-top:18px}.demo-recording figcaption p{font-size:22px;margin-bottom:0}
 }
 @media(max-width:360px){.demo-response-stats{gap:16px}.demo-response-stats dd:not(.demo-stat-detail){font-size:64px}.demo-response-stats dt{font-size:17px}.demo-local-stack dd{font-size:18px}.demo-local-stack dd>span{font-size:8px}.demo-video-label{flex-wrap:wrap;gap:4px}}
