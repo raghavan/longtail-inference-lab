@@ -17,7 +17,7 @@ The former printer, computer, and radio metaphors have been replaced by represen
 
 ## Interaction
 
-The illustration follows one fixed question: “What is the capital of France?” Scroll through the five stages or select a chapter. Recognition reveals the transcript, Gemma reveals answer pieces, Piper animates a waveform, and the reply returns to the same device. Each active illustrated widget gives a brief, two-cycle wiggle when its stage begins; the prototype moves on listening and reply. The person and board remain still. There is no traveling signal dot. SVG masks and clips reuse the original illustration without new image assets. Reduced-motion preferences disable the wiggles.
+The illustration follows one fixed question: “What is the capital of France?” Scroll through the five stages or select an illustrated model station. Recognition reveals the transcript, Gemma reveals answer pieces, Piper animates a waveform, and the reply returns to the same device. Each active illustrated widget gives a brief, two-cycle wiggle when its stage begins; the prototype moves on listening and reply. The person and board remain still. There is no traveling signal dot. SVG masks and clips reuse the original illustration without new image assets. Reduced-motion preferences disable the wiggles.
 
 The owner asked to keep this area simple. There is no example selector, exploration slider, playback toolbar, or technical toggle in the illustration. Runtime details remain in the reading section below it. Narrow screens pan to the active station; short viewports retain chapter selection. Reduced-motion handling removes spatial effects.
 
@@ -54,3 +54,7 @@ The mock-up now ends with a native video player and left-hand timing statistics 
 ## Page focus revision
 
 The owner removed the entire “One idea, three forms” section, including macOS/iPhone/Jetson cards and the platform caveat. The local preview now proceeds directly from the model explanation to the Jetson build log. Removed section-specific styles; shared detail and progress layouts are retained. This revision is included in the pending local review, not yet promoted to production.
+
+## Journey footer cleanup
+
+Removed the lower handoff/caption strip, illustration disclaimers, scroll prompt and five-button step navigation at owner request. Removed the corresponding JavaScript updates and unused styles; the layout now uses three rows. The illustration, stage headings and clickable model stations remain, with scroll progression through the return stage. Desktop Piper selection and scroll to return, and mobile Gemma selection were checked; no horizontal overflow or captured browser warnings/errors. This remains local review only.

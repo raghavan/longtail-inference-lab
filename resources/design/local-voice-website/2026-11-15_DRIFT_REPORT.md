@@ -62,3 +62,7 @@ No drift detected. Removed the standalone approximate-timings/streaming sentence
 ## README.md — platform overview removal
 
 No drift detected. Removed the full three-form overview and its dedicated CSS per owner request. The technical explanation now precedes the build log directly. Production promotion remains pending visual approval.
+
+## README.md — journey footer cleanup
+
+No drift detected. Removed the requested caption, disclaimers, scroll prompt and step navigation, including obsolete render targets. Remaining model-station buttons and scroll progression work without the removed elements.
