@@ -22,7 +22,6 @@ const mobileDetails=[
 ];
 const story=document.querySelector('.inside-story'),pin=document.querySelector('.inside-pin'),workshop=document.querySelector('.workshop'),viewport=document.querySelector('.workshop-viewport');
 const nodes=[...document.querySelectorAll('[data-flow]')],steps=[...document.querySelectorAll('[data-step]')];
-const dot=document.querySelector('.signal-dot'),route=document.querySelector('.return-route');
 const narrow=matchMedia('(max-width:600px)'),reduced=matchMedia('(prefers-reduced-motion:reduce)'),compact=matchMedia('(max-height:610px)');
 let active=-1,top=0,travel=1,renderFrame=0,progress=0;
 let tokens=[];
@@ -58,8 +57,7 @@ function paint(value){
  workshop.style.setProperty('--phase',phase.toFixed(3));
  document.querySelectorAll('.gemma-activation i').forEach((el,i)=>el.style.opacity=String(index===2&&Math.floor(phase*12)%4===i?.9:.12));
  document.querySelectorAll('.piper-wave i').forEach((el,i)=>el.style.height=`${8+Math.abs(Math.sin(i*.8+phase*9))*43*(.25+Math.sin(i/16*Math.PI))}%`);
- const point=index===4?route.getPointAtLength(route.getTotalLength()*phase):{x:220+Math.min(1,progress*5/4)*860,y:240};
- dot.setAttribute('cx',point.x.toFixed(2));dot.setAttribute('cy',point.y.toFixed(2));dot.style.opacity=reduced.matches?'0':'1';
+
 }
 function seek(value){paint(value);if(!compact.matches)window.scrollTo({top:top+travel*progress,behavior:'instant'});}
 function render(){renderFrame=0;if(!compact.matches)paint((scrollY-top)/travel);}

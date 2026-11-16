@@ -153,7 +153,30 @@
               <button data-flow="3"><span>04 / PIPER</span><strong>An answer gets a voice</strong></button>
             </div>
             <div class="illustration">
-              <img class="workshop-art" src="assets/voice-models.png" alt="A person speaks to Local Voice. Inside one illustrated Jetson, Whisper turns a spectrogram into text, Gemma processes tokens through learned model layers, and Piper turns pronunciation units into a speech waveform." width="2172" height="724">
+              <svg class="workshop-art" viewBox="0 0 2172 724" role="img" aria-labelledby="model-art-title">
+                <title id="model-art-title">A person speaks to Local Voice. Inside one illustrated Jetson, Whisper turns a spectrogram into text, Gemma processes tokens through learned model layers, and Piper turns pronunciation units into a speech waveform.</title>
+                <defs>
+                  <image id="model-art" href="assets/voice-models.png" width="2172" height="724"/>
+                  <mask id="stationary-art" maskUnits="userSpaceOnUse" x="0" y="0" width="2172" height="724">
+                    <rect width="2172" height="724" fill="white"/>
+                    <g fill="black">
+                    <rect x="310" y="335" width="128" height="77"/>
+                    <rect x="548" y="210" width="338" height="285"/>
+                    <rect x="1138" y="156" width="245" height="340"/>
+                    <rect x="1548" y="265" width="612" height="222"/>
+                    </g>
+                  </mask>
+                  <clipPath id="clip-device"><rect x="310" y="335" width="128" height="77"/></clipPath>
+                  <clipPath id="clip-whisper"><rect x="548" y="210" width="338" height="285"/></clipPath>
+                  <clipPath id="clip-gemma"><rect x="1138" y="156" width="245" height="340"/></clipPath>
+                  <clipPath id="clip-piper"><rect x="1548" y="265" width="612" height="222"/></clipPath>
+                </defs>
+                <use href="#model-art" mask="url(#stationary-art)"/>
+                <g class="action-widget widget-device"><g clip-path="url(#clip-device)"><use href="#model-art"/></g></g>
+                <g class="action-widget widget-whisper"><g clip-path="url(#clip-whisper)"><use href="#model-art"/></g></g>
+                <g class="action-widget widget-gemma"><g clip-path="url(#clip-gemma)"><use href="#model-art"/></g></g>
+                <g class="action-widget widget-piper"><g clip-path="url(#clip-piper)"><use href="#model-art"/></g></g>
+              </svg>
               <div class="question-bubble" id="question-example">What is the capital of France?</div>
               <div class="transcript-slip"><span>WHISPER HEARD</span><b id="transcript-example">What is the capital of France?</b><i>sound → spectrogram → text</i></div>
               <div class="answer-tokens" aria-label="Illustrative answer tokens" id="answer-example"></div>
@@ -162,7 +185,7 @@
               <div class="spectrogram-scan" aria-hidden="true"></div>
               <div class="gemma-activation" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
               <div class="piper-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <svg class="journey-route" viewBox="0 0 1200 470" aria-hidden="true"><defs><marker id="route-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs><path class="return-route" d="M1090 310V410Q1090 433 1067 433H218Q190 433 190 405V278" marker-end="url(#route-arrow)"/><circle class="signal-dot" r="5" cx="240" cy="235"/></svg>
+              <svg class="journey-route" viewBox="0 0 1200 470" aria-hidden="true"><defs><marker id="route-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs><path class="return-route" d="M1090 310V410Q1090 433 1067 433H218Q190 433 190 405V278" marker-end="url(#route-arrow)"/></svg>
               <span class="return-note">and back to you, through the very same device.</span>
             </div>
             <div class="device-footnote"><img src="assets/enclosure.svg" alt="The prototype enclosure from the hardware story"><span>One Jetson · 8 GB shared memory.<br><em>Software cutaway, not separate machines.</em></span></div>

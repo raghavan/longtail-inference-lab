@@ -34,3 +34,7 @@ Scope: existing website presentation versus the November 15 architecture, runtim
 ## Simplification after visual review
 
 - The example customization and exploration toolbar added too much UI to the illustration. Removed all toolbar controls and their code, keeping one fixed France question with scroll/chapter navigation. Model/runtime detail content remains below the illustration.
+
+## README.md — widget motion revision
+
+No drift detected. Replaced the traveling signal dot with stage-specific, two-cycle widget wiggles. The original art is composed through SVG masks and clips; the board and person remain stationary. Reduced-motion preferences disable the new animations. Desktop and phone checks confirm stage mapping and no page overflow. Local preview only; owner visual review remains pending.

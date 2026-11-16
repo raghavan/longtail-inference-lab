@@ -17,7 +17,7 @@ The former printer, computer, and radio metaphors have been replaced by represen
 
 ## Interaction
 
-The illustration follows one fixed question: “What is the capital of France?” Scroll through the five stages or select a chapter. Recognition reveals the transcript, Gemma reveals answer pieces, Piper animates a waveform, and the reply returns to the same device.
+The illustration follows one fixed question: “What is the capital of France?” Scroll through the five stages or select a chapter. Recognition reveals the transcript, Gemma reveals answer pieces, Piper animates a waveform, and the reply returns to the same device. Each active illustrated widget gives a brief, two-cycle wiggle when its stage begins; the prototype moves on listening and reply. The person and board remain still. There is no traveling signal dot. SVG masks and clips reuse the original illustration without new image assets. Reduced-motion preferences disable the wiggles.
 
 The owner asked to keep this area simple. There is no example selector, exploration slider, playback toolbar, or technical toggle in the illustration. Runtime details remain in the reading section below it. Narrow screens pan to the active station; short viewports retain chapter selection. Reduced-motion handling removes spatial effects.
 
@@ -43,6 +43,6 @@ Scoped presentation change over the existing architecture and website contract. 
 
 ## Verification
 
-JavaScript syntax, whitespace, and repository safety checks passed. Desktop (1280 × 800) and phone (375 × 667) layouts were checked after removing the toolbar; stage selection and responsive panning still work, with no page overflow or captured console warnings/errors. No select or input controls remain in the illustration. The temporary viewport override was reset. Reduced-motion handling remains in source; OS-level emulation is not claimed.
+JavaScript syntax, whitespace, and repository safety checks passed. Desktop (1280 × 800) and phone (375 × 667) layouts were checked after removing the toolbar; stage selection and responsive panning still work, with no page overflow or captured console warnings/errors. The widget-motion revision was checked at both sizes: each of the five stages selects only its corresponding widget animation, with no signal-dot element remaining. No select or input controls remain in the illustration. The temporary viewport override was reset. Reduced-motion handling remains in source; OS-level emulation is not claimed.
 
 No production files are changed by this task. No source push or production deployment. Concurrent device work remains separate.
