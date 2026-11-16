@@ -46,3 +46,7 @@ Owner authorized deployment after local visual review. Reconciled the approved m
 ## video-demo.md — recorded demo addition
 
 No drift detected against the scoped local-preview requirement. The new section is last before the footer, uses native controls, preserves the selected original take, and separates video-derived approximate timings from other runs. The production page intentionally lacks the addition while owner visual review is pending; this is the requested release boundary. No Goldfish review claimed.
+
+## video-demo.md — timing, stack and cost revision
+
+No drift detected. Owner feedback removes recording length from the displayed statistics and emphasizes approximate first speech and spoken-output duration equally. The stack follows the current runtime lock. The single $490.29 hardware figure follows the recorded parts subtotal, explicitly includes setup accessories and excludes tax, shipping and tariffs. The 6.5-second figure describes streamed output duration, not synthesis compute time. Desktop and mobile layouts checked; production promotion remains gated on owner visual approval.

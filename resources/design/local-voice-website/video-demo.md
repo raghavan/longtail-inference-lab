@@ -22,12 +22,16 @@ Only the deliberately selected technical demonstration, web derivative, poster a
 | Display | Evidence and boundary |
 | --- | --- |
 | Approximately 1.6 seconds to first spoken word | Recording-state red light remains visible at frame 234 (7.800 s) and disappears by frame 235 (7.833 s). The first clearly audible reply starts around 9.43–9.45 s in the recording waveform. Difference approximately 1.60–1.65 s, rounded to 1.6 s. This is a video-derived recording-end indicator to acoustic-reply estimate, not isolated model processing time or instrumented button-event latency. |
-| Approximately 6.5 seconds spoken reply | First spoken output about 9.44 s; final spoken word finishes about 15.95 s. Includes the pause between the two sentences. Boundary is approximate because room noise continues. |
-| 17.9 seconds uncut take | 537 frames at 30 fps. This is recording length, not processing latency. |
+| Approximately 6.5 seconds spoken reply | First spoken output about 9.44 s; final spoken word finishes about 15.95 s. Includes the pause between the two sentences. This is the duration of the locally generated spoken output, not synthesis compute time; playback streams while the reply is generated. Boundary is approximate because room noise continues. |
+| $490.29 hardware parts total | Eight ordered hardware/setup items in the [bill of materials](../../../projects/02_edge_offline_intelligence_device/hardware/bill_of_materials.md), including setup accessories. USD, before tax, shipping and tariffs. Final checkout charges remain incompletely reconciled; this is not a settled-spending total. |
 
 No stage-by-stage ASR, LLM or speech-synthesis time is available for this specific take. The separately published live playback-request and authored-WAV timings are not substituted for this example. Current model labels follow the existing runtime record and are configuration context, not independently proven by the movie.
 
 English captions were prepared locally from the selected technical demo. The question is about explaining a large language model to a five-year-old; the two spoken reply sentences are retained. The owner can review the recording and caption wording in the preview.
+
+## Visual review revision
+
+The two timing figures receive equal prominence. Recording length is omitted from the visible statistics. Below the timings, the local stack lists Whisper tiny.en, Gemma 4 E2B Q4_K_M, and Piper LJ Speech, followed by one aggregate hardware parts cost with no merchant or item breakdown. The recording and player are unchanged.
 
 ## Files
 
@@ -40,6 +44,8 @@ English captions were prepared locally from the selected technical demo. The que
 ## Verification
 
 Desktop 1280 × 720 and 1280 × 900, and narrow 390 × 844 layout inspected in the local browser. Statistics sit left on desktop; video sits above statistics on narrow screens. No page horizontal overflow observed. Native playback reached 16.4 seconds with 1920 × 1080 decoded dimensions, readyState 4, no video error, and an English captions track exposed. No captured console warnings or errors. Temporary viewport override reset. Poster and fallback assets resolve locally. Full-file decode, relative-asset validation, repository safety scan and whitespace checks passed.
+
+Revision verification: desktop 1280 × 1000 and mobile 390 × 844 inspected; both timing figures, model labels and total are readable with no horizontal overflow or captured browser warnings/errors. Viewport reset and local review tab preserved.
 
 ## Release gate
 

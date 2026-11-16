@@ -236,18 +236,26 @@
         <p>A real question. A reply from the Jetson.<br>One continuous take, with the original sound.</p>
       </header>
       <div class="demo-layout">
-        <aside class="demo-stats" aria-label="Timing from this recording">
-          <p class="micro-label">From this recording</p>
-          <dl class="demo-primary-stat">
-            <dt>Time to first spoken word</dt>
-            <dd><span class="demo-approx" aria-label="approximately">≈</span>1.6<span class="demo-unit">s</span></dd>
+        <aside class="demo-stats" aria-label="Demo timing, local models and hardware cost">
+          <p class="micro-label">A reply, entirely on device</p>
+          <dl class="demo-response-stats">
+            <div><dt>To first spoken word</dt><dd><span class="demo-approx" aria-label="approximately">≈</span>1.6<span class="demo-unit">s</span></dd><dd class="demo-stat-detail">After recording ends</dd></div>
+            <div><dt>Spoken answer</dt><dd><span class="demo-approx" aria-label="approximately">≈</span>6.5<span class="demo-unit">s</span></dd><dd class="demo-stat-detail">Of locally generated audio</dd></div>
           </dl>
-          <p class="demo-stat-explanation">From recording ending<br>to the answer becoming audible.</p>
-          <dl class="demo-secondary-stats">
-            <div><dt>Spoken reply</dt><dd>≈6.5<span>s</span></dd></div>
-            <div><dt>Uncut take</dt><dd>17.9<span>s</span></dd></div>
-          </dl>
-          <p class="demo-measurement-note">Estimated from the status light and audio in this video. One example, not a performance benchmark.</p>
+          <p class="demo-measurement-note">Approximate timings from this recording. The reply streams as it is generated.</p>
+          <div class="demo-local-stack">
+            <p class="micro-label">The local stack</p>
+            <dl>
+              <div><dt>Transcribe</dt><dd>Whisper <span>tiny.en</span></dd></div>
+              <div><dt>Answer</dt><dd>Gemma 4 E2B <span>Q4_K_M</span></dd></div>
+              <div><dt>Speak</dt><dd>Piper <span>LJ Speech</span></dd></div>
+            </dl>
+          </div>
+          <div class="demo-cost">
+            <p class="micro-label">Hardware parts total</p>
+            <p class="demo-cost-value"><span>$</span>490.29</p>
+            <p class="demo-cost-note">USD · Includes setup accessories.<br>Before tax, shipping &amp; tariffs.</p>
+          </div>
         </aside>
         <figure class="demo-recording">
           <div class="demo-video-label"><span>Field recording <span aria-hidden="true">↘</span></span><span>Jetson · November 15, 2026</span></div>
@@ -257,7 +265,6 @@
             Your browser does not support embedded video. <a href="assets/demo/local-voice-demo.mp4">Download the demo</a>.
           </video>
           <figcaption id="demo-caption"><span class="micro-label">The question</span><p>“Explain me a large language model like I’m a five-year-old.”</p></figcaption>
-          <p class="demo-stack">Whisper <span aria-hidden="true">→</span> Gemma 4 E2B <span aria-hidden="true">→</span> Piper <span class="demo-stack-note">On the Jetson</span></p>
         </figure>
       </div>
     </section>
