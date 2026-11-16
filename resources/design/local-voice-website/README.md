@@ -2,49 +2,53 @@
 
 Status: local design preview, November 15, 2026. Not approved for production.
 
-This is a standalone presentation of Local Voice for the existing device route. It preserves the original seven-stage hardware assembly, typography, paper color, illustrations, and reverse scrolling. It removes the numbered hardware-study masthead and adds a second interactive story explaining a spoken question, transcription, local inference, speech synthesis, and the reply returning to the same person and device.
+The preview preserves the existing seven-stage scroll-driven hardware assembly and adds a retro illustrated account of the real software pipeline: Whisper tiny.en → Gemma 4 E2B → Piper neural speech. It removes the numbered hardware-study masthead. The owner requested local visual review before production.
 
 ## Review the mock-up
 
-Serve `mockup/` using a local static HTTP server. No dependencies or build are required. The files are outside the public website deployment directory. Do not copy them into the deployed website until the owner reviews the preview.
+Serve `mockup/` using a local static HTTP server. No dependencies or build are required. The files are outside the public website deployment directory. Do not promote them before owner review.
 
-- `mockup/index.html`: hardware narrative, architecture, platform status, and evidence.
-- `mockup/inside.css` and `mockup/inside.js`: architecture presentation and scroll/click navigation.
-- `mockup/styles.css`, `assembly.js`, `choreography.mjs`, and `assets/`: preserved hardware experience, with refreshed wording.
+- `mockup/index.html`: hardware narrative, model journey, platform status, and evidence boundaries.
+- `mockup/inside.css` and `mockup/inside.js`: illustration layout, scroll sequence, animation, scrubbing, example selection, and runtime details.
+- `mockup/assets/voice-models.png`: original generated retro editorial illustration. A person speaks to the prototype; sound features, learned model layers, tokens, and neural speech generation are drawn above one Jetson circuit-board cutaway.
+- `mockup/styles.css`, `assembly.js`, `choreography.mjs`, and the original SVG assets preserve the hardware story.
 
-The architecture examples are deliberately authored illustrations, not live inference or measured outputs. The revised story uses a warm-paper, 1990s-style panoramic illustration: person and prototype, tape/typewriter for Whisper, terminal for Qwen, and a speech synthesizer for eSpeak. Scrolling reveals a question bubble, a transcript slip, incremental answer tokens, speech text, and a reply bubble with a return path. These machines are metaphors for software running on the same Jetson, not additional hardware. The original enclosure SVG also appears as a reference. The main narrative omits button protocol details; technical parameters sit below the story.
+The former printer, computer, and radio metaphors have been replaced by representations of the actual operations. The enlarged board is schematic, not a literal board layout. The person and prototype concept remain. A separate original enclosure SVG ties the software story to the hardware assembly.
 
-The panorama reads left to right on desktop. Narrow screens pan to the active station, with shorter copy and horizontal touch scrolling. Stage controls and the four illustrated stations support direct selection; short viewports use a non-sticky presentation. The illustrative token tiles do not claim exact tokenizer segmentation. Model identities follow the validated November 15 Qwen/eSpeak baseline; reconcile any later device upgrade before production promotion.
+## Interactions
 
-## Content authorities
+- Scroll or select a stage to follow the question left to right and the spoken reply back to the same device.
+- Animate/pause one turn; the explicit animation takes about twenty seconds from the beginning and does not represent device latency. Wheel, touch, navigation keys, or hiding the tab interrupts playback.
+- Scrub the timeline with a range control, including keyboard input.
+- Choose one of three authored examples: capital of France, sunlight for plants, or a short walk. Questions and replies update consistently. No inference, recording, speech playback, or external API call occurs in the page.
+- Toggle “Under the hood” for exact runtime/model details and diagram annotations.
+- Recognition reveals transcript pieces while a scan line crosses the schematic spectrogram; Gemma reveals illustrative token pieces; Piper animates a waveform; the final path returns to the speaker/listener.
+- Narrow screens pan to the active station and use concise copy. Short viewports provide a non-sticky, selectable version. Reduced-motion handling removes spatial illustration effects.
 
-- [Current technical status](../../../projects/02_edge_offline_intelligence_device/status.md).
-- [Architecture decision](../../../projects/02_edge_offline_intelligence_device/design_direction.md).
-- [Jetson implementation](../../../projects/02_edge_offline_intelligence_device/software/jetson/README.md) and [runtime lock](../../../projects/02_edge_offline_intelligence_device/software/jetson/runtime-lock.json).
-- [CUDA development check](../../../projects/02_edge_offline_intelligence_device/results/2026-11-15-jetson-cuda-check.md).
-- [Existing website contract](../../../areas/public_website/device/README.md).
+The pictures, layer counts, token pieces, and waveform are explanatory abstractions, not real activations, exact tokenizer output, recorded audio, or benchmark results. Gemma receives text from Whisper in this application; its native audio capability is not used. Piper embeds eSpeak for phonemization, while its ONNX neural voice generates the waveform.
 
-The preview separates CPU standalone checks from CUDA integration and the remaining CUDA button/reboot checks. It preserves the two-trials-per-profile timing boundary, recording/playback exclusion, and lack of scored quality or cross-platform measurements. The enclosure and tiny speaker illustration remain conceptual.
+## Current configuration and evidence
+
+Source inspection identifies Whisper tiny.en F16, Gemma 4 E2B instruction-tuned Q4_K_M, and Piper 1.8.0 with `en_US-ljspeech-medium`, 22,050 Hz output. The model server uses a 2,048-token context and 128-token default answer cap, with thinking disabled. CUDA is used for recognition and answering; Piper uses the CPU.
+
+The current deployment record reports an active/enabled/ready service, 42 passing regressions, and authored pipeline checks. Physical neural-voice listening acceptance, a new reboot, and disconnected operation for this profile remain pending. Old-model timing figures were removed from this current-stack presentation. No quality benchmark is claimed.
+
+Authorities:
+
+- [Technical status](../../../projects/02_edge_offline_intelligence_device/status.md).
+- [Upgrade contract](../../../projects/02_edge_offline_intelligence_device/development/jetson_gemma4_voice_upgrade.md).
+- [Deployment evidence](../../../projects/02_edge_offline_intelligence_device/results/2026-11-15-jetson-gemma4-piper.md).
+- [Runtime lock](../../../projects/02_edge_offline_intelligence_device/software/jetson/runtime-lock.json) and [application source](../../../projects/02_edge_offline_intelligence_device/software/jetson/local_voice/core.py).
+- [Whisper upstream](https://github.com/openai/whisper), [Google Gemma](https://ai.google.dev/gemma/docs/core), and [Piper upstream](https://github.com/OHF-Voice/piper1-gpl) support the conceptual explanations.
 
 ## EGM state
 
-Scoped presentation change over the existing architecture and website contract. Drift analysis is in [the report](2026-11-15_DRIFT_REPORT.md). The owner requested a visual mock-up before production; that review is the current gate. No Goldfish design review or production approval is claimed. No device implementation changes are included.
+Scoped presentation change over the existing architecture and website contract. The [drift report](2026-11-15_DRIFT_REPORT.md) records alignment findings. Visual-review revisions are implemented; the owner’s local design review remains the current gate. No Goldfish review or production approval is claimed. No device code changes belong to this task.
 
 ## Verification
 
-- Local HTTP response: 200; JavaScript syntax checks passed for all three modules.
-- HTML IDs, local assets, and internal fragment targets checked; no broken local references.
-- In-app browser: architecture stage selection, reverse scrolling, keyboard Tab/Enter navigation, and hardware chapter navigation checked. No captured console warnings or errors.
-- Responsive checks: desktop, 390 × 844, 375 × 667, and 320 × 568. All five stages fit above the controls at 375 × 667. The 320 × 568 view uses the non-sticky fallback; no horizontal page overflow was observed.
-- Fixed the timing card's intrinsic width on phones, small-screen architecture overlap, and hardware SVG overlap with chapter controls. Direct chapter selection jumps immediately; ordinary scrolling retains the original assembly interpolation.
-- Reduced-motion rules retained and inspected in source; an OS-level reduced-motion browser test was not performed.
-- Repository safety scan and whitespace checks passed.
-- No production files changed by this task, no source push, and no production deployment. Production remains a separate step after visual review.
+JavaScript syntax, unique HTML IDs, local assets, internal fragment targets, whitespace, and repository safety scan are checked. In-app browser QA covers desktop and mobile layouts, stage selection, example changes, animation/pause, keyboard scrubbing, runtime detail toggle, and the short-viewport fallback. No external inference service or microphone permission is needed. OS-level reduced-motion emulation is not claimed.
 
-## Retro illustration revision
+No production files are changed by this task. No source push or production deployment. Concurrent device work remains separate.
 
-The owner requested a less stacked, less technical presentation with a person, the prototype device, and a retro illustrated round trip. The generated `mockup/assets/voice-workshop.png` is a task-owned editorial illustration; text, token reveals, route, stage labels, and speech bubbles are separate accessible HTML/SVG layers. No image generation occurs in the website.
-
-Revision checks: JavaScript syntax, local image loading, no captured console errors/warnings, and desktop fit at 1280 × 800. All five stages passed heading/scene/caption spacing and page-width checks at 375 × 667. The 390 × 844 view was inspected and shortened mobile copy subsequently applied; the 320 × 568 non-sticky fallback and keyboard Tab/Enter stage selection passed. Viewport override was reset after inspection. Reduced-motion handling remains in source; no OS-setting emulation is claimed.
-
-This revision changes only the local preview and its records. No production publication.
+Current revision observations: the twenty-second animation completed at step 5 with the matching short-walk response and reset its play state. Pause stopped an in-progress turn. Keyboard Home/ArrowRight changed the scrub position. All three example selectors updated the question, answer pieces, and reply. Runtime detail mode showed the correct Gemma and Piper configurations. All stages fit at 375 × 667 after shortening the Piper heading/copy; 320 × 568 used the non-sticky fallback without page overflow. The final 1280 × 800 preview had no missing images or captured console warnings/errors. Temporary browser viewport overrides were reset.

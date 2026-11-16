@@ -23,3 +23,10 @@ Scope: existing website presentation versus the November 15 architecture, runtim
 - The initial dark, stacked component diagram did not match the requested illustrated left-to-right journey. It is replaced by a warm-paper retro panorama and a returning speech path, with the hardware story preserved.
 - The initial narrative emphasized the AtomS3-Lite protocol. The revised architecture story instead follows sound → transcript → generated answer → synthesized speech → the original listener. Inference is explained separately from transcription and synthesis.
 - The token and machinery illustrations are abstractions, not exact tokenizer output or extra physical components. The page now states these limits and identifies the dated validated model baseline.
+
+## Actual-model illustration revision
+
+- The mechanical metaphors obscured the actual technology. The updated picture represents Whisper audio features/transcription, Gemma learned weights/token generation, and Piper pronunciation/neural waveform synthesis on one Jetson cutaway.
+- The earlier Qwen/eSpeak labels no longer matched the current runtime lock. The preview now identifies Whisper tiny.en F16, Gemma 4 E2B Q4_K_M, and Piper 1.8.0 / LJ Speech medium. The current deployment record became available during the revision and reports service activation; physical voice acceptance remains pending.
+- The old timing comparison could incorrectly imply Gemma/Piper latency. It was removed from the current-stack presentation; configuration limits and a link to the current deployment record replace it.
+- The first illustrated version only supported scroll/step selection. The revision adds explicit animation/pause, keyboard scrubbing, three consistently propagated authored examples, and an optional runtime-detail view. None invokes live inference or audio recording.
