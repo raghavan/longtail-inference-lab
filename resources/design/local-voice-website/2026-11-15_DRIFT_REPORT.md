@@ -66,3 +66,7 @@ No drift detected. Removed the full three-form overview and its dedicated CSS pe
 ## README.md — journey footer cleanup
 
 No drift detected. Removed the requested caption, disclaimers, scroll prompt and step navigation, including obsolete render targets. Remaining model-station buttons and scroll progression work without the removed elements.
+
+## README.md — build log copy cleanup
+
+No drift detected. Removed the requested “What comes next” block and its unused styles from the local preview.

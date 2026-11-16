@@ -58,3 +58,5 @@ The owner removed the entire “One idea, three forms” section, including macO
 ## Journey footer cleanup
 
 Removed the lower handoff/caption strip, illustration disclaimers, scroll prompt and five-button step navigation at owner request. Removed the corresponding JavaScript updates and unused styles; the layout now uses three rows. The illustration, stage headings and clickable model stations remain, with scroll progression through the return stage. Desktop Piper selection and scroll to return, and mobile Gemma selection were checked; no horizontal overflow or captured browser warnings/errors. This remains local review only.
+
+The owner also removed the “What comes next” block beneath the build log. Its dedicated styles are removed; the remaining build log and afterword are retained.
