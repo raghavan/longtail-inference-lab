@@ -68,3 +68,5 @@ Read the [software guide](software/README.md), [intake](../../resources/project_
 ## Data handling
 
 Process microphone audio, transcripts, and answers locally. Default to transient audio and session state; retain recordings only for explicitly agreed evaluation. Publish synthetic or approved examples and sanitized measurements. Separate initial app/model downloads from offline interaction testing. Never treat local storage alone as proof of no transmission.
+
+The current [responsive Jetson implementation](results/2026-11-15-jetson-responsive-voice.md) keeps models loaded and overlaps phrase generation and speech. Its nine final authored trials reached playback requests in 0.795–0.970 seconds; this is not a universal live acoustic latency guarantee.

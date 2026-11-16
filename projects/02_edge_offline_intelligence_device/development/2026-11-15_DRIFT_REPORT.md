@@ -17,3 +17,7 @@ No drift detected in the scoped GPU deployment. Separate CPU/CUDA runtime direct
 ## Gemma 4 and neural speech upgrade contract
 
 No drift detected in the scoped model/voice upgrade. The implementation pins the requested Gemma artifact, disables thinking, rejects control-token output, and uses the selected Piper medium voice through bounded stdin-fed subprocess synthesis. The existing single-turn, timeout/cancellation, temporary-audio, button/audio, and offline-service boundaries remain in place. Actual CUDA offload, authored inference, voice-file generation, failure handling, and Piper cancellation/cleanup passed. The service points to the separate validated installation, with the previous application/runtime retained for rollback. The dated upgrade record separates final trials, preliminary failures, slower voice variants, observed deployment state, and listening acceptance. This is an implementation consistency check against `jetson_gemma4_voice_upgrade.md`, not a fresh-context design review or scored quality evaluation.
+
+## jetson_responsive_voice.md
+
+No drift detected in the scoped execution, cancellation, startup, privacy and measurement contracts. Device streaming explicitly permits completed phrases before a later error; CLI export retains all-or-nothing behavior. Provisional capture does not skip final new audio. The one-second acoustic target remains unverified by software timestamps. This is a scoped consistency check, not a fresh-context Goldfish review.

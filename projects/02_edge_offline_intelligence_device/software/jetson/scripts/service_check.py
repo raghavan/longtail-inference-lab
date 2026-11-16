@@ -70,7 +70,7 @@ def main():
             command("sudo", "install", "-m", "644", str(path), unit_path)
             command("sudo", "systemctl", "daemon-reload")
             command("sudo", "systemctl", "start", name)
-            wait_for(master, b"STATE ready\n")
+            wait_for(master, b"STATE ready\n", timeout=480)
             report["service_start"] = "passed"
             pid = command(
                 "systemctl", "show", "--property=MainPID", "--value", name

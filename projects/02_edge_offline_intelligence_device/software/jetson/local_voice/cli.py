@@ -65,6 +65,7 @@ def parser():
         "doctor", help="Check local assets and executables without downloading"
     )
     doctor.add_argument("--verify-hashes", action="store_true")
+    doctor.add_argument("--responsive", action="store_true", help="Also check resident device workers")
     doctor.add_argument(
         "--audio",
         action="store_true",
@@ -132,18 +133,22 @@ def main():
         )
         if args.command == "doctor":
             checks = readiness(
-                settings, verify_hashes=args.verify_hashes, audio=args.audio
+                settings, verify_hashes=args.verify_hashes, audio=args.audio, responsive=args.responsive
             )
             print(
                 json.dumps({"ready": all(checks.values()), "checks": checks}, indent=2)
             )
             return 0 if all(checks.values()) else 1
-        checks = readiness(settings, audio=args.command == "device" or args.play)
+        checks = readiness(settings, audio=args.command == "device" or args.play, responsive=args.command == "device")
         if not all(checks.values()):
             raise VoiceError(
                 "Local runtime is not ready. Run doctor for asset and executable checks."
             )
-        backend = LocalBackend(settings)
+        if args.command == 'device':
+            from .responsive import ResponsiveBackend
+            backend = ResponsiveBackend(settings)
+        else:
+            backend = LocalBackend(settings)
         if args.command == "ask":
             text = (
                 read_stdin_text(sys.stdin.fileno(), shutdown)
@@ -174,16 +179,19 @@ def main():
                 event["error"] = controller.error
             print(json.dumps(event), flush=True)
             if serial:
-                serial.state(state)
+                serial.state('answering' if state == 'starting' else state)
 
-        controller = Controller(backend, notify)
-        notify("ready")
+        def metrics(data):
+            print(json.dumps({'event': 'latency', 'seconds': data}), flush=True)
+
+        controller = Controller(backend, notify, metrics=metrics)
+        controller.initialize()
         source_fd = serial.fd if serial else sys.stdin.fileno()
         heartbeat = 0
         keyboard_buffer = bytearray()
         while not shutdown.is_set():
             if serial and time.monotonic() - heartbeat >= 1:
-                serial.state(controller.state)
+                serial.state('answering' if controller.state == 'starting' else controller.state)
                 heartbeat = time.monotonic()
             readable, _, _ = select.select([source_fd], [], [], 0.1)
             if not readable:

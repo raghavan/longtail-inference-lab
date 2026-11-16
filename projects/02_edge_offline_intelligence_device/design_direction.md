@@ -79,3 +79,5 @@ Model file size, app download size, persistent storage, and peak runtime memory 
 7. Before Jetson procurement, select a full configuration within the remaining $1,000 first-year ceiling. An 8 GB Orin Nano and a 16 GB Orin NX are different tiers. Revalidate local model and speech backends on Jetson, then measure the physical system. [NVIDIA lineup](https://developer.nvidia.com/embedded/jetson-modules).
 
 **November 15 model/voice upgrade:** The current Jetson profile uses Gemma 4 E2B Q4_K_M and Piper neural English speech. The [upgrade contract](development/jetson_gemma4_voice_upgrade.md) and [observed record](results/2026-11-15-jetson-gemma4-piper.md) define its bounded offline deployment and measured limits. Model selection by the owner is not a scored quality result.
+
+**November 15 responsive execution:** The [responsive contract](development/jetson_responsive_voice.md) extends the device path to resident speech workers, startup preloading, provisional recognition and bounded phrase streaming. The [dated results](results/2026-11-15-jetson-responsive-voice.md) separate authored software latency from live acoustic acceptance.

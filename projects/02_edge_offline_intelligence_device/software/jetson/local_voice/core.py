@@ -199,7 +199,7 @@ class Settings:
         return self.root / "tts-venv" / "bin" / "piper"
 
 
-def readiness(settings: Settings, *, verify_hashes=False, audio=False):
+def readiness(settings: Settings, *, verify_hashes=False, audio=False, responsive=False):
     checks = {}
     for name in ("llama-server", "whisper-cli"):
         checks[name] = os.access(settings.binary(name), os.X_OK)
@@ -210,6 +210,9 @@ def readiness(settings: Settings, *, verify_hashes=False, audio=False):
     checks["transient_audio"] = Path("/dev/shm").is_dir() and os.access(
         "/dev/shm", os.W_OK
     )
+    if responsive:
+        checks['resident_asr'] = settings.binary('local-voice-whisper.so').is_file()
+        checks['speech_python'] = os.access(settings.root / 'tts-venv/bin/python', os.X_OK)
     if audio:
         checks["arecord"] = shutil.which("arecord") is not None
         checks["aplay"] = shutil.which("aplay") is not None

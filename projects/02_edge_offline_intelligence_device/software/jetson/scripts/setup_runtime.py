@@ -9,6 +9,7 @@ from pathlib import Path
 import platform
 import shutil
 import subprocess
+import sys
 import urllib.request
 
 
@@ -80,6 +81,8 @@ def main():
         elif link.exists():
             raise RuntimeError("Refusing to replace a non-symlink runtime executable")
         link.symlink_to(build / "bin" / target)
+    run(sys.executable, Path(__file__).with_name('build_speech_worker.py'),
+        '--root', root, '--source', root / 'sources/whisper_cpp', '--backend', a.backend)
     models = root / "models"
     models.mkdir(exist_ok=True)
     for key in ("answer_model", "speech_model", "voice_model", "voice_config"):

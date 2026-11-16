@@ -2,7 +2,9 @@
 
 **A same-device Jetson CPU/CUDA development comparison is published; no scored quality or cross-platform comparison is published.**
 
-The current [Gemma 4 E2B/Piper upgrade](2026-11-15-jetson-gemma4-piper.md) records the new model/voice, 42 passing regressions, three authored final turns, failures encountered, cancellation checks, and actual deployment state. Its timings do not inherit the preceding configuration's speedup.
+The current [resident/streaming voice implementation](2026-11-15-jetson-responsive-voice.md) records 55 regressions, a final nine-trial authored median of 0.827 seconds to playback request, and the distinction between synthetic software timing and live acoustic response. All configurations and intermediate attempts are retained in its artifact.
+
+The [Gemma 4 E2B/Piper upgrade](2026-11-15-jetson-gemma4-piper.md) records the new model/voice, 42 passing regressions, three authored final turns, failures encountered, cancellation checks, and actual deployment state. Its timings do not inherit the preceding configuration's speedup.
 
 The [current latency profile](2026-11-15-jetson-latency-profile.md) separates two live button turns into stages and uses authored component probes to prioritize persistent speech workers. These optimizations are proposed, not deployed. No live utterances or audio are included.
 

@@ -1,6 +1,6 @@
 # Local Voice for Linux and Jetson development
 
-**Status:** The physical Jetson profile uses Gemma 4 E2B Q4_K_M with CUDA recognition/answering and a local Piper neural voice. The [upgrade record](../../results/2026-11-15-jetson-gemma4-piper.md) contains the exact configuration, 42 regressions, real pipeline/failure checks, deployment state, timing trade-offs, and listening limits. The earlier [CPU](../../results/2026-11-15-jetson-cpu-bringup.md) and [CUDA development](../../results/2026-11-15-jetson-cuda-check.md) records describe their dated configurations; their latency figures do not transfer to this model/voice. See the [upgrade contract](../../development/jetson_gemma4_voice_upgrade.md).
+**Status:** The physical Jetson runs Gemma 4 E2B Q4_K_M, CUDA Whisper recognition, and resident Piper neural speech. The [responsive voice record](../../results/2026-11-15-jetson-responsive-voice.md) reports 55 passing regressions and nine final authored trials at 0.795–0.970 seconds to a playback request (median 0.827 seconds; acoustic onset and live microphone excluded). It records intermediate conditions, failures, cancellation, deployment and remaining limits. The [model/voice upgrade](../../results/2026-11-15-jetson-gemma4-piper.md) retains asset provenance; its earlier sequential timing is not the current execution path.
 
 An offline, single-turn English voice application:
 
@@ -12,10 +12,47 @@ USB button or keyboard → ALSA microphone → whisper.cpp → llama.cpp → Pip
 
 The program is designed for Orin Nano Super 8 GB and has a real Linux ARM64 CPU implementation. Its CUDA profile has been built and run on the physical board, with GPU transcription and all answer-model layers offloaded. Apple frameworks and models are not used. There is no web access, retrieval, conversation memory, external action, or cloud fallback.
 
+## Responsive device execution
+
+Device mode keeps Whisper and Piper in owned pipe workers and warms Gemma before
+signaling ready. The button is amber during startup (about 52 seconds in one
+observed run); presses then are ignored. No new network listener is introduced.
+Recognition runs provisionally during capture, but any additional audio forces a
+final full pass so quiet trailing corrections are preserved. Answer generation,
+phrase synthesis and playback overlap. Gemma reuses exact matching prompt prefixes in RAM; requests still contain only the system prompt and current question. CLI `ask` retains sequential export behavior.
+
+For an existing native installation, build the small adapter without downloading
+or rebuilding the model runtimes (use the source path for your installation):
+
+```bash
+python3 scripts/build_speech_worker.py --root "$HOME/.local/share/longtail-voice" --source "$HOME/.local/share/longtail-voice/sources/whisper_cpp" --backend cuda
+python3 -m local_voice --backend cuda doctor --responsive --verify-hashes --audio
+```
+
+Fresh `setup_runtime.py` installations build the adapter automatically for the
+selected backend. Recognition retains English beam search (five beams), disables
+timestamp tokens, and passes no prior utterance context. All assets stay pinned.
+`local_voice/responsive.py`, `speech_worker.py`, and `native/whisper_worker.cpp`
+implement the [responsive contract](../../development/jetson_responsive_voice.md).
+
+The service emits numeric latency events without words or audio. The metric
+`finish_to_playback_request` ends immediately before ALSA playback, not at measured
+acoustic onset. A software timestamp below one second is not proof that every live
+question becomes audible within one second. The reproducible authored comparison is:
+
+```bash
+python3 scripts/responsive_check.py --root /path/to/runtime --output /path/to/new-report.json
+```
+
+Use only one resident answer deployment while checking on an 8 GB board. Keep the
+previous application directory as rollback; restoring it and restarting the service
+restores the sequential behavior. The service sandbox, audio routing and firmware
+are unchanged by this application update.
+
 ## What is included
 
 - A command-line text/WAV mode for reproducible model checks.
-- A device mode: press to start recording, press to finish and answer, press during processing/playback to cancel. Recording automatically ends at 30 seconds. The next press after cancellation starts a fresh turn.
+- A device mode: press to start recording, press to finish and answer, press during processing/playback to cancel. Recording automatically ends at 30 seconds. After cancellation, stopped workers reload before green/ready; the next press starts a fresh turn.
 - An AtomS3-Lite firmware project and bounded USB serial protocol, with status LED and connection heartbeat. Firmware was flashed and basic button/LED/voice interaction passed on the physical device; extended reconnect/cancellation reliability remains open.
 - Local runtime readiness and SHA-256 checks, pinned source/model identities, and a separate explicit online setup script.
 - Linux regressions, real-model smoke/failure checks, a VM lifecycle helper, and a startup-service generator.
@@ -45,13 +82,13 @@ This repository supplies application source and installation tools. It is not a 
 | --- | --- | --- |
 | Speech recognition | Whisper tiny.en, F16, whisper.cpp | Compact English baseline; human speech/noise accuracy not scored |
 | Answer model | Gemma 4 E2B instruction model, Unsloth Q4_K_M GGUF, llama.cpp | Text answering with thinking disabled; usefulness not scored |
-| Speech output | Piper 1.8.0, en_US-ljspeech-medium, CPU ONNX Runtime | Neural English voice; model loads per turn, adding synthesis latency |
+| Speech output | Piper 1.8.0, en_US-ljspeech-medium, CPU ONNX Runtime | Neural English voice; resident worker in device mode |
 | Controller | Python standard library; separate Python 3.10 Piper environment | One active operation; pinned ARM64 voice wheels required |
 | Audio | ALSA `arecord` and `aplay` | Actual device selection and permissions need on-board qualification |
 
 Exact commits, model revisions, hashes, and licenses are in `runtime-lock.json`. Models and source builds live outside the repository by default. llama.cpp and whisper.cpp are MIT licensed; Gemma 4 is Apache-2.0; Piper is GPL-3.0-or-later. The voice card identifies a public-domain LJ Speech dataset. eSpeak remains a synthetic fixture generator, not answer synthesis. Their upstream license requirements still apply if a packaged product is later distributed.
 
-Input is at most 1,200 characters or 30 seconds of mono, 16 kHz, signed 16-bit PCM WAV. Near-zero audio is rejected before transcription; this is not a full voice activity detector. Context is 2,048 tokens. Output defaults to 128 model tokens, bounded to a maximum of 384, and 4,000 characters. A model response that exhausts its token allowance is discarded instead of speaking a partial answer. Sampling uses temperature 0 and seed 42, with Gemma thinking disabled. Leaked model control tokens are rejected before synthesis. Each turn supplies only the fixed system prompt and the current utterance; there is no retrieval or saved conversation.
+Input is at most 1,200 characters or 30 seconds of mono, 16 kHz, signed 16-bit PCM WAV. Near-zero audio is rejected before transcription; this is not a full voice activity detector. Context is 2,048 tokens. Output defaults to 128 model tokens, bounded to a maximum of 384, and 4,000 characters. CLI mode discards a response that exhausts its token allowance. Device mode streams complete phrases: a later error stops remaining speech, but previously spoken phrases cannot be retracted. An unfinished final phrase is held until successful completion. Sampling uses temperature 0 and seed 42, with Gemma thinking disabled. Leaked model control tokens are rejected before synthesis. Each turn supplies only the fixed system prompt and the current utterance; there is no retrieval or saved conversation.
 
 Deadlines are per stage: model-server startup 120 seconds, transcription 60 seconds, answer 120 seconds, synthesis 30 seconds, and playback 120 seconds. They are protective caps, not desired response times or measured Jetson performance. A model can still give incorrect answers.
 
@@ -123,7 +160,7 @@ python3 scripts/runtime_check.py
 python3 scripts/service_check.py
 ```
 
-The regression runner should end with `Ran 42 tests` and `OK`. The smoke and runtime/service scripts must exit with status 0 and report `"status": "passed"`. The smoke report must list only `lo` under `network_interfaces`. A passing `doctor` checks assets/executables, not real microphone, speaker, or GPU operation. Firmware compilation is a separate command in the button section.
+The regression runner should end with `Ran 55 tests` and `OK`. The smoke and runtime/service scripts must exit with status 0 and report `"status": "passed"`. The smoke report must list only `lo` under `network_interfaces`. A passing `doctor` checks assets/executables, not real microphone, speaker, or GPU operation. Firmware compilation is a separate command in the button section.
 
 `vm.yaml` pins the Ubuntu image and checksum used for the observed run. If Ubuntu retires that snapshot URL, deliberately select and record a replacement image/digest; do not silently call it the same environment. Apt security updates can change package versions; the observed versions are recorded with results.
 

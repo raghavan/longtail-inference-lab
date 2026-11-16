@@ -1,0 +1,735 @@
+{
+  "scope": "Authored development checks on one Jetson; no live utterances or audio",
+  "comparison_without_prompt_cache": {
+    "scope": "Authored WAV to software playback request; no microphone or acoustic-onset measurement",
+    "order": [
+      "previous_sequential",
+      "resident_streaming"
+    ],
+    "repeats": 3,
+    "playback": "null",
+    "recognition_change": "Resident context, no timestamp tokens; beam size 5 and English retained",
+    "system_prompt_sha256": "ddd95c260821c1d0fd0e59f736423fa1e21a39c5fcdc99b09c22d44704720597",
+    "lock": {
+      "llama_cpp": {
+        "repository": "https://github.com/ggml-org/llama.cpp.git",
+        "commit": "930e2fa5995789efbf249a8bf61325bb626e417b",
+        "license": "MIT"
+      },
+      "whisper_cpp": {
+        "repository": "https://github.com/ggml-org/whisper.cpp.git",
+        "commit": "da54572229bcf64ba367d96c7ef15770376c4280",
+        "license": "MIT"
+      },
+      "answer_model": {
+        "repository": "unsloth/gemma-4-E2B-it-GGUF",
+        "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+        "file": "gemma-4-E2B-it-Q4_K_M.gguf",
+        "sha256": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8",
+        "bytes": 3106738272,
+        "quantization": "Q4_K_M",
+        "license": "Apache-2.0",
+        "base_model": "google/gemma-4-E2B-it"
+      },
+      "speech_model": {
+        "repository": "ggerganov/whisper.cpp",
+        "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+        "file": "ggml-tiny.en.bin",
+        "sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+        "bytes": 77704715,
+        "quantization": "F16",
+        "license": "MIT"
+      },
+      "speech_output": {
+        "runtime": "piper-tts",
+        "version": "1.8.0",
+        "voice": "en_US-ljspeech-medium",
+        "sample_rate": 22050,
+        "execution": "CPU subprocess; model loaded per turn",
+        "license": "GPL-3.0-or-later",
+        "selection": "Local neural English voice; physical listening acceptance required"
+      },
+      "voice_model": {
+        "repository": "rhasspy/piper-voices",
+        "revision": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+        "file": "en_US-ljspeech-medium.onnx",
+        "repository_path": "en/en_US/ljspeech/medium/en_US-ljspeech-medium.onnx",
+        "sha256": "6f52a751e2349abe7a76735eb09dc1875298c77ea2342ffd2fef79ff81b87f22",
+        "bytes": 63531379,
+        "dataset_license": "Public domain (LJ Speech; see voice model card)"
+      },
+      "voice_config": {
+        "repository": "rhasspy/piper-voices",
+        "revision": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+        "file": "en_US-ljspeech-medium.onnx.json",
+        "repository_path": "en/en_US/ljspeech/medium/en_US-ljspeech-medium.onnx.json",
+        "sha256": "141d612cc0a95ed7efc1ca936b845c2364967f2e9217c5dbfcf69fc4d6c65860",
+        "bytes": 4972,
+        "dataset_license": "Public domain (LJ Speech; see voice model card)"
+      }
+    },
+    "fixtures": [
+      {
+        "text": "What is the capital of France?",
+        "sha256": "f5be09db269b4ab487d2d23023396df90ebfdd588a6533c4ccd46aeddd401982",
+        "seconds": 2.2375625
+      },
+      {
+        "text": "Why do plants need sunlight?",
+        "sha256": "1d025f7cf0c2f6d89aca098886a442a9643b0e6d10a31e9c5612f55ba2b38d64",
+        "seconds": 2.3053125
+      },
+      {
+        "text": "Name two things to pack for a short walk.",
+        "sha256": "f2d89f1db28e7a410e6381b3d42866840b74b019ce0050d9e02853e8a1f461a6",
+        "seconds": 3.0035625
+      }
+    ],
+    "runs": [
+      {
+        "profile": "previous_sequential",
+        "startup_seconds": 39.581
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 1,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "first_playback_request": 8.762,
+          "playback_complete": 8.864
+        },
+        "stage_seconds": {
+          "transcription": 3.408,
+          "answer": 0.645,
+          "synthesis": 4.709
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 1,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "first_playback_request": 5.972,
+          "playback_complete": 6.005
+        },
+        "stage_seconds": {
+          "transcription": 1.252,
+          "answer": 1.09,
+          "synthesis": 3.63
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 1,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "first_playback_request": 5.428,
+          "playback_complete": 5.461
+        },
+        "stage_seconds": {
+          "transcription": 1.071,
+          "answer": 0.979,
+          "synthesis": 3.377
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 2,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "first_playback_request": 4.775,
+          "playback_complete": 4.807
+        },
+        "stage_seconds": {
+          "transcription": 1.008,
+          "answer": 0.601,
+          "synthesis": 3.165
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 2,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "first_playback_request": 5.476,
+          "playback_complete": 5.509
+        },
+        "stage_seconds": {
+          "transcription": 1.009,
+          "answer": 0.999,
+          "synthesis": 3.468
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 2,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "first_playback_request": 5.332,
+          "playback_complete": 5.365
+        },
+        "stage_seconds": {
+          "transcription": 1.103,
+          "answer": 0.912,
+          "synthesis": 3.317
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 3,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "first_playback_request": 4.844,
+          "playback_complete": 4.877
+        },
+        "stage_seconds": {
+          "transcription": 1.008,
+          "answer": 0.612,
+          "synthesis": 3.224
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 3,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "first_playback_request": 6.078,
+          "playback_complete": 6.111
+        },
+        "stage_seconds": {
+          "transcription": 1.039,
+          "answer": 0.99,
+          "synthesis": 4.049
+        }
+      },
+      {
+        "profile": "previous_sequential",
+        "repetition": 3,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "first_playback_request": 5.35,
+          "playback_complete": 5.383
+        },
+        "stage_seconds": {
+          "transcription": 1.042,
+          "answer": 0.898,
+          "synthesis": 3.41
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "startup_seconds": 52.329
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 1,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "transcription": 0.13,
+          "first_playback_request": 0.963,
+          "answer_to_first_phrase": 0.567,
+          "playback_complete": 1.062
+        },
+        "stage_seconds": {
+          "first_phrase": 0.567,
+          "first_playback_request": 0.833,
+          "playback_complete": 0.931
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 1,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "transcription": 0.144,
+          "first_playback_request": 0.945,
+          "answer_to_first_phrase": 0.545,
+          "playback_complete": 1.469
+        },
+        "stage_seconds": {
+          "first_phrase": 0.545,
+          "first_playback_request": 0.801,
+          "playback_complete": 1.324
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 1,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "transcription": 0.159,
+          "first_playback_request": 0.995,
+          "answer_to_first_phrase": 0.628,
+          "playback_complete": 1.334
+        },
+        "stage_seconds": {
+          "first_phrase": 0.628,
+          "first_playback_request": 0.836,
+          "playback_complete": 1.175
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 2,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "transcription": 0.129,
+          "first_playback_request": 0.837,
+          "answer_to_first_phrase": 0.509,
+          "playback_complete": 0.868
+        },
+        "stage_seconds": {
+          "first_phrase": 0.509,
+          "first_playback_request": 0.707,
+          "playback_complete": 0.739
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 2,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "transcription": 0.129,
+          "first_playback_request": 0.859,
+          "answer_to_first_phrase": 0.472,
+          "playback_complete": 1.365
+        },
+        "stage_seconds": {
+          "first_phrase": 0.472,
+          "first_playback_request": 0.729,
+          "playback_complete": 1.236
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 2,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "transcription": 0.162,
+          "first_playback_request": 0.894,
+          "answer_to_first_phrase": 0.511,
+          "playback_complete": 1.219
+        },
+        "stage_seconds": {
+          "first_phrase": 0.511,
+          "first_playback_request": 0.731,
+          "playback_complete": 1.056
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 3,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "transcription": 0.118,
+          "first_playback_request": 0.825,
+          "answer_to_first_phrase": 0.507,
+          "playback_complete": 0.857
+        },
+        "stage_seconds": {
+          "first_phrase": 0.507,
+          "first_playback_request": 0.707,
+          "playback_complete": 0.738
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 3,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "transcription": 0.128,
+          "first_playback_request": 1.166,
+          "answer_to_first_phrase": 0.47,
+          "playback_complete": 1.703
+        },
+        "stage_seconds": {
+          "first_phrase": 0.47,
+          "first_playback_request": 1.038,
+          "playback_complete": 1.575
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 3,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "transcription": 0.214,
+          "first_playback_request": 0.991,
+          "answer_to_first_phrase": 0.575,
+          "playback_complete": 1.329
+        },
+        "stage_seconds": {
+          "first_phrase": 0.575,
+          "first_playback_request": 0.776,
+          "playback_complete": 1.114
+        }
+      }
+    ],
+    "responsive_prompt_cache": false
+  },
+  "final_prompt_cache": {
+    "scope": "Authored WAV to software playback request; no microphone or acoustic-onset measurement",
+    "order": [
+      "resident_streaming"
+    ],
+    "repeats": 3,
+    "playback": "null",
+    "recognition_change": "Resident context, no timestamp tokens; beam size 5 and English retained",
+    "system_prompt_sha256": "ddd95c260821c1d0fd0e59f736423fa1e21a39c5fcdc99b09c22d44704720597",
+    "lock": {
+      "llama_cpp": {
+        "repository": "https://github.com/ggml-org/llama.cpp.git",
+        "commit": "930e2fa5995789efbf249a8bf61325bb626e417b",
+        "license": "MIT"
+      },
+      "whisper_cpp": {
+        "repository": "https://github.com/ggml-org/whisper.cpp.git",
+        "commit": "da54572229bcf64ba367d96c7ef15770376c4280",
+        "license": "MIT"
+      },
+      "answer_model": {
+        "repository": "unsloth/gemma-4-E2B-it-GGUF",
+        "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+        "file": "gemma-4-E2B-it-Q4_K_M.gguf",
+        "sha256": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8",
+        "bytes": 3106738272,
+        "quantization": "Q4_K_M",
+        "license": "Apache-2.0",
+        "base_model": "google/gemma-4-E2B-it"
+      },
+      "speech_model": {
+        "repository": "ggerganov/whisper.cpp",
+        "revision": "5359861c739e955e79d9a303bcbc70fb988958b1",
+        "file": "ggml-tiny.en.bin",
+        "sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+        "bytes": 77704715,
+        "quantization": "F16",
+        "license": "MIT"
+      },
+      "speech_output": {
+        "runtime": "piper-tts",
+        "version": "1.8.0",
+        "voice": "en_US-ljspeech-medium",
+        "sample_rate": 22050,
+        "execution": "CPU subprocess; model loaded per turn",
+        "license": "GPL-3.0-or-later",
+        "selection": "Local neural English voice; physical listening acceptance required"
+      },
+      "voice_model": {
+        "repository": "rhasspy/piper-voices",
+        "revision": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+        "file": "en_US-ljspeech-medium.onnx",
+        "repository_path": "en/en_US/ljspeech/medium/en_US-ljspeech-medium.onnx",
+        "sha256": "6f52a751e2349abe7a76735eb09dc1875298c77ea2342ffd2fef79ff81b87f22",
+        "bytes": 63531379,
+        "dataset_license": "Public domain (LJ Speech; see voice model card)"
+      },
+      "voice_config": {
+        "repository": "rhasspy/piper-voices",
+        "revision": "e9ab671f2a0e50a701b34361136ba3e6a3a9eb0c",
+        "file": "en_US-ljspeech-medium.onnx.json",
+        "repository_path": "en/en_US/ljspeech/medium/en_US-ljspeech-medium.onnx.json",
+        "sha256": "141d612cc0a95ed7efc1ca936b845c2364967f2e9217c5dbfcf69fc4d6c65860",
+        "bytes": 4972,
+        "dataset_license": "Public domain (LJ Speech; see voice model card)"
+      }
+    },
+    "fixtures": [
+      {
+        "text": "What is the capital of France?",
+        "sha256": "f5be09db269b4ab487d2d23023396df90ebfdd588a6533c4ccd46aeddd401982",
+        "seconds": 2.2375625
+      },
+      {
+        "text": "Why do plants need sunlight?",
+        "sha256": "1d025f7cf0c2f6d89aca098886a442a9643b0e6d10a31e9c5612f55ba2b38d64",
+        "seconds": 2.3053125
+      },
+      {
+        "text": "Name two things to pack for a short walk.",
+        "sha256": "f2d89f1db28e7a410e6381b3d42866840b74b019ce0050d9e02853e8a1f461a6",
+        "seconds": 3.0035625
+      }
+    ],
+    "runs": [
+      {
+        "profile": "resident_streaming",
+        "startup_seconds": 48.66
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 1,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "transcription": 0.153,
+          "first_playback_request": 0.9,
+          "answer_to_first_phrase": 0.516,
+          "playback_complete": 0.999
+        },
+        "stage_seconds": {
+          "first_phrase": 0.516,
+          "first_playback_request": 0.746,
+          "playback_complete": 0.845
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 1,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "transcription": 0.149,
+          "first_playback_request": 0.97,
+          "answer_to_first_phrase": 0.526,
+          "playback_complete": 1.468
+        },
+        "stage_seconds": {
+          "first_phrase": 0.526,
+          "first_playback_request": 0.821,
+          "playback_complete": 1.319
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 1,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "transcription": 0.175,
+          "first_playback_request": 0.909,
+          "answer_to_first_phrase": 0.53,
+          "playback_complete": 1.246
+        },
+        "stage_seconds": {
+          "first_phrase": 0.53,
+          "first_playback_request": 0.734,
+          "playback_complete": 1.071
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 2,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "transcription": 0.136,
+          "first_playback_request": 0.801,
+          "answer_to_first_phrase": 0.448,
+          "playback_complete": 0.832
+        },
+        "stage_seconds": {
+          "first_phrase": 0.448,
+          "first_playback_request": 0.665,
+          "playback_complete": 0.696
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 2,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "transcription": 0.143,
+          "first_playback_request": 0.82,
+          "answer_to_first_phrase": 0.428,
+          "playback_complete": 1.335
+        },
+        "stage_seconds": {
+          "first_phrase": 0.428,
+          "first_playback_request": 0.677,
+          "playback_complete": 1.192
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 2,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "transcription": 0.177,
+          "first_playback_request": 0.851,
+          "answer_to_first_phrase": 0.473,
+          "playback_complete": 1.196
+        },
+        "stage_seconds": {
+          "first_phrase": 0.473,
+          "first_playback_request": 0.674,
+          "playback_complete": 1.018
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 3,
+        "case": 1,
+        "transcript": "What is the capital of France?",
+        "answer": "The capital of France is Paris.",
+        "timings": {
+          "transcription": 0.13,
+          "first_playback_request": 0.795,
+          "answer_to_first_phrase": 0.463,
+          "playback_complete": 0.828
+        },
+        "stage_seconds": {
+          "first_phrase": 0.463,
+          "first_playback_request": 0.664,
+          "playback_complete": 0.697
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 3,
+        "case": 2,
+        "transcript": "Why do plant seed sunlight?",
+        "answer": "Plants need sunlight for photosynthesis. Sunlight provides the energy plants need to make food.",
+        "timings": {
+          "transcription": 0.147,
+          "first_playback_request": 0.826,
+          "answer_to_first_phrase": 0.431,
+          "playback_complete": 1.346
+        },
+        "stage_seconds": {
+          "first_phrase": 0.431,
+          "first_playback_request": 0.679,
+          "playback_complete": 1.198
+        }
+      },
+      {
+        "profile": "resident_streaming",
+        "repetition": 3,
+        "case": 3,
+        "transcript": "name two things to pack for a short walk.",
+        "answer": "Pack water and a light jacket. You should also bring comfortable shoes.",
+        "timings": {
+          "transcription": 0.163,
+          "first_playback_request": 0.827,
+          "answer_to_first_phrase": 0.459,
+          "playback_complete": 1.158
+        },
+        "stage_seconds": {
+          "first_phrase": 0.459,
+          "first_playback_request": 0.664,
+          "playback_complete": 0.995
+        }
+      }
+    ],
+    "responsive_prompt_cache": true
+  },
+  "physical_output_and_cancellation_before_prefix_cache": {
+    "scope": "Authored physical playback and owned-worker failure checks; no live microphone recording",
+    "checks": [
+      {
+        "check": "asr_cancellation",
+        "passed": true,
+        "seconds": 0.14
+      },
+      {
+        "check": "tts_cancellation",
+        "passed": true,
+        "seconds": 0.073
+      },
+      {
+        "check": "generation_cancellation",
+        "passed": true,
+        "seconds": 1.569
+      },
+      {
+        "check": "authored_capture_stream_physical_playback",
+        "passed": true,
+        "turns": [
+          {
+            "first_phrase": 0.613,
+            "first_playback_request": 0.834,
+            "playback_complete": 3.069,
+            "finish_to_answer_start": 0.195,
+            "finish_to_playback_request": 1.029,
+            "finish_to_playback_complete": 3.265
+          },
+          {
+            "first_phrase": 0.611,
+            "first_playback_request": 0.819,
+            "playback_complete": 2.987,
+            "finish_to_answer_start": 0.187,
+            "finish_to_playback_request": 1.006,
+            "finish_to_playback_complete": 3.174
+          }
+        ],
+        "states": [
+          "recording",
+          "starting",
+          "recording",
+          "finishing",
+          "transcribing",
+          "answering",
+          "speaking",
+          "ready",
+          "recording",
+          "starting",
+          "recording",
+          "finishing",
+          "transcribing",
+          "answering",
+          "speaking",
+          "ready"
+        ]
+      },
+      {
+        "check": "physical_playback_cancellation",
+        "passed": true
+      },
+      {
+        "check": "transient_workspace_cleanup",
+        "passed": true
+      }
+    ]
+  },
+  "limits": [
+    "Sequential configuration order; cache and operating-system state differ.",
+    "A regression-test process ran during portions of the first comparison; final prefix-cache timing run had no concurrent regression test.",
+    "Playback-request timestamps are not acoustic-onset measurements. Null-sink playback completion is not speech duration.",
+    "Only three authored questions, three repetitions each; no representative quality or percentile claim.",
+    "All nine final transcripts and answers match the earlier sequential outputs; one synthetic plant question is mistranscribed in both conditions."
+  ]
+}

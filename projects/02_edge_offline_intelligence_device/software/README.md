@@ -1,6 +1,6 @@
 # Local Voice for macOS and iPhone
 
-For the separate Linux implementation intended for Jetson, use the [Linux voice application guide](jetson/README.md). It has ARM64 VM checks, standalone physical Jetson button/service acceptance, and a [Gemma 4 E2B/Piper deployment record](../results/2026-11-15-jetson-gemma4-piper.md). Extended reliability and quality remain open. The Apple implementation below is unchanged.
+For the separate Linux implementation intended for Jetson, use the [Linux voice application guide](jetson/README.md). It has ARM64 VM checks, standalone physical Jetson button/service acceptance, and a [resident/streaming Gemma 4 E2B/Piper deployment record](../results/2026-11-15-jetson-responsive-voice.md). Extended reliability and quality remain open. The Apple implementation below is unchanged.
 
 **Status:** The Mac development app is version 0.2.0 (build 4). The native iPhone beta is **Local Voice Lab 0.3.0 (build 5)** in TestFlight; the installed app remains **Local Voice**. The owner confirmed that the delivered beta works on their iOS device. Device/OS details and individual feature checks remain to be recorded. Simulator typed-answer and manual read-aloud checks passed. The owner also confirmed the Mac voice-input, text-answer, and read-aloud flow. A same-device Jetson CPU/CUDA development comparison is published; no scored quality or cross-platform comparison is published.
 
