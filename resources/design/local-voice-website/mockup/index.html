@@ -140,48 +140,43 @@
       <p>Inside the device, each part has a specific job. A speech model hears the words. A language model forms an answer. A speech synthesizer gives it a voice.</p>
       <a class="text-link" href="#inside">Follow one turn <span aria-hidden="true">↓</span></a>
     </section>
-    <section class="inside-story" id="inside" aria-label="Interactive local voice architecture">
+    <section class="inside-story" id="inside" aria-label="An illustrated journey through local voice AI">
       <div class="inside-pin">
-        <div class="inside-top"><a href="#assembly">Local Voice<span>.</span></a><span>Inside the device</span><a href="#progress">Current progress ↗</a></div>
-        <div class="inside-layout">
-          <div class="inside-copy">
-            <p class="eyebrow" id="flow-kicker">01 / Capture</p>
-            <h2 id="flow-title">Your voice.<br> <em>Your cue.</em></h2>
-            <p id="flow-description">The AtomS3-Lite sends a button press over USB. The Python controller starts the microphone; a second press ends the recording. Listening stops automatically at 30 seconds.</p>
-            <div class="flow-spec" id="flow-spec">ALSA · mono 16 kHz audio · temporary WAV</div>
-            <div class="example"><span class="micro-label">Illustrative turn · not live inference</span><p id="flow-example">“What is the capital of France?”</p><span id="flow-handoff">Sound → recorded audio</span></div>
-          </div>
-          <div class="system-map" aria-label="Signal path on the Jetson">
-            <div class="controller"><span class="status-dot" id="state-light"></span><div><span class="micro-label">AtomS3-Lite → Python controller</span><strong id="controller-state">Recording</strong></div><span class="control-note">Start · finish · cancel</span></div>
-            <div class="device-boundary">
-              <div class="boundary-label"><span>JETSON ORIN NANO SUPER</span><span>8 GB shared memory</span></div>
-              <div class="signal-path">
-                <button class="signal-node is-lit" data-flow="0" aria-current="step"><span class="node-number">01</span><img src="assets/microphone.svg" alt=""/><span class="node-text"><strong>Capture</strong><small>USB microphone · ALSA</small></span><span class="node-port">Audio</span></button>
-                <div class="signal-line" aria-hidden="true"><span></span></div>
-                <button class="signal-node" data-flow="1"><span class="node-number">02</span><span class="model-symbol" aria-hidden="true">∿</span><span class="node-text"><strong>Whisper tiny.en</strong><small>whisper.cpp · F16 · CUDA</small></span><span class="node-port">Text</span></button>
-                <div class="signal-line" aria-hidden="true"><span></span></div>
-                <button class="signal-node" data-flow="2"><span class="node-number">03</span><span class="model-symbol" aria-hidden="true">✳</span><span class="node-text"><strong>Qwen2.5 1.5B</strong><small>Instruct · Q4_K_M · llama.cpp</small></span><span class="node-port">Answer</span></button>
-                <div class="signal-line" aria-hidden="true"><span></span></div>
-                <button class="signal-node" data-flow="3"><span class="node-number">04</span><span class="model-symbol" aria-hidden="true">≋</span><span class="node-text"><strong>eSpeak NG</strong><small>Local synthesis · CPU · en-us</small></span><span class="node-port">Speech</span></button>
-                <div class="signal-line" aria-hidden="true"><span></span></div>
-                <button class="signal-node" data-flow="4"><span class="node-number">05</span><img src="assets/speaker.svg" alt=""/><span class="node-text"><strong>Playback</strong><small>USB speaker · ALSA</small></span><span class="node-port">Sound</span></button>
-              </div>
-              <div class="boundary-foot"><span>Local processing after model setup</span><span>One question at a time</span></div>
+        <div class="inside-top"><a href="#assembly">Local Voice<span>.</span></a><span>A little tour of the inside</span><a href="#underneath">The finer details ↗</a></div>
+        <div class="journey-heading"><div><p class="eyebrow" id="flow-kicker">01 / A question, out loud</p><h2 id="flow-title">It starts with <em>you.</em></h2></div><p id="flow-description">“What is the capital of France?” You speak to Local Voice. Its microphone captures the sound of your question.</p></div>
+        <div class="workshop-viewport" tabindex="0" aria-label="Illustrated voice journey; scroll horizontally on small screens">
+          <div class="workshop" data-scene="0">
+            <div class="workshop-labels">
+              <button data-flow="0" aria-current="step"><span>01 / YOU &amp; LOCAL VOICE</span><strong>A little conversation</strong></button>
+              <button data-flow="1"><span>02 / WHISPER</span><strong>Sound becomes words</strong></button>
+              <button data-flow="2"><span>03 / QWEN</span><strong>Words become an answer</strong></button>
+              <button data-flow="3"><span>04 / ESPEAK NG</span><strong>An answer gets a voice</strong></button>
             </div>
-            <p class="map-caption">The microphone, speaker, and button connect over USB. Recognition, answering, and synthesis run on the Jetson.</p>
+            <div class="illustration">
+              <img class="workshop-art" src="assets/voice-workshop.png" alt="A person talks to a small white voice device. A tape-and-typewriter machine represents Whisper, a retro computer represents the answer model, and a coral synthesizer represents text-to-speech." width="2172" height="724">
+              <div class="question-bubble">What is the capital<br>of France?</div>
+              <div class="transcript-slip"><span>HEARD &amp; TRANSCRIBED</span>What is the<br>capital of France?<i>audio → text</i></div>
+              <div class="answer-tokens" aria-label="Illustration of incremental answer generation"><span>The</span><span>capital</span><span>of France</span><span>is</span><span>Paris.</span></div>
+              <div class="speech-strip"><span>READY TO SPEAK</span>“The capital of<br>France is Paris.”<i>text → audio</i></div>
+              <div class="reply-bubble">The capital of<br>France is <em>Paris.</em></div>
+              <svg class="journey-route" viewBox="0 0 1200 470" aria-hidden="true"><defs><marker id="route-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs><path class="return-route" d="M1090 310V410Q1090 433 1067 433H218Q190 433 190 405V278" marker-end="url(#route-arrow)"/><circle class="signal-dot" r="5" cx="240" cy="235"/></svg>
+              <span class="return-note">and back to you, through the very same device.</span>
+            </div>
+            <div class="device-footnote"><img src="assets/enclosure.svg" alt="The prototype enclosure from the hardware story"><span>Same Local Voice concept.<br><em>A peek inside, drawn as a tiny workshop.</em></span></div>
           </div>
         </div>
-        <div class="inside-bottom"><span>Scroll to follow the signal</span><nav aria-label="Voice pipeline steps"><button data-step="0" aria-current="step">Capture</button><button data-step="1">Transcribe</button><button data-step="2">Answer</button><button data-step="3">Synthesize</button><button data-step="4">Speak</button></nav><span id="flow-count">01 / 05</span></div>
+        <div class="journey-caption"><span class="caption-index" id="flow-count">01 / 05</span><div><span class="micro-label" id="flow-handoff">Your voice → recorded sound</span><p id="flow-detail">The device receives audio, not written words. The next job is to work out what was said.</p></div><span class="illustration-note">Illustrative example<br>Models run on the Jetson</span></div>
+        <div class="inside-bottom"><span>Scroll to follow the question ↓</span><nav aria-label="Voice journey steps"><button data-step="0" aria-current="step">You speak</button><button data-step="1">Whisper hears</button><button data-step="2">An answer forms</button><button data-step="3">Text gets a voice</button><button data-step="4">Back to you</button></nav></div>
       </div>
     </section>
     <section id="underneath" class="underneath section-wrap" aria-labelledby="underneath-title">
-      <div class="section-heading"><p class="eyebrow">How the pieces cooperate</p><h2 id="underneath-title">One controller.<br><em>A deliberate sequence.</em></h2></div>
+      <div class="section-heading"><p class="eyebrow">How the pieces cooperate</p><h2 id="underneath-title">A playful picture.<br><em>A real process.</em></h2></div>
       <div class="detail-grid">
-        <article><span class="micro-label">Control</span><h3>The button runs the turn.</h3><p>The Python controller coordinates recording, transcription, generation, synthesis, and playback. It sends state updates back to the button’s LED. A press during processing or playback cancels the active turn.</p></article>
+        <article><span class="micro-label">Inference</span><h3>How does an answer form?</h3><p>The transcript and a brief system instruction become the language model’s input. It generates text a token at a time, using patterns learned during training. A token may be a word or part of one; the little tiles above are a simplified illustration. There is no web lookup, and an answer can still be wrong.</p></article>
         <article><span class="micro-label">Compute</span><h3>Two models. Different jobs.</h3><p>Whisper tiny.en converts audio to text. Qwen2.5 1.5B Instruct uses that transcript and a fixed system prompt to produce a short answer. The CUDA profile runs recognition and all 29 answer-model layers on the GPU. eSpeak synthesis stays on CPU.</p></article>
         <article><span class="micro-label">Boundaries</span><h3>A fresh start, each time.</h3><p>The current device handles English, one question at a time. There is no conversation history, web search, document retrieval, or cloud fallback. Temporary audio is cleaned up on normal completion, cancellation, and ordinary errors.</p></article>
       </div>
-      <details class="technical"><summary>Read the runtime and privacy details <span>+</span></summary><div><p>The answer context is 2,048 tokens, with a default 128-token response cap. A response that exhausts its allowance is discarded rather than spoken partially. Runtime commits, model revisions, and SHA-256 hashes are pinned in the <a href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/software/jetson/runtime-lock.json">runtime lock</a>.</p><p>Initial setup downloads software and weights. The deployed service’s process network namespace contains only loopback; this is a boundary around the service, not a claim that the entire board has no network. Temporary audio uses RAM-backed storage. Abrupt process kills and operating-system behavior have separate retention limits; no forensic-erasure guarantee is made.</p></div></details>
+      <details class="technical"><summary>Under the paper: models, runtime &amp; privacy <span>+</span></summary><div><p>This illustration follows the validated November 15 Qwen/eSpeak baseline: Whisper tiny.en F16 through whisper.cpp, Qwen2.5 1.5B Instruct Q4_K_M through llama.cpp, and eSpeak NG with the en-us voice. The illustrated machines are metaphors for software running on the same Jetson, not additional physical hardware. The enclosure remains a form concept.</p><p>The answer context is 2,048 tokens, with a default 128-token response cap. A response that exhausts its allowance is discarded rather than spoken partially. Runtime commits, model revisions, and SHA-256 hashes are pinned in the <a href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/software/jetson/runtime-lock.json">runtime lock</a>.</p><p>Initial setup downloads software and weights. The deployed service’s process network namespace contains only loopback; this is a boundary around the service, not a claim that the entire board has no network. Temporary audio uses RAM-backed storage. Abrupt process kills and operating-system behavior have separate retention limits; no forensic-erasure guarantee is made.</p></div></details>
     </section>
     <section class="platforms section-wrap" aria-labelledby="platforms-title">
       <div class="section-heading"><p class="eyebrow">One idea, three forms</p><h2 id="platforms-title">Local on the desk.<br>Local <em>in your hand.</em></h2><p>The Apple apps share a Swift core and native interface. The Jetson follows the same single-question idea with its own Linux controller and open models.</p></div>

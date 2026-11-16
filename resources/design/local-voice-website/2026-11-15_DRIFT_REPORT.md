@@ -17,3 +17,9 @@ Scope: existing website presentation versus the November 15 architecture, runtim
 ## CUDA development record versus broad status wording
 
 - Broad “standalone operation works” wording could imply the CUDA profile had passed the same physical-button and reboot checks as CPU. The detailed CUDA record explicitly leaves those checks open. The preview labels CPU standalone evidence, CUDA integration, and pending CUDA physical acceptance separately.
+
+## Visual review revision
+
+- The initial dark, stacked component diagram did not match the requested illustrated left-to-right journey. It is replaced by a warm-paper retro panorama and a returning speech path, with the hardware story preserved.
+- The initial narrative emphasized the AtomS3-Lite protocol. The revised architecture story instead follows sound → transcript → generated answer → synthesized speech → the original listener. Inference is explained separately from transcription and synthesis.
+- The token and machinery illustrations are abstractions, not exact tokenizer output or extra physical components. The page now states these limits and identifies the dated validated model baseline.

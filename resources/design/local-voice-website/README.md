@@ -2,7 +2,7 @@
 
 Status: local design preview, November 15, 2026. Not approved for production.
 
-This is a standalone presentation of Local Voice for the existing device route. It preserves the original seven-stage hardware assembly, typography, paper color, illustrations, and reverse scrolling. It removes the numbered hardware-study masthead and adds a second interactive story explaining capture, transcription, answering, synthesis, and playback.
+This is a standalone presentation of Local Voice for the existing device route. It preserves the original seven-stage hardware assembly, typography, paper color, illustrations, and reverse scrolling. It removes the numbered hardware-study masthead and adds a second interactive story explaining a spoken question, transcription, local inference, speech synthesis, and the reply returning to the same person and device.
 
 ## Review the mock-up
 
@@ -12,7 +12,9 @@ Serve `mockup/` using a local static HTTP server. No dependencies or build are r
 - `mockup/inside.css` and `mockup/inside.js`: architecture presentation and scroll/click navigation.
 - `mockup/styles.css`, `assembly.js`, `choreography.mjs`, and `assets/`: preserved hardware experience, with refreshed wording.
 
-The architecture examples are deliberately authored illustrations, not live inference or measured outputs. Model names and implementation limits come from the current source. eSpeak is a functional synthesizer, not another language model. The dark architecture section uses the same typography and bronze accent as the hardware section. Its nodes and stage controls support direct selection; short viewports use a non-sticky, directly selectable presentation.
+The architecture examples are deliberately authored illustrations, not live inference or measured outputs. The revised story uses a warm-paper, 1990s-style panoramic illustration: person and prototype, tape/typewriter for Whisper, terminal for Qwen, and a speech synthesizer for eSpeak. Scrolling reveals a question bubble, a transcript slip, incremental answer tokens, speech text, and a reply bubble with a return path. These machines are metaphors for software running on the same Jetson, not additional hardware. The original enclosure SVG also appears as a reference. The main narrative omits button protocol details; technical parameters sit below the story.
+
+The panorama reads left to right on desktop. Narrow screens pan to the active station, with shorter copy and horizontal touch scrolling. Stage controls and the four illustrated stations support direct selection; short viewports use a non-sticky presentation. The illustrative token tiles do not claim exact tokenizer segmentation. Model identities follow the validated November 15 Qwen/eSpeak baseline; reconcile any later device upgrade before production promotion.
 
 ## Content authorities
 
@@ -38,3 +40,11 @@ Scoped presentation change over the existing architecture and website contract. 
 - Reduced-motion rules retained and inspected in source; an OS-level reduced-motion browser test was not performed.
 - Repository safety scan and whitespace checks passed.
 - No production files changed by this task, no source push, and no production deployment. Production remains a separate step after visual review.
+
+## Retro illustration revision
+
+The owner requested a less stacked, less technical presentation with a person, the prototype device, and a retro illustrated round trip. The generated `mockup/assets/voice-workshop.png` is a task-owned editorial illustration; text, token reveals, route, stage labels, and speech bubbles are separate accessible HTML/SVG layers. No image generation occurs in the website.
+
+Revision checks: JavaScript syntax, local image loading, no captured console errors/warnings, and desktop fit at 1280 × 800. All five stages passed heading/scene/caption spacing and page-width checks at 375 × 667. The 390 × 844 view was inspected and shortened mobile copy subsequently applied; the 320 × 568 non-sticky fallback and keyboard Tab/Enter stage selection passed. Viewport override was reset after inspection. Reduced-motion handling remains in source; no OS-setting emulation is claimed.
+
+This revision changes only the local preview and its records. No production publication.
