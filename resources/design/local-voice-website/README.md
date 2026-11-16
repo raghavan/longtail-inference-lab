@@ -1,6 +1,6 @@
 # Local Voice website preview
 
-Status: the base design was approved and deployed on November 15, 2026. The recorded-demo addition is implemented locally and awaits owner visual approval before promotion.
+Status: the base design was approved and deployed on November 15, 2026. The owner approved deployment of the recorded demo and subsequent page cleanups on November 15, 2026; the reviewed files are promoted to production source.
 
 The preview preserves the existing seven-stage scroll-driven hardware assembly and adds a retro illustrated account of the real software pipeline: Whisper tiny.en → Gemma 4 E2B → Piper neural speech. It removes the numbered hardware-study masthead. The owner requested local visual review before production.
 
@@ -47,9 +47,9 @@ JavaScript syntax, whitespace, and repository safety checks passed. Desktop (128
 
 The approved files are promoted into the production device page. Concurrent device work remains separate. Deployment status is tracked in the task knowledge record.
 
-## Recorded demo addition — review pending
+## Recorded demo addition — approved
 
-The mock-up now ends with a native video player and left-hand timing statistics for the selected real recording. On phones the video precedes the statistics. The [demo design and evidence](video-demo.md) defines the 1.6-second approximate response delay, approximately 6.5-second reply, local model stack, and compact cloud API latency context table with proportional bars; the video timings are separate from the instrumented development trials above. The original background, interaction and stereo audio are retained. The 1080p H.264/SDR derivative includes a poster and optional English captions. No new production changes or source push are authorized until this addition receives owner approval.
+The mock-up now ends with a native video player and left-hand timing statistics for the selected real recording. On phones the video precedes the statistics. The [demo design and evidence](video-demo.md) defines the 1.6-second approximate response delay, approximately 6.5-second reply, local model stack, and compact cloud API latency context table with proportional bars; the video timings are separate from the instrumented development trials above. The original background, interaction and stereo audio are retained. The 1080p H.264/SDR derivative includes a poster and optional English captions. Owner approval now authorizes publishing the complete reviewed revision.
 
 ## Page focus revision
 
@@ -66,3 +66,7 @@ The owner also removed the “What comes next” block beneath the build log. It
 The owner removed the loop back to the listener, return caption and repeated answer bubble beside the person. The journey now has four stages and ends at Piper; its existing speech card remains. Scroll distance is shortened to match, and stage indexing uses the stage count. Desktop scrolling beyond Piper stays on Piper; mobile selection pans to Piper. No overflow or captured browser warnings/errors. Local review only.
 
 The hardware illustration header omits the incremental FIG. labels at owner request. Component names remain right aligned; chapter controls and assembly progression are retained.
+
+## Approved release
+
+The owner explicitly requested deployment of all reviewed changes. The complete mock-up is promoted to the production device route; changed script and stylesheet URLs are versioned for returning visitors. Deployment and live verification are recorded in task knowledge.

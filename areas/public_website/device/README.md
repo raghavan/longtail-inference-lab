@@ -4,13 +4,13 @@ The hardware and model-architecture page at <https://lily.md/device/>. This page
 
 The experience starts with a Jetson and introduces storage, a microphone, a speaker, a button, and power. Scrolling gathers the components into an illustrative enclosure. Scrolling backward reverses the sequence. The chapter controls jump directly to each component; reduced-motion preferences select still frames.
 
-The model journey follows one authored France question through Whisper tiny.en, Gemma 4 E2B, and Piper, then back to the prototype. Each widget briefly wiggles during its action; no traveling signal dot or customization toolbar is used. Scroll or chapter controls advance the story. Reduced motion disables wiggles. The runtime keeps models resident and streams complete phrases; the five visual chapters separate overlapping jobs for clarity. The illustration is explanatory, not a live model run or measured activation trace.
+The model journey follows one authored France question through Whisper tiny.en, Gemma 4 E2B, and Piper, ending at speech output. Each widget briefly wiggles during its action; no traveling signal dot or customization toolbar is used. Scroll or illustrated model-station controls advance the story. Reduced motion disables wiggles. The runtime keeps models resident and streams complete phrases; the four visual stages separate overlapping jobs for clarity. The illustration is explanatory, not a live model run or measured activation trace.
 
 ## Editing
 
 - `index.html` contains the narrative and scene structure.
 - `styles.css` contains the hardware layout; `inside.css` styles the model journey and reading sections.
-- `inside.js` maps scroll/chapter navigation to the fixed example and active widget wiggles.
+- `inside.js` maps scroll/model-station navigation to the fixed example and active widget wiggles.
 - `choreography.mjs` contains the chapter data and component poses in the 820 by 720 scene.
 - `assembly.js` maps native scroll position to the poses and chapter controls.
 - `assets/` contains seven self-contained SVG hardware illustrations and the original generated retro model illustration. SVG masks and clips animate its individual widgets without moving the board or person.
@@ -30,3 +30,9 @@ Manufacturer references: [Jetson layout](https://docs.nvidia.com/jetson/orin-nan
 ## Design approval
 
 The owner approved promotion of the locally reviewed mock-up on November 15, 2026. The [design record](../../../resources/design/local-voice-website/README.md) tracks the iterations. Production copy was reconciled with the resident-worker deployment and two confirmed live answers before promotion.
+
+## Recorded demonstration
+
+The page ends with the approved original clockwise landscape recording, a native video player, poster and optional English captions. The 1080p H.264/SDR delivery preserves source timing and stereo audio. Approximately 1.6 seconds to first speech and 6.5 seconds of spoken output are video-derived estimates. A compact sourced table provides cloud API latency context, explicitly distinguishing the single local take from benchmark medians and different tasks. See [demo evidence](../../../resources/design/local-voice-website/video-demo.md).
+
+The November 15 owner-approved cleanup removes the three-platform overview, upcoming-work block, model-journey footer, return loop/repeated listener reply and hardware FIG. counters. The user explicitly authorized deploying the complete reviewed revision.

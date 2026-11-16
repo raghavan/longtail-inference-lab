@@ -6,7 +6,6 @@ const chapters = [...document.querySelectorAll('[data-chapter]')];
 const navigation = [...document.querySelectorAll('[data-go]')];
 const partElements = Object.fromEntries(Object.keys(PARTS).map(name => [name, document.getElementById(`part-${name}`)]));
 const number = document.getElementById('chapter-number');
-const figure = document.getElementById('figure-number');
 const partName = document.getElementById('part-name');
 const caption = document.getElementById('figure-caption');
 const instruction = document.getElementById('scroll-instruction');
@@ -47,7 +46,6 @@ function setChapter(index) {
     else button.removeAttribute('aria-current');
   });
   number.textContent = String(index + 1).padStart(2, '0');
-  figure.textContent = `FIG. ${String(index + 1).padStart(2, '0')}`;
   partName.textContent = ['Jetson Orin Nano Super', '128 GB microSD', 'Mini USB microphone', 'Tiny USB speaker', 'AtomS3-Lite', 'Mains power', 'Local Voice / Form study'][index];
   caption.textContent = stage.caption;
   instruction.textContent = index === 6 ? 'Scroll to go inside' : 'Scroll to assemble';

@@ -10,10 +10,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="inside.css">
-  <script src="assembly.js?v=3" type="module"></script>
-  <script src="inside.js" type="module"></script>
+  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="inside.css?v=5">
+  <link rel="stylesheet" href="demo.css?v=5">
+  <script src="assembly.js?v=5" type="module"></script>
+  <script src="inside.js?v=5" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#underneath">Skip the animation</a>
@@ -79,7 +80,7 @@
           </div>
 
           <figure class="hardware" aria-labelledby="scene-caption">
-            <div class="figure-heading"><span id="figure-number">FIG. 01</span><span id="part-name">Jetson Orin Nano Super</span></div>
+            <div class="figure-heading"><span id="part-name">Jetson Orin Nano Super</span></div>
             <svg class="hardware-scene" viewBox="0 0 820 720" role="img" aria-labelledby="hardware-title hardware-description">
               <title id="hardware-title">Local Voice, piece by piece</title>
               <desc id="hardware-description">A stylized Jetson board is joined by a microSD card, USB microphone, speaker, button and power supply as you scroll. The pieces gather inside an illustrative enclosure.</desc>
@@ -181,18 +182,13 @@
               <div class="transcript-slip"><span>WHISPER HEARD</span><b id="transcript-example">What is the capital of France?</b><i>sound → spectrogram → text</i></div>
               <div class="answer-tokens" aria-label="Illustrative answer tokens" id="answer-example"></div>
               <div class="speech-strip"><span>PIPER SPEAKS</span><b id="speech-example">The capital of France is Paris.</b><i>text → pronunciation → waveform</i></div>
-              <div class="reply-bubble" id="reply-example">The capital of France is Paris.</div>
               <div class="spectrogram-scan" aria-hidden="true"></div>
               <div class="gemma-activation" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
               <div class="piper-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <svg class="journey-route" viewBox="0 0 1200 470" aria-hidden="true"><defs><marker id="route-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10" fill="none" stroke="currentColor" stroke-width="1.5"/></marker></defs><path class="return-route" d="M1090 310V410Q1090 433 1067 433H218Q190 433 190 405V278" marker-end="url(#route-arrow)"/></svg>
-              <span class="return-note">and back to you, through the very same device.</span>
             </div>
             <div class="device-footnote"><img src="assets/enclosure.svg" alt="The prototype enclosure from the hardware story"><span>One Jetson · 8 GB shared memory.<br><em>Software cutaway, not separate machines.</em></span></div>
           </div>
         </div>
-        <div class="journey-caption"><span class="caption-index" id="flow-count">01 / 05</span><div><span class="micro-label" id="flow-handoff">Your voice → recorded sound</span><p id="flow-detail">The device receives audio, not written words. The next job is to work out what was said.</p></div><span class="illustration-note">Illustrative example · no live inference<br>Animation timing ≠ device latency</span></div>
-        <div class="inside-bottom"><span>Scroll to follow the question ↓</span><nav aria-label="Voice journey steps"><button data-step="0" aria-current="step">You speak</button><button data-step="1">Whisper hears</button><button data-step="2">Gemma answers</button><button data-step="3">Piper speaks</button><button data-step="4">Back to you</button></nav></div>
       </div>
     </section>
     <section id="underneath" class="underneath section-wrap" aria-labelledby="underneath-title">
@@ -204,20 +200,10 @@
       </div>
       <details class="technical"><summary>Under the paper: models, runtime &amp; privacy <span>+</span></summary><div><p>This illustration follows the current Gemma/Piper deployment: Whisper tiny.en F16, Gemma 4 E2B instruction-tuned Q4_K_M, and Piper 1.8.0 with en_US-ljspeech-medium (22,050 Hz audio). The Gemma path receives text from Whisper; it does not use Gemma’s native audio capability. Thinking output is disabled. Piper’s embedded eSpeak phonemizer supplies pronunciation units; its neural ONNX voice model produces the waveform. The illustration is conceptual, not a literal layer count, measured spectrogram, exact tokenizer trace, or board layout. The enclosure remains a form concept.</p><p>Technology references: <a href="https://github.com/openai/whisper">Whisper</a>, <a href="https://ai.google.dev/gemma/docs/core">Google Gemma</a>, and <a href="https://github.com/OHF-Voice/piper1-gpl">Piper neural speech</a>.</p><p>The answer context is 2,048 tokens, with a default 128-token response cap. Device mode speaks complete phrases as they arrive. If the output limit or a later stream error stops generation, remaining speech stops; phrases already spoken cannot be retracted. The command-line path validates the complete answer before export. Runtime commits, model revisions, and SHA-256 hashes are pinned in the <a href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/software/jetson/runtime-lock.json">runtime lock</a>.</p><p>Initial setup downloads software and weights. The deployed service and its three model/voice child processes have only loopback in their network namespaces; this is a boundary around the service, not a claim that the entire board has no network. Temporary audio uses RAM-backed storage. Abrupt process kills and operating-system behavior have separate retention limits; no forensic-erasure guarantee is made.</p></div></details>
     </section>
-    <section class="platforms section-wrap" aria-labelledby="platforms-title">
-      <div class="section-heading"><p class="eyebrow">One idea, three forms</p><h2 id="platforms-title">Local on the desk.<br>Local <em>in your hand.</em></h2><p>The Apple apps share a Swift core and native interface. The Jetson follows the same single-question idea with its own Linux controller and open models.</p></div>
-      <div class="platform-grid">
-        <article><span class="micro-label">macOS · 0.2.0 / build 4</span><h3>Local Voice</h3><p>Voice input, editable transcript, local text answers, and manual read-aloud. Basic use confirmed on the development Mac.</p><div class="platform-stack">Apple Speech → on-device<br>SystemLanguageModel → installed voice</div></article>
-        <article><span class="micro-label">iPhone · 0.3.0 / build 5</span><h3>Local Voice Lab</h3><p>Native beta delivered through TestFlight, with basic use reported on an iPhone. Device-specific feature and offline checks remain open.</p><div class="platform-stack">Shared Swift core and SwiftUI<br>Manual read-aloud · Apple-managed models</div></article>
-        <article><span class="micro-label">Jetson · physical prototype</span><h3>A standalone voice</h3><p>Physical button, USB audio, mains power, and automatic spoken answers. Standalone hardware operation has been confirmed. The resident Gemma/Piper service is deployed; two live answers were confirmed fast and complete.</p><div class="platform-stack">Whisper → Gemma 4 E2B → Piper<br>Python controller · Linux / CUDA</div></article>
-      </div>
-      <p class="platform-note">Apple’s system models do not transfer to Jetson. Model selection and evidence remain specific to each platform; a working beta is not a cross-platform quality comparison.</p>
-    </section>
     <section class="progress-section section-wrap" id="progress" aria-labelledby="progress-title">
       <div class="section-heading"><p class="eyebrow">Build log · November 15, 2026</p><h2 id="progress-title">Built. Running.<br><em>Still learning.</em></h2><p>The physical device has moved beyond parts on a list. Here is what the current evidence establishes—and what is still being tested.</p></div>
       <div class="progress-grid"><article><span class="micro-label">Hardware and software status</span><h3>A working device. An evolving stack.</h3><p>The physical Jetson has completed standalone button-to-spoken-answer checks, including use with the laptop disconnected. The headless service and startup after reboot have also been exercised.</p><p>Whisper, Gemma 4 E2B, and Piper now stay loaded, with answer generation, phrase synthesis, and playback overlapping. All 55 regression checks passed. Two confirmed live answers reached the playback request in 1.113 and 1.061 seconds after capture ended; acoustic onset was not instrumented. Nine short authored WAV trials reached playback requests in 0.795–0.970 seconds (median 0.827), excluding microphone capture and acoustic onset. These small samples do not establish a universal sub-second response. New profile-specific reboot/disconnection checks and long-session qualification remain open. <a href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/results/2026-11-15-jetson-responsive-voice.md">Read the deployment record</a>.</p></article>
       <article class="timing-card"><span class="micro-label">Current application configuration</span><h3>Small, deliberate limits.</h3><div class="timing-values"><div><strong>2,048</strong><small>Context tokens</small></div><div><strong>128</strong><small>Default answer limit</small></div></div><p>Gemma uses Q4_K_M weights. Piper’s selected English voice produces 22,050 Hz audio. Model identities are pinned; these configuration values are not quality scores or latency measurements.</p><a class="text-link" href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/software/jetson/runtime-lock.json">Inspect the runtime lock ↗</a></article></div>
-      <div class="next-note"><span class="micro-label">What comes next</span><p>Representative spoken questions. Answer usefulness. Voice naturalness. Long-session reliability and thermal behavior. A screen, battery, and portable enclosure remain deferred.</p></div>
     </section>
 
     <section class="afterword" id="about" aria-labelledby="afterword-title">
@@ -229,8 +215,54 @@
         <a class="text-link" href="https://github.com/raghavan/longtail-inference-lab/blob/main/projects/02_edge_offline_intelligence_device/hardware/portable_procurement.md">Follow the hardware build <span aria-hidden="true">↗</span></a>
       </div>
     </section>
+    <section class="real-demo section-wrap" id="real-demo" aria-labelledby="demo-title">
+      <header class="demo-heading">
+        <div><p class="eyebrow">The working prototype</p><h2 id="demo-title">Hear it <em>for yourself.</em></h2></div>
+        <p>A real question. A reply from the Jetson.<br>One continuous take, with the original sound.</p>
+      </header>
+      <div class="demo-layout">
+        <aside class="demo-stats" aria-label="Demo timing, local models and latency comparison">
+          <p class="micro-label">A reply, entirely on device</p>
+          <dl class="demo-response-stats">
+            <div><dt>To first spoken word</dt><dd><span class="demo-approx" aria-label="approximately">≈</span>1.6<span class="demo-unit">s</span></dd><dd class="demo-stat-detail">After recording ends</dd></div>
+            <div><dt>Spoken answer</dt><dd><span class="demo-approx" aria-label="approximately">≈</span>6.5<span class="demo-unit">s</span></dd><dd class="demo-stat-detail">Of locally generated audio</dd></div>
+          </dl>
+          <div class="demo-local-stack">
+            <p class="micro-label">The local stack</p>
+            <dl>
+              <div><dt>Transcribe</dt><dd>Whisper <span>tiny.en</span></dd></div>
+              <div><dt>Answer</dt><dd>Gemma 4 E2B <span>Q4_K_M</span></dd></div>
+              <div><dt>Speak</dt><dd>Piper <span>LJ Speech</span></dd></div>
+            </dl>
+          </div>
+          <div class="demo-comparison">
+            <p class="micro-label" id="latency-heading">Time to first speech</p>
+            <table aria-labelledby="latency-heading" aria-describedby="latency-note">
+              <thead><tr><th scope="col">Model / system</th><th scope="col">Latency</th></tr></thead>
+              <tbody>
+                <tr class="demo-local-row"><th scope="row">Local Voice <span class="demo-row-tag">this demo</span><span class="demo-latency-track" aria-hidden="true"><span style="width:64%"></span></span></th><td>≈1.60 s</td></tr>
+                <tr><th scope="row">Grok Voice 3.0<span class="demo-latency-track" aria-hidden="true"><span style="width:64%"></span></span></th><td>1.60 s</td></tr>
+                <tr><th scope="row">Gemini 3.8 Live<span class="demo-latency-track" aria-hidden="true"><span style="width:80.4%"></span></span></th><td>2.01 s</td></tr>
+                <tr><th scope="row">GPT Realtime 2.1<span class="demo-latency-track" aria-hidden="true"><span style="width:86.4%"></span></span></th><td>2.16 s</td></tr>
+              </tbody>
+            </table>
+            <p class="demo-comparison-note" id="latency-note">Local: one take, recording end → speech.<br>Cloud: <a href="https://benchmarks.cekura.ai/speech-to-speech/real-calls/gemini-live">Cekura API medians ↗</a>, speech end → reply.<br>Different tasks; not a head-to-head test.</p>
+          </div>
+        </aside>
+        <figure class="demo-recording">
+          <div class="demo-video-label"><span>Field recording <span aria-hidden="true">↘</span></span><span>Jetson · November 15, 2026</span></div>
+          <video controls playsinline preload="none" width="1920" height="1080" poster="assets/demo/local-voice-demo-poster.jpg" aria-label="Local Voice answers a question about large language models" aria-describedby="demo-caption">
+            <source src="assets/demo/local-voice-demo.mp4" type="video/mp4">
+            <track kind="captions" src="assets/demo/local-voice-demo.en.vtt" srclang="en" label="English">
+            Your browser does not support embedded video. <a href="assets/demo/local-voice-demo.mp4">Download the demo</a>.
+          </video>
+          <figcaption id="demo-caption"><span class="micro-label">The question</span><p>“Explain me a large language model like I’m a five-year-old.”</p></figcaption>
+        </figure>
+      </div>
+    </section>
+
     <footer class="colophon"><span>Local Voice · Long Tail Inference Lab</span><button id="replay">Back to the first piece <span aria-hidden="true">↑</span></button></footer>
   </main>
-  <noscript><style>.inside-story{height:auto!important}.inside-pin{position:relative!important;height:auto!important}.inside-bottom{display:none!important}.assembly-story{height:auto}.pin{position:relative;height:auto;overflow:visible}.chapter{position:relative;visibility:visible;opacity:1;transform:none}.chapter-nav,.journey-cue{display:none}</style><p class="noscript-note">Turn on JavaScript to explore the animated assembly. The build notes above remain available.</p></noscript>
+  <noscript><style>.inside-story{height:auto!important}.inside-pin{position:relative!important;height:auto!important}.assembly-story{height:auto}.pin{position:relative;height:auto;overflow:visible}.chapter{position:relative;visibility:visible;opacity:1;transform:none}.chapter-nav,.journey-cue{display:none}</style><p class="noscript-note">Turn on JavaScript to explore the animated assembly. The build notes above remain available.</p></noscript>
 </body>
 </html>

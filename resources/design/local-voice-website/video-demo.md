@@ -1,12 +1,12 @@
 # Recorded device demo — local design review
 
-Date: November 15, 2026. Status: implemented in the isolated mock-up; owner visual approval pending. No source push or production deployment authorized yet for this addition.
+Date: November 15, 2026. Status: owner approved deployment of the reviewed demo and page cleanups on November 15, 2026. Promoted to production source.
 
 ## Agreed scope
 
 Append the owner-selected clockwise landscape recording to the end of the device page, immediately before its colophon. Show example-specific timing on the left on desktop. Preserve the existing warm paper, bronze, serif/mono design. On phones, put the player first and stack the statistics below it. Use native browser video controls, manual playback, a poster image, English captions and a downloadable fallback. No new player library or hosting service.
 
-This continues the existing website contract; it does not introduce a new device experiment. EGM artifact directory is this design folder. Workflow stage: scoped implementation and drift check, then owner visual review. No Goldfish review is claimed.
+This continues the existing website contract; it does not introduce a new device experiment. EGM artifact directory is this design folder. Workflow stage: scoped implementation and drift check, then owner visual review (approved). No Goldfish review is claimed.
 
 ## Media preparation
 
@@ -54,6 +54,6 @@ Revision verification: desktop 1280 × 1000 and mobile 390 × 844 inspected; bot
 
 Comparison revision: desktop 1280 × 1100 and mobile 390 × 844 inspected, with no horizontal overflow or browser warnings/errors. Rendered bar widths checked against the shared scale; equal local/Grok values produce equal bar lengths. Price removed; recording/player unchanged.
 
-## Release gate
+## Approved release
 
-This preview is outside the GitHub Pages upload directory. After explicit owner approval, promote the added section, stylesheet and demo assets to `areas/public_website/device/`, reconcile the production README, run checks, commit/push the task changes and verify GitHub Pages deployment and live video. Preserve unrelated brief edits.
+Owner explicitly authorized deployment. The complete reviewed page, styles, scripts and demo assets are promoted to `areas/public_website/device/`. Production README is reconciled and changed asset URLs versioned. Run checks and verify GitHub Pages plus the live player; preserve unrelated brief edits.

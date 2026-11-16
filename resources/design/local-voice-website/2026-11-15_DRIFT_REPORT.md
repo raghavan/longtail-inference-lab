@@ -78,3 +78,7 @@ No drift detected. Removed the return stage, loop path, return caption and liste
 ## README.md — hardware figure label cleanup
 
 No drift detected. Removed the incremental FIG. label and its JavaScript update, retaining the component name and assembly controls.
+
+## Approved demo and cleanup release
+
+No drift detected. Owner approved deployment of the complete reviewed preview. Production source matches the mock-up, including native video, timing context and all requested removals. Versioned changed asset URLs prevent reuse of stale scripts against the new DOM.
