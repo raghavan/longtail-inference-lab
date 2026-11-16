@@ -49,7 +49,7 @@ em { font-weight: 300; color: var(--bronze); }
 .part-detail p { margin: 0; font-size: 14px; line-height: 1.4; }
 .part-detail small { font-family: var(--mono); font-size: 12px; line-height: 1.6; color: var(--muted); display: block; margin-top: 6px; }
 .hardware { position: relative; margin: 0 -20px 0 -38px; align-self: stretch; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
-.figure-heading { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: #8a8171; display: flex; justify-content: space-between; position: absolute; top: 32px; left: 6%; right: 4%; }
+.figure-heading { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: #8a8171; display: flex; justify-content: flex-end; position: absolute; top: 32px; left: 6%; right: 4%; }
 .figure-heading span:last-child { color: #898174; }
 .hardware-scene { display: block; width: 100%; max-height: 100%; aspect-ratio: 820 / 720; overflow: visible; }
 .part { will-change: transform, opacity; }

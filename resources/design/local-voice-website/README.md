@@ -64,3 +64,5 @@ The owner also removed the “What comes next” block beneath the build log. It
 ## End at speech output
 
 The owner removed the loop back to the listener, return caption and repeated answer bubble beside the person. The journey now has four stages and ends at Piper; its existing speech card remains. Scroll distance is shortened to match, and stage indexing uses the stage count. Desktop scrolling beyond Piper stays on Piper; mobile selection pans to Piper. No overflow or captured browser warnings/errors. Local review only.
+
+The hardware illustration header omits the incremental FIG. labels at owner request. Component names remain right aligned; chapter controls and assembly progression are retained.

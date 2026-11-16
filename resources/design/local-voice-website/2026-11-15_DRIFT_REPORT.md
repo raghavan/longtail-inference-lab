@@ -74,3 +74,7 @@ No drift detected. Removed the requested “What comes next” block and its unu
 ## README.md — four-stage journey
 
 No drift detected. Removed the return stage, loop path, return caption and listener reply bubble. Four-stage scroll mapping ends at Piper, with matching shorter scroll distance and no obsolete return animation.
+
+## README.md — hardware figure label cleanup
+
+No drift detected. Removed the incremental FIG. label and its JavaScript update, retaining the component name and assembly controls.
