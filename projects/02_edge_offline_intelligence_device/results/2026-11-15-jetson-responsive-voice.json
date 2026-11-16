@@ -731,5 +731,23 @@
     "Playback-request timestamps are not acoustic-onset measurements. Null-sink playback completion is not speech duration.",
     "Only three authored questions, three repetitions each; no representative quality or percentile claim.",
     "All nine final transcripts and answers match the earlier sequential outputs; one synthetic plant question is mistranscribed in both conditions."
-  ]
+  ],
+  "live_listening_acceptance": {
+    "scope": "Two physical button turns; state/timing data only, no utterances or audio retained",
+    "owner_report": "Both answers were fast and complete",
+    "turns": [
+      {
+        "finish_to_playback_request_seconds": 1.113,
+        "finish_to_playback_complete_seconds": 3.283,
+        "finish_to_answer_start_seconds": 0.323
+      },
+      {
+        "finish_to_playback_request_seconds": 1.061,
+        "finish_to_playback_complete_seconds": 3.472,
+        "finish_to_answer_start_seconds": 0.261
+      }
+    ],
+    "service": "Active and ready after both turns; no additional restart since deliberate deployment restart",
+    "limit": "Software playback-request timing, not measured acoustic onset; neither live turn was strictly below one second."
+  }
 }

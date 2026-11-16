@@ -98,7 +98,16 @@ service unit, audio routing, button firmware and filesystem isolation are unchan
 One deliberate application restart activated the update; subsequent stability is
 checked separately from that requested restart.
 
-Live microphone timing and owner listening must be recorded separately. No new
+The owner subsequently confirmed that two physical-button answers were fast and
+complete. Their recorded times from the button ending capture to the first playback
+request were **1.113 and 1.061 seconds**, with playback completing after 3.283 and
+3.472 seconds. Both returned to ready, with no additional service restart. No live
+utterances or audio were retained in this record. These live results support an
+approximately one-second experience, but neither met a strict sub-second threshold;
+the nine synthetic sub-second results must not be substituted for them. Acoustic
+onset was not instrumented.
+
+No new
 profile-specific reboot test, long-session resource qualification, noise/accent
 accuracy study or representative latency distribution is claimed. One second
 remains a target for useful audible response, not a universal guarantee established
