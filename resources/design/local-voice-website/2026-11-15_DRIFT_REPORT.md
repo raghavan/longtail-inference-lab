@@ -70,3 +70,7 @@ No drift detected. Removed the requested caption, disclaimers, scroll prompt and
 ## README.md — build log copy cleanup
 
 No drift detected. Removed the requested “What comes next” block and its unused styles from the local preview.
+
+## README.md — four-stage journey
+
+No drift detected. Removed the return stage, loop path, return caption and listener reply bubble. Four-stage scroll mapping ends at Piper, with matching shorter scroll distance and no obsolete return animation.
